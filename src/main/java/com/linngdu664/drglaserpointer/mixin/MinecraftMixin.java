@@ -1,4 +1,4 @@
-package com.example.examplemod.mixin;
+package com.linngdu664.drglaserpointer.mixin;
 
 import com.mojang.blaze3d.platform.WindowEventHandler;
 import net.minecraft.client.Minecraft;
@@ -15,8 +15,8 @@ public abstract class MinecraftMixin extends ReentrantBlockableEventLoop<Runnabl
         super(pName);
     }
 
-    @Inject(method = "shouldEntityAppearGlowing", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "shouldEntityAppearGlowing", at = @At(value = "HEAD"))
     private void shouldEntityAppearGlowing(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(true);
+//        cir.setReturnValue(true);
     }
 }

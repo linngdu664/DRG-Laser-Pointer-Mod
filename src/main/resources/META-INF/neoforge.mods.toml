@@ -92,4 +92,4 @@ description='''${mod_description}'''
 #openGLVersion="[3.2,)"
 
 [[mixins]]
-config="mixins.examplemod.json"
+config="mixins.drglaserpointer.json"
