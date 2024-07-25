@@ -1,0 +1,7 @@
+{
+  "parent": "drglaserpointer:custom/laser_pointer",
+  "textures": {
+    "1": "drglaserpointer:models/laser_pointer",
+    "particle": "drglaserpointer:models/laser_pointer"
+  }
+}

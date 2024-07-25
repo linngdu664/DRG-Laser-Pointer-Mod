@@ -1,6 +1,7 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -12,7 +13,7 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(Main.LASER_POINTER);
+            event.accept(ItemRegister.LASER_POINTER);
         }
     }
 }
