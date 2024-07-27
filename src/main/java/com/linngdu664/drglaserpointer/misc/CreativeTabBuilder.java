@@ -1,4 +1,4 @@
-package com.linngdu664.drglaserpointer.event;
+package com.linngdu664.drglaserpointer.misc;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
@@ -9,7 +9,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ClientModEvents {
+public class CreativeTabBuilder {
     @SubscribeEvent
     public static void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {

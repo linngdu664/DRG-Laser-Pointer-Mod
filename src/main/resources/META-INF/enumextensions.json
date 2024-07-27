@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "DRGLASERPOINTER_LASER_POINTER",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/linngdu664/drglaserpointer/misc/MyEnumParams",
+        "field": "LASER_POINTER_ARM_POSE_ENUM_PROXY"
+      }
+    }
+  ]
+}

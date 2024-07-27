@@ -55,23 +55,22 @@ public class RenderLevelStageEventHandler {
         addLaserQuad(bufferBuilder, start, end, n2, color);
     }
 
+    // copy mojang's code
     private static Vec3 getThirdViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         float f = Mth.lerp(partialTick, player.yBodyRotO, player.yBodyRot) * 0.017453292F;
         double d0 = Mth.sin(f);
         double d1 = Mth.cos(f);
         double d4 = player.getScale();
-        double d2 = (isLeftHand ? -0.35 : 0.35) * d4;
-        double d3 = 0.8 * d4;
+        double d2 = (isLeftHand ? -0.35 : 0.35) * d4;       // original 0.35
+        double d3 = 0.6 * d4;                               // original 0.8
         double d5 = player.isCrouching() ? -0.1875 : 0.0;
-        return player.getEyePosition(partialTick).add(-d1 * d2 - d0 * d3, d5 - 0.45 * d4, -d0 * d2 + d1 * d3);
+        return player.getEyePosition(partialTick).add(-d1 * d2 - d0 * d3, d5 - 0.12 * d4, -d0 * d2 + d1 * d3);
     }
 
     private static Vec3 getFirstViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         double d4 = 960.0 / mc.options.fov().get();
-//        float para = 1.57f;
-//        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.1F).scale(d4).yRot(para * 0.5F).xRot(-para * 0.7F);
-        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.1F).scale(d4);
+        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.25F).scale(d4);
         return player.getEyePosition(partialTick).add(vec3);
     }
 
