@@ -1,6 +1,8 @@
 package com.linngdu664.drglaserpointer.registry;
 
 import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.network.LaserColorSwitchPayload;
+import com.linngdu664.drglaserpointer.network.LaserColorSwitchServerHandler;
 import com.linngdu664.drglaserpointer.network.LaserDistancePayload;
 import com.linngdu664.drglaserpointer.network.LaserDistanceServerHandler;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,5 +16,6 @@ public class NetworkRegister {
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar("1");
         registrar.playToServer(LaserDistancePayload.TYPE, LaserDistancePayload.STREAM_CODEC, LaserDistanceServerHandler::handleData);
+        registrar.playToServer(LaserColorSwitchPayload.TYPE, LaserColorSwitchPayload.STREAM_CODEC, LaserColorSwitchServerHandler::handleData);
     }
 }

@@ -8,11 +8,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record LaserDistancePayload(double distance) implements CustomPacketPayload {
+public record LaserDistancePayload(float distance) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<LaserDistancePayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_distance"));
-
     public static final StreamCodec<ByteBuf, LaserDistancePayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.DOUBLE, LaserDistancePayload::distance,
+            ByteBufCodecs.FLOAT, LaserDistancePayload::distance,
             LaserDistancePayload::new
     );
 

@@ -1,6 +1,6 @@
 package com.linngdu664.drglaserpointer.network;
 
-import com.linngdu664.drglaserpointer.item.component.LaserDistance;
+import com.linngdu664.drglaserpointer.item.component.LaserData;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import net.minecraft.world.entity.player.Player;
@@ -13,12 +13,14 @@ public class LaserDistanceServerHandler {
             Player player = context.player();
             ItemStack mainHandItemStack = player.getMainHandItem();
             ItemStack offHandItemStack = player.getOffhandItem();
-            var distanceComponent = DataComponentRegister.LASER_DISTANCE.get();
+            var component = DataComponentRegister.LASER_DATA.get();
             if (mainHandItemStack.is(ItemRegister.LASER_POINTER.get())) {
-                mainHandItemStack.set(distanceComponent, new LaserDistance(payload.distance()));
+                byte colorId = mainHandItemStack.get(component).colorId();
+                mainHandItemStack.set(component, new LaserData(payload.distance(), colorId));
             }
             if (offHandItemStack.is(ItemRegister.LASER_POINTER.get())) {
-                offHandItemStack.set(distanceComponent, new LaserDistance(payload.distance()));
+                byte colorId = offHandItemStack.get(component).colorId();
+                offHandItemStack.set(component, new LaserData(payload.distance(), colorId));
             }
         });
     }
