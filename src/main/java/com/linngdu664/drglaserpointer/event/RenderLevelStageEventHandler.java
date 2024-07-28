@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -84,7 +85,7 @@ public class RenderLevelStageEventHandler {
             ItemStack offHandItemStack = player.getOffhandItem();
             Item laserPointer = ItemRegister.LASER_POINTER.get();
             var componentType = DataComponentRegister.LASER_DATA.get();
-            if (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer)) {
+            if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR && (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer))) {
                 HitResult blockHitResult = player.pick(LASER_MAX_DISTANCE, partialTick, false);
                 Vec3 traceBegin = player.getEyePosition(partialTick);
                 Vec3 scaledViewVec = player.getViewVector(partialTick).scale(LASER_MAX_DISTANCE);
@@ -123,7 +124,7 @@ public class RenderLevelStageEventHandler {
                 }
             }
 
-            mc.level.getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(LASER_MAX_DISTANCE), p -> !p.equals(player) && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)))
+            mc.level.getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(LASER_MAX_DISTANCE), p -> !p.equals(player) && !p.isSpectator() && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)))
                     .forEach(p -> {
                         ItemStack mainHandItemStack1 = p.getMainHandItem();
                         ItemStack offHandItemStack1 = p.getOffhandItem();
