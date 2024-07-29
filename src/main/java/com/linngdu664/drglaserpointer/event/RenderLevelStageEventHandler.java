@@ -30,6 +30,7 @@ public class RenderLevelStageEventHandler {
     public static final double LASER_MAX_DISTANCE_SQ = 64 * 64;
     public static final double LASER_WIDTH = 0.005;
     public static float laserDistance;
+    public static HitResult hitResult;
 
     private static void addLaserQuad(BufferBuilder bufferBuilder, Vec3 start, Vec3 end, Vec3 n, int color) {
         int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LASER_MAX_DISTANCE)));
@@ -61,8 +62,8 @@ public class RenderLevelStageEventHandler {
         double d0 = Mth.sin(f);
         double d1 = Mth.cos(f);
         double d4 = player.getScale();
-        double d2 = (isLeftHand ? -0.35 : 0.35) * d4;       // original 0.35
-        double d3 = 0.6 * d4;                               // original 0.8
+        double d2 = (isLeftHand ? -0.32 : 0.32) * d4;       // 左右，original 0.35
+        double d3 = 0.6 * d4;                               // 前后，original 0.8
         double d5 = player.isCrouching() ? -0.1875 : 0.0;
         return player.getEyePosition(partialTick).add(-d1 * d2 - d0 * d3, d5 - 0.12 * d4, -d0 * d2 + d1 * d3);
     }
@@ -70,7 +71,7 @@ public class RenderLevelStageEventHandler {
     private static Vec3 getFirstViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         double d4 = 960.0 / mc.options.fov().get();
-        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.25F).scale(d4);
+        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.3F).scale(d4);
         return player.getEyePosition(partialTick).add(vec3);
     }
 
@@ -86,22 +87,22 @@ public class RenderLevelStageEventHandler {
             Item laserPointer = ItemRegister.LASER_POINTER.get();
             var componentType = DataComponentRegister.LASER_DATA.get();
             if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR && (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer))) {
-                HitResult blockHitResult = player.pick(LASER_MAX_DISTANCE, partialTick, false);
+                hitResult = player.pick(LASER_MAX_DISTANCE, partialTick, false);
                 Vec3 traceBegin = player.getEyePosition(partialTick);
+                laserDistance = (float) hitResult.getLocation().distanceTo(traceBegin);
                 Vec3 scaledViewVec = player.getViewVector(partialTick).scale(LASER_MAX_DISTANCE);
                 Vec3 traceEnd = traceBegin.add(scaledViewVec);
                 AABB aabb = player.getBoundingBox().expandTowards(scaledViewVec).inflate(1.0);
                 EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, traceBegin, traceEnd, aabb, p -> !p.isSpectator() && p.isPickable(), LASER_MAX_DISTANCE_SQ);
-                Vec3 targetPos = blockHitResult.getLocation();
-                laserDistance = (float) blockHitResult.getLocation().distanceTo(traceBegin);
                 if (entityHitResult != null) {
                     float f1 = (float) entityHitResult.getLocation().distanceTo(traceBegin);
                     if (f1 < laserDistance) {
-                        targetPos = entityHitResult.getLocation();
                         laserDistance = f1;
+                        hitResult = entityHitResult;
                     }
                 }
 
+                Vec3 targetPos = hitResult.getLocation();
                 if (mainHandItemStack.is(laserPointer)) {
                     int color = mainHandItemStack.get(componentType).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {

@@ -13,7 +13,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
-public class MouseScrollEventHandler {
+public class InputEventHandler {
     @SubscribeEvent
     public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -21,6 +21,13 @@ public class MouseScrollEventHandler {
         ItemStack itemStack = player.getMainHandItem();
         if (itemStack.is(ItemRegister.LASER_POINTER.get()) && player.isShiftKeyDown()) {
             PacketDistributor.sendToServer(new LaserColorSwitchPayload(event.getScrollDeltaY() > 0));
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onInteractionKeyMappingTriggered(InputEvent.InteractionKeyMappingTriggered event) {
+        if (Minecraft.getInstance().player.getMainHandItem().is(ItemRegister.LASER_POINTER.get()) && event.isAttack()) {
             event.setCanceled(true);
         }
     }
