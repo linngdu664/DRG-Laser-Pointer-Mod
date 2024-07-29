@@ -19,6 +19,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class ClientTickEventHandler {
     private static Item lastMainHandItem = Items.AIR;
     private static Item lastOffHandItem = Items.AIR;
+    public static int mainHandLaserTick;
+    public static int offHandLaserTick;
 
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
@@ -29,6 +31,16 @@ public class ClientTickEventHandler {
             ItemStack offHandStack = player.getOffhandItem();
             if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
                 PacketDistributor.sendToServer(new LaserDistancePayload(RenderLevelStageEventHandler.laserDistance));
+            }
+            if (mainHandStack.is(laserPointerItem)) {
+                mainHandLaserTick++;
+            } else {
+                mainHandLaserTick = 0;
+            }
+            if (offHandStack.is(laserPointerItem)) {
+                offHandLaserTick++;
+            } else {
+                offHandLaserTick = 0;
             }
             // == is safe here
             if (mainHandStack.is(laserPointerItem) && lastMainHandItem != laserPointerItem || offHandStack.is(laserPointerItem) && lastOffHandItem != laserPointerItem) {

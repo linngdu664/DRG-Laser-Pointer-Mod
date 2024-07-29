@@ -51,7 +51,7 @@ public class RenderLevelStageEventHandler {
         addLaserQuad(bufferBuilder, start, end, n2, color);
     }
 
-    // copy mojang's code
+    /*
     private static Vec3 getThirdViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         float f = Mth.lerp(partialTick, player.yBodyRotO, player.yBodyRot) * 0.017453292F;
         double d0 = Mth.sin(f);
@@ -61,8 +61,23 @@ public class RenderLevelStageEventHandler {
         double d3 = 0.6 * d4;                               // 前后，original 0.8
         double d5 = player.isCrouching() ? -0.1875 : 0.0;
         return player.getEyePosition(partialTick).add(-d1 * d2 - d0 * d3, d5 - 0.12 * d4, -d0 * d2 + d1 * d3);
+    }*/
+
+    private static Vec3 getThirdViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
+        // x：俯仰，垂直向上为-90
+        // y：水平偏转
+        float yBodyRot = Mth.lerp(partialTick, player.yBodyRotO, player.yBodyRot) * Mth.DEG_TO_RAD;
+        float yRot = (player.getViewYRot(partialTick) + (isLeftHand ? 0.1F : -0.1F)) * Mth.DEG_TO_RAD;
+        float xRot = player.getViewXRot(partialTick) * Mth.DEG_TO_RAD;
+        Vec3 eyePos = player.getEyePosition(partialTick);
+        Vec3 shoulderPos = eyePos.add(Mth.cos(yBodyRot) * (isLeftHand ? 0.28125 : -0.28125), -0.3125, Mth.sin(yBodyRot) * (isLeftHand ? 0.28125 : -0.28125));
+        Vec3 handVec = new Vec3(-Mth.sin(yRot) * Mth.cos(xRot), -Mth.sin(xRot), Mth.cos(yRot) * Mth.cos(xRot));
+        Vec3 handPos = shoulderPos.add(handVec.scale(0.6));
+        Vec3 normal = handVec.cross(handVec.add(Mth.cos(yRot), 0, Mth.sin(yRot))).normalize();
+        return handPos.add(normal.scale(player.isCrouching() ? 0.125 : 0.3125));
     }
 
+    // copy mojang's code
     private static Vec3 getFirstViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         double d4 = 960.0 / mc.options.fov().get();
@@ -88,8 +103,10 @@ public class RenderLevelStageEventHandler {
                 if (mainHandItemStack.is(laserPointer)) {
                     int color = mainHandItemStack.get(componentType).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {
-                        Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
-                        addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
+                        if (ClientTickEventHandler.mainHandLaserTick > 6) {
+                            Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
+                            addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
+                        }
                     } else {
                         Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                         addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
@@ -98,8 +115,10 @@ public class RenderLevelStageEventHandler {
                 if (offHandItemStack.is(laserPointer)) {
                     int color = offHandItemStack.get(componentType).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {
-                        Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
-                        addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
+                        if (ClientTickEventHandler.offHandLaserTick > 6) {
+                            Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
+                            addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
+                        }
                     } else {
                         Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                         addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
