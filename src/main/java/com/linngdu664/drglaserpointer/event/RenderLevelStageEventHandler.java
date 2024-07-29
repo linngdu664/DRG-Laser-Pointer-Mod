@@ -3,6 +3,7 @@ package com.linngdu664.drglaserpointer.event;
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.util.LaserPointerUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
@@ -10,12 +11,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -26,14 +24,11 @@ import org.joml.Matrix4f;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderLevelStageEventHandler {
-    public static final double LASER_MAX_DISTANCE = 64;
-    public static final double LASER_MAX_DISTANCE_SQ = 64 * 64;
-    public static final double LASER_WIDTH = 0.005;
     public static float laserDistance;
     public static HitResult hitResult;
 
     private static void addLaserQuad(BufferBuilder bufferBuilder, Vec3 start, Vec3 end, Vec3 n, int color) {
-        int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LASER_MAX_DISTANCE)));
+        int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerUtil.LASER_MAX_DISTANCE)));
         Vec3 start1 = start.add(n);
         Vec3 start2 = start.subtract(n);
         Vec3 end1 = end.add(n);
@@ -50,8 +45,8 @@ public class RenderLevelStageEventHandler {
         if (n1.lengthSqr() < 1e-10) {
             n1 = rVec.cross(new Vec3(1, 0, 0));
         }
-        n1 = n1.normalize().scale(LASER_WIDTH);
-        Vec3 n2 = rVec.cross(n1).normalize().scale(LASER_WIDTH);
+        n1 = n1.normalize().scale(LaserPointerUtil.LASER_WIDTH);
+        Vec3 n2 = rVec.cross(n1).normalize().scale(LaserPointerUtil.LASER_WIDTH);
         addLaserQuad(bufferBuilder, start, end, n1, color);
         addLaserQuad(bufferBuilder, start, end, n2, color);
     }
@@ -87,21 +82,8 @@ public class RenderLevelStageEventHandler {
             Item laserPointer = ItemRegister.LASER_POINTER.get();
             var componentType = DataComponentRegister.LASER_DATA.get();
             if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR && (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer))) {
-                hitResult = player.pick(LASER_MAX_DISTANCE, partialTick, false);
-                Vec3 traceBegin = player.getEyePosition(partialTick);
-                laserDistance = (float) hitResult.getLocation().distanceTo(traceBegin);
-                Vec3 scaledViewVec = player.getViewVector(partialTick).scale(LASER_MAX_DISTANCE);
-                Vec3 traceEnd = traceBegin.add(scaledViewVec);
-                AABB aabb = player.getBoundingBox().expandTowards(scaledViewVec).inflate(1.0);
-                EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, traceBegin, traceEnd, aabb, p -> !p.isSpectator() && p.isPickable(), LASER_MAX_DISTANCE_SQ);
-                if (entityHitResult != null) {
-                    float f1 = (float) entityHitResult.getLocation().distanceTo(traceBegin);
-                    if (f1 < laserDistance) {
-                        laserDistance = f1;
-                        hitResult = entityHitResult;
-                    }
-                }
-
+                hitResult = LaserPointerUtil.getHitResult(player, partialTick);
+                laserDistance = (float) hitResult.getLocation().distanceTo(player.getEyePosition(partialTick));
                 Vec3 targetPos = hitResult.getLocation();
                 if (mainHandItemStack.is(laserPointer)) {
                     int color = mainHandItemStack.get(componentType).getColorARGB();
@@ -125,7 +107,7 @@ public class RenderLevelStageEventHandler {
                 }
             }
 
-            mc.level.getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(LASER_MAX_DISTANCE), p -> !p.equals(player) && !p.isSpectator() && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)))
+            mc.level.getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(LaserPointerUtil.LASER_MAX_DISTANCE), p -> !p.equals(player) && !p.isSpectator() && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)))
                     .forEach(p -> {
                         ItemStack mainHandItemStack1 = p.getMainHandItem();
                         ItemStack offHandItemStack1 = p.getOffhandItem();

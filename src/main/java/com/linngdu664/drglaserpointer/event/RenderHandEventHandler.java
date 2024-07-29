@@ -75,7 +75,6 @@ public class RenderHandEventHandler {
                 poseStack.popPose();
             } else {
                 component = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", RenderLevelStageEventHandler.laserDistance)}));
-//                String distanceStr = String.format("%.1f m", RenderLevelStageEventHandler.laserDistance);
                 font.drawInBatch(component, (float) (-font.width(component) / 2), -25, 0xffffffff, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 240);
                 if (RenderLevelStageEventHandler.hitResult.getType() == HitResult.Type.BLOCK) {
                     BlockHitResult blockHitResult = (BlockHitResult) RenderLevelStageEventHandler.hitResult;

@@ -1,0 +1,17 @@
+{
+  "laser_off": {
+    "sounds": [
+      "drglaserpointer:laser_off"
+    ]
+  },
+  "laser_on": {
+    "sounds": [
+      "drglaserpointer:laser_on"
+    ]
+  },
+  "laser_make": {
+    "sounds": [
+      "drglaserpointer:laser_make"
+    ]
+  }
+}
