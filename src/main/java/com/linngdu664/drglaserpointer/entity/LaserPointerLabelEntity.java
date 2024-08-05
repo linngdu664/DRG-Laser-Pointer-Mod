@@ -27,6 +27,7 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
     private static final EntityDataAccessor<Optional<BlockPos>> TARGET_BLOCK_POS = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private int timer;
+    private UUID targetEntityUuid = null;
 
     public LaserPointerLabelEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -34,11 +35,14 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
 
     public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, int entityId) {
         super(entityType, level);
-        entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
-        entityData.set(TARGET_ENTITY_ID, entityId);
         Entity entity = level.getEntity(entityId);
-        if (!(entity instanceof LivingEntity)) {
-            moveTo(location.x, location.y, location.z);
+        if (entity != null && !entity.isRemoved()) {
+            entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
+            entityData.set(TARGET_ENTITY_ID, entityId);
+            targetEntityUuid = entity.getUUID();
+            if (!(entity instanceof LivingEntity)) {
+                moveTo(location.x, location.y, location.z);
+            }
         }
     }
 
@@ -59,19 +63,13 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         if (compoundTag.hasUUID("Owner")) {
-            System.out.println("owner uuid " + compoundTag.getUUID("Owner"));
             entityData.set(OWNER_UUID, Optional.of(compoundTag.getUUID("Owner")));
         }
-        if (compoundTag.hasUUID("TargetEntityUUID")) {
-            System.out.println("entity uuid " + compoundTag.getUUID("TargetEntityUUID"));
-            Entity entity = ((ServerLevel) level()).getEntity(compoundTag.getUUID("TargetEntityUUID"));
-            if (entity != null && !entity.isRemoved()) {
-                entityData.set(TARGET_ENTITY_ID, entity.getId());
-            }
+        if (compoundTag.hasUUID("TargetEntity")) {
+            targetEntityUuid = compoundTag.getUUID("TargetEntity");
         }
         int[] arr = compoundTag.getIntArray("TargetBlockPos");
         if (arr.length == 3) {
-            System.out.println("target block pos " + arr[0] + " " + arr[1] + " " + arr[2]);
             entityData.set(TARGET_BLOCK_POS, Optional.of(new BlockPos(arr[0], arr[1], arr[2])));
         }
         timer = compoundTag.getInt("Timer");
@@ -81,21 +79,13 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
     protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         if (getOwnerUUID() != null) {
             compoundTag.putUUID("Owner", getOwnerUUID());
-        } else {
-            compoundTag.remove("Owner");
-        }
-        Entity entity = level().getEntity(getTargetEntityId());
-        if (entity != null && !entity.isRemoved()) {
-            System.out.println("put entity uuid " + entity.getUUID());
-            compoundTag.putUUID("TargetEntityUUID", entity.getUUID());
-        } else {
-            compoundTag.remove("TargetEntityUUID");
         }
         BlockPos blockPos = getTargetBlockPos();
         if (blockPos != null) {
             compoundTag.putIntArray("TargetBlockPos", new int[]{blockPos.getX(), blockPos.getY(), blockPos.getZ()});
-        } else {
-            compoundTag.remove("TargetBlockPos");
+        }
+        if (targetEntityUuid != null) {
+            compoundTag.putUUID("TargetEntity", targetEntityUuid);
         }
         compoundTag.putInt("Timer", timer);
     }
@@ -105,6 +95,10 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         super.tick();
         Level level = level();
         if (!level.isClientSide()) {
+            if (timer > MAX_TIME) {
+                discard();
+                return;
+            }
             int targetEntityId = entityData.get(TARGET_ENTITY_ID);
             if (targetEntityId >= 0) {
                 Entity entity = level.getEntity(targetEntityId);
@@ -112,10 +106,13 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
                     moveTo(livingEntity.position());
                     livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
                 }
+            } else if (targetEntityUuid != null) {
+                Entity entity = ((ServerLevel) level()).getEntity(targetEntityUuid);
+                if (entity != null && !entity.isRemoved()) {
+                    entityData.set(TARGET_ENTITY_ID, entity.getId());
+                }
             }
-            if (++timer >= MAX_TIME) {
-                discard();
-            }
+            timer++;
         }
     }
 
