@@ -1,7 +1,52 @@
 {
   "parent": "drglaserpointer:custom/laser_pointer",
   "textures": {
-    "1": "drglaserpointer:item/laser_pointer",
-    "particle": "drglaserpointer:item/laser_pointer"
-  }
+    "laser_light": "drglaserpointer:item/laser_light_yellow",
+    "body": "drglaserpointer:item/laser_pointer_body",
+    "screen": "drglaserpointer:item/laser_screen_dark_green"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "light_color": 0
+      },
+      "model": "drglaserpointer:item/laser_pointer_light_blue"
+    },
+    {
+      "predicate": {
+        "light_color": 1
+      },
+      "model": "drglaserpointer:item/laser_pointer_light_red"
+    },
+    {
+      "predicate": {
+        "light_color": 2
+      },
+      "model": "drglaserpointer:item/laser_pointer_light_yellow"
+    },
+    {
+      "predicate": {
+        "light_color": 3
+      },
+      "model": "drglaserpointer:item/laser_pointer_light_green"
+    },
+    {
+      "predicate": {
+        "screen_color": 0
+      },
+      "model": "drglaserpointer:item/laser_pointer_screen_dark_green"
+    },
+    {
+      "predicate": {
+        "screen_color": 1
+      },
+      "model": "drglaserpointer:item/laser_pointer_screen_green"
+    },
+    {
+      "predicate": {
+        "screen_color": 2
+      },
+      "model": "drglaserpointer:item/laser_pointer_screen_red"
+    }
+  ]
 }
