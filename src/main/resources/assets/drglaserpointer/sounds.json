@@ -13,5 +13,20 @@
     "sounds": [
       "drglaserpointer:laser_make"
     ]
+  },
+  "mushroom1": {
+    "sounds": [
+      "drglaserpointer:mushroom1"
+    ]
+  },
+  "mushroom2": {
+    "sounds": [
+      "drglaserpointer:mushroom2"
+    ]
+  },
+  "were_rich": {
+    "sounds": [
+      "drglaserpointer:were_rich"
+    ]
   }
 }

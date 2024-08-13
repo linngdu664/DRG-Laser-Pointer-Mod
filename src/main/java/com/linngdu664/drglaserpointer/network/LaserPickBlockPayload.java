@@ -12,8 +12,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +40,17 @@ public class LaserPickBlockPayload implements CustomPacketPayload {
             Player player = context.player();
             ServerLevel level = (ServerLevel) player.level();
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
+            Block block = level.getBlockState(payload.blockPos).getBlock();
+            RandomSource random = level.getRandom();
+            if (block == Blocks.GOLD_BLOCK) {
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH.get(), SoundSource.PLAYERS,random.nextFloat()*0.4f+0.8f,random.nextFloat()*0.4f+0.8f);
+            }else if (block == Blocks.MUSHROOM_STEM || block == Blocks.BROWN_MUSHROOM || block == Blocks.RED_MUSHROOM || block == Blocks.BROWN_MUSHROOM_BLOCK || block == Blocks.RED_MUSHROOM_BLOCK || block == Blocks.POTTED_BROWN_MUSHROOM || block == Blocks.POTTED_RED_MUSHROOM) {
+                if(random.nextFloat()>0.5f){
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.MUSHROOM1.get(), SoundSource.PLAYERS,random.nextFloat()*0.4f+0.8f,random.nextFloat()*0.4f+0.8f);
+                }else{
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.MUSHROOM2.get(), SoundSource.PLAYERS,random.nextFloat()*0.4f+0.8f,random.nextFloat()*0.4f+0.8f);
+                }
+            }
             for (Entity entity : level.getAllEntities()) {
                 if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerUUID().equals(player.getUUID())) {
                     entity1.discard();
