@@ -40,8 +40,10 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
             entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
             entityData.set(TARGET_ENTITY_ID, entityId);
             targetEntityUuid = entity.getUUID();
-            if (!(entity instanceof LivingEntity)) {
-                moveTo(location.x, location.y, location.z);
+            if (entity instanceof LivingEntity) {
+                moveTo(entity.position());
+            } else {
+                moveTo(location);
             }
         }
     }
@@ -50,7 +52,7 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         super(entityType, level);
         entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
         entityData.set(TARGET_BLOCK_POS, Optional.of(blockPos));
-        moveTo(location.x, location.y, location.z);
+        moveTo(location);
     }
 
     @Override
@@ -99,18 +101,26 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
                 discard();
                 return;
             }
-            int targetEntityId = entityData.get(TARGET_ENTITY_ID);
+            int targetEntityId = getTargetEntityId();
             if (targetEntityId >= 0) {
                 Entity entity = level.getEntity(targetEntityId);
-                if (entity != null && !entity.isRemoved() && entity instanceof LivingEntity livingEntity) {
-                    moveTo(livingEntity.position());
-                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
+                if (entity != null && !entity.isRemoved()) {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        moveTo(livingEntity.position());
+                        livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
+                    }
+                } else {
+                    discard();
                 }
             } else if (targetEntityUuid != null) {
                 Entity entity = ((ServerLevel) level()).getEntity(targetEntityUuid);
                 if (entity != null && !entity.isRemoved()) {
                     entityData.set(TARGET_ENTITY_ID, entity.getId());
+                } else {
+                    discard();
                 }
+            } else if (getTargetBlockPos() == null) {
+                discard();
             }
             timer++;
         }
