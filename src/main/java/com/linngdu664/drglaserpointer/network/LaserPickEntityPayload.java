@@ -26,6 +26,7 @@ public class LaserPickEntityPayload implements CustomPacketPayload {
             ByteBufCodecs.DOUBLE, LaserPickEntityPayload::getLocationY,
             ByteBufCodecs.DOUBLE, LaserPickEntityPayload::getLocationZ,
             ByteBufCodecs.INT, LaserPickEntityPayload::getEntityId,
+            ByteBufCodecs.BYTE, LaserPickEntityPayload::getColor,
             LaserPickEntityPayload::new
     );
 
@@ -40,20 +41,22 @@ public class LaserPickEntityPayload implements CustomPacketPayload {
                     break;
                 }
             }
-            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.entityId));
+            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.entityId, payload.color));
         });
     }
 
     private final Vec3 location;
     private final int entityId;
+    private final byte color;
 
-    public LaserPickEntityPayload(Vec3 location, int entityId) {
+    public LaserPickEntityPayload(Vec3 location, int entityId, byte color) {
         this.location = location;
         this.entityId = entityId;
+        this.color = color;
     }
 
-    private LaserPickEntityPayload(double locationX, double locationY, double locationZ, int entityId) {
-        this(new Vec3(locationX, locationY, locationZ), entityId);
+    private LaserPickEntityPayload(double locationX, double locationY, double locationZ, int entityId, byte color) {
+        this(new Vec3(locationX, locationY, locationZ), entityId, color);
     }
 
     @Override
@@ -75,6 +78,10 @@ public class LaserPickEntityPayload implements CustomPacketPayload {
 
     public int getEntityId() {
         return entityId;
+    }
+
+    private byte getColor() {
+        return color;
     }
 
     @Override

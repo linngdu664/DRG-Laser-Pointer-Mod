@@ -1,6 +1,7 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.item.component.LaserData;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.util.LaserPointerUtil;
@@ -101,7 +102,7 @@ public class RenderLevelStageEventHandler {
                 laserDistance = (float) hitResult.getLocation().distanceTo(player.getEyePosition(partialTick));
                 Vec3 targetPos = hitResult.getLocation();
                 if (mainHandItemStack.is(laserPointer)) {
-                    int color = mainHandItemStack.get(componentType).getColorARGB();
+                    int color = mainHandItemStack.getOrDefault(componentType, LaserData.defaultInstance).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {
                         if (ClientTickEventHandler.mainHandLaserTick > 6) {
                             Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
@@ -113,7 +114,7 @@ public class RenderLevelStageEventHandler {
                     }
                 }
                 if (offHandItemStack.is(laserPointer)) {
-                    int color = offHandItemStack.get(componentType).getColorARGB();
+                    int color = offHandItemStack.getOrDefault(componentType, LaserData.defaultInstance).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {
                         if (ClientTickEventHandler.offHandLaserTick > 6) {
                             Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
@@ -133,13 +134,13 @@ public class RenderLevelStageEventHandler {
                         Vec3 eyePos = p.getEyePosition(partialTick);
                         Vec3 viewVec = p.getViewVector(partialTick);
                         if (mainHandItemStack1.is(laserPointer)) {
-                            var data = mainHandItemStack1.get(componentType);
+                            var data = mainHandItemStack1.getOrDefault(componentType, LaserData.defaultInstance);
                             Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                             Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
                         }
                         if (offHandItemStack1.is(laserPointer)) {
-                            var data = offHandItemStack1.get(componentType);
+                            var data = offHandItemStack1.getOrDefault(componentType, LaserData.defaultInstance);
                             Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                             Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());

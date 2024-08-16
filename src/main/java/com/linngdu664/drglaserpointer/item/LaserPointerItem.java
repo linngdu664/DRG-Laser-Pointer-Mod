@@ -5,10 +5,8 @@ import com.linngdu664.drglaserpointer.item.component.LaserData;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
-import com.linngdu664.drglaserpointer.registry.SoundRegister;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,8 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -33,7 +29,7 @@ public class LaserPointerItem extends Item {
     public LaserPointerItem() {
         super(new Properties()
                 .stacksTo(1)
-                .component(DataComponentRegister.LASER_DATA, new LaserData(0, (byte) 0)));
+                .component(DataComponentRegister.LASER_DATA, LaserData.defaultInstance));
     }
 
     @Override
@@ -41,12 +37,13 @@ public class LaserPointerItem extends Item {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
         if (pLevel.isClientSide) {
             HitResult hitResult = RenderLevelStageEventHandler.hitResult;
+            byte color = itemStack.getOrDefault(DataComponentRegister.LASER_DATA.get(), LaserData.defaultInstance).colorId();
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-                PacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos()));
+                PacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color));
             } else if (hitResult.getType() == HitResult.Type.ENTITY) {
                 EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-                PacketDistributor.sendToServer(new LaserPickEntityPayload(entityHitResult.getLocation(), entityHitResult.getEntity().getId()));
+                PacketDistributor.sendToServer(new LaserPickEntityPayload(entityHitResult.getLocation(), entityHitResult.getEntity().getId(), color));
             }
         }
         return InteractionResultHolder.pass(itemStack);

@@ -2,5 +2,6 @@
   "item.drglaserpointer.laser_pointer": "Laser Pointer",
 
   "tip.drglaserpointer.distance": "%1$s m",
-  "tip.drglaserpointer.mark_key": "%1$s to mark"
+  "tip.drglaserpointer.mark_key": "%1$s to mark",
+  "tip.drglaserpointer.item_entity_name": "%1$s (Item)"
 }

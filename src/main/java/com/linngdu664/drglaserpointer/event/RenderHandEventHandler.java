@@ -98,7 +98,7 @@ public class RenderHandEventHandler {
                 poseStack.translate(isLeftHand ? -0.56f : 0.56f, -0.29f, -0.75f);
                 poseStack.scale(-0.0028f, -0.0028f, -0.0028f);
                 poseStack.mulPose(Y_AXIS_180);
-                component = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.mark_key", null, new Object[]{mc.options.keyUse.getKey().getDisplayName().getString()}));
+                component = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.mark_key", null, new Object[]{mc.options.keyUse.getKey().getDisplayName()}));
                 font.drawInBatch(component, (float) (-font.width(component) / 2), 0, 0xffffff00, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 240);
                 poseStack.popPose();
             }

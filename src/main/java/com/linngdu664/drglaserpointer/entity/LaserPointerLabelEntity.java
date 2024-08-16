@@ -13,7 +13,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,43 +27,48 @@ import java.util.UUID;
 
 public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
     private static final int MAX_TIME = 10 * 20;
-    private static final EntityDataAccessor<Integer> TARGET_ENTITY_ID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Optional<BlockPos>> TARGET_BLOCK_POS = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private int timer;
+    private static final EntityDataAccessor<BlockState> TARGET_BLOCK_STATE = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> TARGET_ENTITY_ID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Byte> COLOR = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BYTE);
+
+    private int timer = 0;
     private UUID targetEntityUuid = null;
 
     public LaserPointerLabelEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, int entityId) {
+    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, int entityId, byte color) {
         super(entityType, level);
         Entity entity = level.getEntity(entityId);
         if (entity != null && !entity.isRemoved()) {
+            targetEntityUuid = entity.getUUID();
             entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
             entityData.set(TARGET_ENTITY_ID, entityId);
-            targetEntityUuid = entity.getUUID();
             if (entity instanceof LivingEntity) {
                 moveTo(entity.position());
             } else {
+                entityData.set(COLOR, color);
                 moveTo(location);
             }
         }
     }
 
-    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockPos blockPos) {
+    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockPos blockPos, byte color) {
         super(entityType, level);
         entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
-        entityData.set(TARGET_BLOCK_POS, Optional.of(blockPos));
+        entityData.set(TARGET_BLOCK_STATE, level.getBlockState(blockPos));
+        entityData.set(COLOR, color);
         moveTo(location);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(TARGET_ENTITY_ID, -1);
-        builder.define(TARGET_BLOCK_POS, Optional.empty());
         builder.define(OWNER_UUID, Optional.empty());
+        builder.define(TARGET_BLOCK_STATE, Blocks.AIR.defaultBlockState());
+        builder.define(TARGET_ENTITY_ID, -1);
+        builder.define(COLOR, (byte) -1);
     }
 
     @Override
@@ -70,10 +79,11 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         if (compoundTag.hasUUID("TargetEntity")) {
             targetEntityUuid = compoundTag.getUUID("TargetEntity");
         }
-        int[] arr = compoundTag.getIntArray("TargetBlockPos");
-        if (arr.length == 3) {
-            entityData.set(TARGET_BLOCK_POS, Optional.of(new BlockPos(arr[0], arr[1], arr[2])));
+        ItemStack stack = ItemStack.parseOptional(registryAccess(), compoundTag.getCompound("TargetBlockItemStack"));
+        if (stack.getItem() instanceof BlockItem blockItem) {
+            entityData.set(TARGET_BLOCK_STATE, blockItem.getBlock().defaultBlockState());
         }
+        entityData.set(COLOR, compoundTag.getByte("Color"));
         timer = compoundTag.getInt("Timer");
     }
 
@@ -82,13 +92,11 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         if (getOwnerUUID() != null) {
             compoundTag.putUUID("Owner", getOwnerUUID());
         }
-        BlockPos blockPos = getTargetBlockPos();
-        if (blockPos != null) {
-            compoundTag.putIntArray("TargetBlockPos", new int[]{blockPos.getX(), blockPos.getY(), blockPos.getZ()});
-        }
         if (targetEntityUuid != null) {
             compoundTag.putUUID("TargetEntity", targetEntityUuid);
         }
+        compoundTag.put("TargetBlockItemStack", entityData.get(TARGET_BLOCK_STATE).getBlock().asItem().getDefaultInstance().saveOptional(registryAccess()));
+        compoundTag.putInt("Color", entityData.get(COLOR));
         compoundTag.putInt("Timer", timer);
     }
 
@@ -101,26 +109,24 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
                 discard();
                 return;
             }
-            int targetEntityId = getTargetEntityId();
-            if (targetEntityId >= 0) {
-                Entity entity = level.getEntity(targetEntityId);
-                if (entity != null && !entity.isRemoved()) {
-                    if (entity instanceof LivingEntity livingEntity) {
-                        moveTo(livingEntity.position());
-                        livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
+            if (targetEntityUuid != null) {
+                if (entityData.get(TARGET_ENTITY_ID) == -1) {
+                    Entity entity = ((ServerLevel) level).getEntity(targetEntityUuid);
+                    if (entity == null || entity.isRemoved()) {
+                        discard();
+                        return;
                     }
-                } else {
-                    discard();
-                }
-            } else if (targetEntityUuid != null) {
-                Entity entity = ((ServerLevel) level()).getEntity(targetEntityUuid);
-                if (entity != null && !entity.isRemoved()) {
                     entityData.set(TARGET_ENTITY_ID, entity.getId());
-                } else {
-                    discard();
                 }
-            } else if (getTargetBlockPos() == null) {
-                discard();
+                Entity entity = level.getEntity(entityData.get(TARGET_ENTITY_ID));
+                if (entity == null || entity.isRemoved()) {
+                    discard();
+                    return;
+                }
+                if (entity instanceof LivingEntity livingEntity) {
+                    moveTo(livingEntity.position());
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
+                }
             }
             timer++;
         }
@@ -138,11 +144,15 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         return entityData.get(OWNER_UUID).orElse(null);
     }
 
+    public BlockState getTargetBlockState() {
+        return entityData.get(TARGET_BLOCK_STATE);
+    }
+
     public int getTargetEntityId() {
         return entityData.get(TARGET_ENTITY_ID);
     }
 
-    public BlockPos getTargetBlockPos() {
-        return entityData.get(TARGET_BLOCK_POS).orElse(null);
+    public byte getColor() {
+        return entityData.get(COLOR);
     }
 }

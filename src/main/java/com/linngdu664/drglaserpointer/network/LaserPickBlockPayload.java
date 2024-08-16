@@ -21,57 +21,65 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.util.Objects;
 
 public class LaserPickBlockPayload implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_pick_block"));
+
     public static final StreamCodec<ByteBuf, LaserPickBlockPayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.DOUBLE, LaserPickBlockPayload::getLocationX,
-            ByteBufCodecs.DOUBLE, LaserPickBlockPayload::getLocationY,
-            ByteBufCodecs.DOUBLE, LaserPickBlockPayload::getLocationZ,
-            ByteBufCodecs.INT, LaserPickBlockPayload::getBlockPosX,
-            ByteBufCodecs.INT, LaserPickBlockPayload::getBlockPosY,
-            ByteBufCodecs.INT, LaserPickBlockPayload::getBlockPosZ,
+            ByteBufCodecs.BYTE_ARRAY, LaserPickBlockPayload::toByteArray,
             LaserPickBlockPayload::new
     );
 
     public static void handleDataInServer(final LaserPickBlockPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            Player player = context.player();
-            ServerLevel level = (ServerLevel) player.level();
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
-            Block block = level.getBlockState(payload.blockPos).getBlock();
-            RandomSource random = level.getRandom();
-            if (block == Blocks.GOLD_BLOCK) {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH.get(), SoundSource.PLAYERS,random.nextFloat()*0.4f+0.8f,random.nextFloat()*0.4f+0.8f);
-            }else if (block == Blocks.MUSHROOM_STEM || block == Blocks.BROWN_MUSHROOM || block == Blocks.RED_MUSHROOM || block == Blocks.BROWN_MUSHROOM_BLOCK || block == Blocks.RED_MUSHROOM_BLOCK || block == Blocks.POTTED_BROWN_MUSHROOM || block == Blocks.POTTED_RED_MUSHROOM) {
-                if(random.nextFloat()>0.5f){
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.MUSHROOM1.get(), SoundSource.PLAYERS,random.nextFloat()*0.4f+0.8f,random.nextFloat()*0.4f+0.8f);
-                }else{
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.MUSHROOM2.get(), SoundSource.PLAYERS,random.nextFloat()*0.4f+0.8f,random.nextFloat()*0.4f+0.8f);
+            if (payload.blockPos != null && payload.location != null) {
+                Player player = context.player();
+                ServerLevel level = (ServerLevel) player.level();
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
+                Block block = level.getBlockState(payload.blockPos).getBlock();
+                RandomSource random = level.getRandom();
+                if (block == Blocks.GOLD_BLOCK) {
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH.get(), SoundSource.PLAYERS, random.nextFloat() * 0.4f + 0.8f, random.nextFloat() * 0.4f + 0.8f);
+                } else if (block == Blocks.MUSHROOM_STEM || block == Blocks.BROWN_MUSHROOM || block == Blocks.RED_MUSHROOM || block == Blocks.BROWN_MUSHROOM_BLOCK || block == Blocks.RED_MUSHROOM_BLOCK || block == Blocks.POTTED_BROWN_MUSHROOM || block == Blocks.POTTED_RED_MUSHROOM) {
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextFloat() > 0.5F ? SoundRegister.MUSHROOM1.get() : SoundRegister.MUSHROOM2.get(), SoundSource.PLAYERS, random.nextFloat() * 0.4f + 0.8f, random.nextFloat() * 0.4f + 0.8f);
                 }
-            }
-            for (Entity entity : level.getAllEntities()) {
-                if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerUUID().equals(player.getUUID())) {
-                    entity1.discard();
-                    break;
+                for (Entity entity : level.getAllEntities()) {
+                    if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerUUID().equals(player.getUUID())) {
+                        entity1.discard();
+                        break;
+                    }
                 }
+                level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.blockPos, payload.color));
             }
-            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.blockPos));
         });
     }
 
     private final Vec3 location;
     private final BlockPos blockPos;
+    private final byte color;
 
-    public LaserPickBlockPayload(Vec3 location, BlockPos blockPos) {
+    public LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color) {
         this.location = location;
         this.blockPos = blockPos;
+        this.color = color;
     }
 
-    private LaserPickBlockPayload(double locationX, double locationY, double locationZ, int blockPosX, int blockPosY, int blockPosZ) {
-        this.location = new Vec3(locationX, locationY, locationZ);
-        this.blockPos = new BlockPos(blockPosX, blockPosY, blockPosZ);
+    private LaserPickBlockPayload(byte[] arr) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(arr);
+        DataInputStream dis = new DataInputStream(bais);
+        Vec3 location = null;
+        BlockPos blockPos = null;
+        byte color = 0;
+        try {
+            location = new Vec3(dis.readDouble(), dis.readDouble(), dis.readDouble());
+            blockPos = new BlockPos(dis.readInt(), dis.readInt(), dis.readInt());
+            color = dis.readByte();
+        } catch (IOException ignored) {}
+        this.location = location;
+        this.blockPos = blockPos;
+        this.color = color;
     }
 
     @Override
@@ -79,28 +87,19 @@ public class LaserPickBlockPayload implements CustomPacketPayload {
         return TYPE;
     }
 
-    private double getLocationX() {
-        return location.x;
-    }
-
-    private double getLocationY() {
-        return location.y;
-    }
-
-    private double getLocationZ() {
-        return location.z;
-    }
-
-    private int getBlockPosX() {
-        return blockPos.getX();
-    }
-
-    private int getBlockPosY() {
-        return blockPos.getY();
-    }
-
-    private int getBlockPosZ() {
-        return blockPos.getZ();
+    private byte[] toByteArray() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dataOutputStream = new DataOutputStream(baos);
+        try {
+            dataOutputStream.writeDouble(location.x);
+            dataOutputStream.writeDouble(location.y);
+            dataOutputStream.writeDouble(location.z);
+            dataOutputStream.writeInt(blockPos.getX());
+            dataOutputStream.writeInt(blockPos.getY());
+            dataOutputStream.writeInt(blockPos.getZ());
+            dataOutputStream.writeByte(color);
+        } catch (IOException ignored) {}
+        return baos.toByteArray();
     }
 
     @Override
