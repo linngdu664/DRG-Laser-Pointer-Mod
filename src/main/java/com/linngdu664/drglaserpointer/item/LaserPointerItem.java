@@ -60,6 +60,7 @@ public class LaserPointerItem extends Item {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             @Override

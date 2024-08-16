@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -62,8 +63,9 @@ public class LabelRenderHelper {
                     entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
                 }
                 targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
-                Vec3 vec3 = entity.getEyePosition(partialTick);
-                ndcPos = new Vector4f((float) vec3.x, (float) vec3.y, (float) vec3.z, 1.0F);
+                AABB aabb = entity.getBoundingBox();
+                Vec3 vec3 = entity.getPosition(partialTick);
+                ndcPos = new Vector4f((float) vec3.x, (float) (vec3.y+aabb.maxY-aabb.minY+0.5), (float) vec3.z, 1.0F);
                 distance = entity.distanceTo(player);
             } else {
                 if (entity instanceof ItemEntity itemEntity) {
@@ -75,7 +77,8 @@ public class LabelRenderHelper {
                     entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
                     targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                 }
-                ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY(), (float) labelEntity.getZ(), 1.0F);
+                AABB aabb = labelEntity.getBoundingBox();
+                ndcPos = new Vector4f((float) labelEntity.getX(), (float) (labelEntity.getY()+1), (float) labelEntity.getZ(), 1.0F);
                 distance = labelEntity.distanceTo(player);
             }
         } else {
@@ -83,7 +86,7 @@ public class LabelRenderHelper {
             blockItemStack = block.asItem().getDefaultInstance();
             entityIconLocation = null;
             targetTextList = font.split(block.getName(), MAX_TARGET_NAME_WIDTH);
-            ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY(), (float) labelEntity.getZ(), 1.0F);
+            ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY()+1, (float) labelEntity.getZ(), 1.0F);
             distance = labelEntity.distanceTo(player);
         }
         distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", distance)})), MAX_PLAYER_NAME_WIDTH);

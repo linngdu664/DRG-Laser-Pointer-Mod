@@ -16,10 +16,15 @@ public class SetupHandler {
     public static void setupClient(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ItemProperties.register(ItemRegister.LASER_POINTER.get(),
-                    ResourceLocation.fromNamespaceAndPath("drglaserpointer","laser_light"),(itemStack, world, livingEntity, num)-> {
+                    ResourceLocation.fromNamespaceAndPath("drglaserpointer", "laser_light"), (itemStack, world, livingEntity, num) -> {
                         byte id = itemStack.get(DataComponentRegister.LASER_DATA.get()).colorId();
-                        System.out.println((int)id);
-                return id;});
+                        System.out.println((int) id);
+                        return id;
+                    });
         });
     }
+//    @SubscribeEvent
+//    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+//        event.registerLayerDefinition(LaserPointerLabelModel.LAYER_LOCATION, LaserPointerLabelModel::createBodyLayer);
+//    }
 }

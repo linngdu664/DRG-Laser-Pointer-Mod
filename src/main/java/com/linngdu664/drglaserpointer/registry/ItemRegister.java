@@ -2,7 +2,6 @@ package com.linngdu664.drglaserpointer.registry;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.item.LaserPointerItem;
-import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
