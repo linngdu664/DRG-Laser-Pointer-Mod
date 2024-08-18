@@ -18,7 +18,7 @@ public record LaserData(float distance, byte colorId) {
             ByteBufCodecs.BYTE, LaserData::colorId,
             LaserData::new
     );
-    public static LaserData defaultInstance = new LaserData(0F, (byte) 0);
+    public static final LaserData EMPTY = new LaserData(0F, (byte) 0);
 
     public int getColorARGB() {
         return switch (colorId) {

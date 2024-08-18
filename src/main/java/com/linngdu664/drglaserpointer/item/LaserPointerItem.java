@@ -29,7 +29,7 @@ public class LaserPointerItem extends Item {
     public LaserPointerItem() {
         super(new Properties()
                 .stacksTo(1)
-                .component(DataComponentRegister.LASER_DATA, LaserData.defaultInstance));
+                .component(DataComponentRegister.LASER_DATA, LaserData.EMPTY));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class LaserPointerItem extends Item {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
         if (pLevel.isClientSide) {
             HitResult hitResult = RenderLevelStageEventHandler.hitResult;
-            byte color = itemStack.getOrDefault(DataComponentRegister.LASER_DATA.get(), LaserData.defaultInstance).colorId();
+            byte color = itemStack.getOrDefault(DataComponentRegister.LASER_DATA, LaserData.EMPTY).colorId();
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                 PacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color));
@@ -60,7 +60,6 @@ public class LaserPointerItem extends Item {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             @Override

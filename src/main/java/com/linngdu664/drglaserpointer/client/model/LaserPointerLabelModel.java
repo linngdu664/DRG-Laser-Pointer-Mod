@@ -12,8 +12,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-
+@SuppressWarnings("unused")
 public class LaserPointerLabelModel<T extends LaserPointerLabelEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
@@ -1522,12 +1523,12 @@ public class LaserPointerLabelModel<T extends LaserPointerLabelEntity> extends E
 	}
 
 	@Override
-	public void setupAnim(T t, float v, float v1, float v2, float v3, float v4) {
+	public void setupAnim(@NotNull T t, float v, float v1, float v2, float v3, float v4) {
 
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int i1, int i2) {
+	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
 		ball.render(poseStack, vertexConsumer, i, i1, i2);
 	}
 }

@@ -8,43 +8,43 @@
   "overrides": [
     {
       "predicate": {
-        "light_color": 0
+        "drglaserpointer:light_color": 0
       },
       "model": "drglaserpointer:item/laser_pointer_light_blue"
     },
     {
       "predicate": {
-        "light_color": 1
+        "drglaserpointer:light_color": 1
       },
       "model": "drglaserpointer:item/laser_pointer_light_red"
     },
     {
       "predicate": {
-        "light_color": 2
+        "drglaserpointer:light_color": 2
       },
       "model": "drglaserpointer:item/laser_pointer_light_yellow"
     },
     {
       "predicate": {
-        "light_color": 3
+        "drglaserpointer:light_color": 3
       },
       "model": "drglaserpointer:item/laser_pointer_light_green"
     },
     {
       "predicate": {
-        "screen_color": 0
+        "drglaserpointer:screen_color": 0
       },
       "model": "drglaserpointer:item/laser_pointer_screen_dark_green"
     },
     {
       "predicate": {
-        "screen_color": 1
+        "drglaserpointer:screen_color": 1
       },
       "model": "drglaserpointer:item/laser_pointer_screen_green"
     },
     {
       "predicate": {
-        "screen_color": 2
+        "drglaserpointer:screen_color": 2
       },
       "model": "drglaserpointer:item/laser_pointer_screen_red"
     }

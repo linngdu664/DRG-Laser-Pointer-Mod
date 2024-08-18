@@ -65,7 +65,7 @@ public class LabelRenderHelper {
                 targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                 AABB aabb = entity.getBoundingBox();
                 Vec3 vec3 = entity.getPosition(partialTick);
-                ndcPos = new Vector4f((float) vec3.x, (float) (vec3.y+aabb.maxY-aabb.minY+0.5), (float) vec3.z, 1.0F);
+                ndcPos = new Vector4f((float) vec3.x, (float) (vec3.y + aabb.maxY - aabb.minY + 0.5), (float) vec3.z, 1.0F);
                 distance = entity.distanceTo(player);
             } else {
                 if (entity instanceof ItemEntity itemEntity) {
@@ -77,8 +77,7 @@ public class LabelRenderHelper {
                     entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
                     targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                 }
-                AABB aabb = labelEntity.getBoundingBox();
-                ndcPos = new Vector4f((float) labelEntity.getX(), (float) (labelEntity.getY()+1), (float) labelEntity.getZ(), 1.0F);
+                ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY() + 1.0F, (float) labelEntity.getZ(), 1.0F);
                 distance = labelEntity.distanceTo(player);
             }
         } else {
@@ -86,7 +85,7 @@ public class LabelRenderHelper {
             blockItemStack = block.asItem().getDefaultInstance();
             entityIconLocation = null;
             targetTextList = font.split(block.getName(), MAX_TARGET_NAME_WIDTH);
-            ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY()+1, (float) labelEntity.getZ(), 1.0F);
+            ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY() + 1.0F, (float) labelEntity.getZ(), 1.0F);
             distance = labelEntity.distanceTo(player);
         }
         distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", distance)})), MAX_PLAYER_NAME_WIDTH);

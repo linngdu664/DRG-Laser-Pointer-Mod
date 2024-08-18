@@ -27,31 +27,19 @@ public class LaserPointerLabelRenderer extends EntityRenderer<Entity> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Entity entity) {
-        switch (((LaserPointerLabelEntity) entity).getColor()) {
-            case -1 ->{
-                return LaserPointerLabelModel.LAYER_LOCATION_EMPTY.getModel();
-            }
-            case 1 ->{
-                return LaserPointerLabelModel.LAYER_LOCATION_RED.getModel();
-            }
-            case 2 ->{
-                return LaserPointerLabelModel.LAYER_LOCATION_YELLOW.getModel();
-            }
-            case 3 ->{
-                return LaserPointerLabelModel.LAYER_LOCATION_GREEN.getModel();
-            }
-            default -> {
-                return LaserPointerLabelModel.LAYER_LOCATION_BLUE.getModel();
-            }
-        }
+        return switch (((LaserPointerLabelEntity) entity).getColor()) {
+            default -> LaserPointerLabelModel.LAYER_LOCATION_EMPTY.getModel();
+            case 0 -> LaserPointerLabelModel.LAYER_LOCATION_BLUE.getModel();
+            case 1 -> LaserPointerLabelModel.LAYER_LOCATION_RED.getModel();
+            case 2 -> LaserPointerLabelModel.LAYER_LOCATION_YELLOW.getModel();
+            case 3 -> LaserPointerLabelModel.LAYER_LOCATION_GREEN.getModel();
+        };
     }
 
     @Override
     public void render(@NotNull Entity p_entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucentCull(getTextureLocation(p_entity)));
         int i = OverlayTexture.NO_OVERLAY;
-        poseStack.pushPose();
         model.getBody().render(poseStack, vertexconsumer, 15728672, i);
-        poseStack.popPose();
     }
 }
