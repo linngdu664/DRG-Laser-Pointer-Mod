@@ -134,13 +134,13 @@ public class RenderLevelStageEventHandler {
                         Vec3 viewVec = p.getViewVector(partialTick);
                         if (mainHandItemStack1.is(laserPointer)) {
                             LaserData data = mainHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
-                            Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
+                            Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                             Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
                         }
                         if (offHandItemStack1.is(laserPointer)) {
                             LaserData data = offHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
-                            Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
+                            Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                             Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
                         }
