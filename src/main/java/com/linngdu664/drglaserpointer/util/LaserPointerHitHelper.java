@@ -8,12 +8,25 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class LaserPointerUtil {
+public class LaserPointerHitHelper {
     public static final double LASER_MAX_DISTANCE = 64;
     public static final double LASER_MAX_DISTANCE_SQ = 64 * 64;
-    public static final double LASER_WIDTH = 0.005;
 
-    public static HitResult getHitResult(Player player, float partialTick) {
+
+    private static class SingletonHandler {
+        private static final LaserPointerHitHelper instance = new LaserPointerHitHelper();
+    }
+
+    private HitResult hitResult;
+    private float laserDistance;
+
+    private LaserPointerHitHelper() {}
+
+    public static LaserPointerHitHelper getInstance() {
+        return SingletonHandler.instance;
+    }
+
+    public void calcHitResult(Player player, float partialTick) {
         HitResult hitResult = player.pick(LASER_MAX_DISTANCE, partialTick, false);
         Vec3 traceBegin = player.getEyePosition(partialTick);
         double distance = hitResult.getLocation().distanceTo(traceBegin);
@@ -24,6 +37,15 @@ public class LaserPointerUtil {
         if (entityHitResult != null && entityHitResult.getLocation().distanceTo(traceBegin) < distance) {
             hitResult = entityHitResult;
         }
+        this.hitResult = hitResult;
+        this.laserDistance = (float) hitResult.getLocation().distanceTo(player.getEyePosition(partialTick));
+    }
+
+    public HitResult getHitResult() {
         return hitResult;
+    }
+
+    public float getLaserDistance() {
+        return laserDistance;
     }
 }

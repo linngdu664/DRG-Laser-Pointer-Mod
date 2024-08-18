@@ -2,6 +2,7 @@ package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -35,7 +36,7 @@ public class RenderHandEventHandler {
 
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
-        if (event.getItemStack().is(ItemRegister.LASER_POINTER.get()) && event.getEquipProgress() == 0 && event.getSwingProgress() == 0) {
+        if (event.getItemStack().is(ItemRegister.LASER_POINTER) && event.getEquipProgress() == 0 && event.getSwingProgress() == 0) {
             Minecraft mc = Minecraft.getInstance();
             Level level = mc.level;
             Player player = mc.player;
@@ -44,8 +45,9 @@ public class RenderHandEventHandler {
             MultiBufferSource bufferSource = event.getMultiBufferSource();
             boolean isLeftHand = event.getHand() == InteractionHand.MAIN_HAND && player.getMainArm() == HumanoidArm.LEFT
                     || event.getHand() == InteractionHand.OFF_HAND && player.getMainArm() == HumanoidArm.RIGHT;
-            if (RenderLevelStageEventHandler.hitResult != null && RenderLevelStageEventHandler.hitResult.getType() == HitResult.Type.BLOCK) {
-                BlockHitResult blockHitResult = (BlockHitResult) RenderLevelStageEventHandler.hitResult;
+            HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
+            if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+                BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                 ItemStack itemStack = level.getBlockState(blockHitResult.getBlockPos()).getBlock().asItem().getDefaultInstance();
                 ItemRenderer itemRenderer = mc.getItemRenderer();
                 poseStack.pushPose();
@@ -69,18 +71,18 @@ public class RenderHandEventHandler {
             poseStack.mulPose(Y_AXIS_180);
             Matrix4f matrix = poseStack.last().pose();
             Component component;
-            if (RenderLevelStageEventHandler.hitResult == null || RenderLevelStageEventHandler.hitResult.getType() == HitResult.Type.MISS) {
+            if (hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
                 component = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{"??.?"}));
                 font.drawInBatch(component, (float) (-font.width(component) / 2), -25, 0xffffffff, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 240);
                 poseStack.popPose();
             } else {
-                component = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", RenderLevelStageEventHandler.laserDistance)}));
+                component = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", LaserPointerHitHelper.getInstance().getLaserDistance())}));
                 font.drawInBatch(component, (float) (-font.width(component) / 2), -25, 0xffffffff, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 240);
-                if (RenderLevelStageEventHandler.hitResult.getType() == HitResult.Type.BLOCK) {
-                    BlockHitResult blockHitResult = (BlockHitResult) RenderLevelStageEventHandler.hitResult;
+                if (hitResult.getType() == HitResult.Type.BLOCK) {
+                    BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                     component = level.getBlockState(blockHitResult.getBlockPos()).getBlock().getName();
                 } else {
-                    EntityHitResult entityHitResult = (EntityHitResult) RenderLevelStageEventHandler.hitResult;
+                    EntityHitResult entityHitResult = (EntityHitResult) hitResult;
                     component = entityHitResult.getEntity().getName();
                 }
                 var splitList = font.split(component, 108);

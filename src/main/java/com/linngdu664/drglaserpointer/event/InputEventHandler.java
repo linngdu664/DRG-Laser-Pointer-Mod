@@ -19,7 +19,7 @@ public class InputEventHandler {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         ItemStack itemStack = player.getMainHandItem();
-        if (itemStack.is(ItemRegister.LASER_POINTER.get()) && player.isShiftKeyDown()) {
+        if (itemStack.is(ItemRegister.LASER_POINTER) && player.isShiftKeyDown()) {
             PacketDistributor.sendToServer(new LaserColorSwitchPayload(event.getScrollDeltaY() > 0));
             event.setCanceled(true);
         }
@@ -27,7 +27,7 @@ public class InputEventHandler {
 
     @SubscribeEvent
     public static void onInteractionKeyMappingTriggered(InputEvent.InteractionKeyMappingTriggered event) {
-        if (Minecraft.getInstance().player.getMainHandItem().is(ItemRegister.LASER_POINTER.get()) && event.isAttack()) {
+        if (Minecraft.getInstance().player.getMainHandItem().is(ItemRegister.LASER_POINTER) && event.isAttack()) {
             event.setCanceled(true);
         }
     }

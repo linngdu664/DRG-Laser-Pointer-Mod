@@ -30,6 +30,7 @@ import java.util.List;
 /**
  * <b>Important: This class will be deleted later!!!</b>
  */
+@Deprecated
 public class LabelRenderHelper {
     public static final int MAX_TARGET_NAME_WIDTH = 108;
     public static final int MAX_PLAYER_NAME_WIDTH = 153;

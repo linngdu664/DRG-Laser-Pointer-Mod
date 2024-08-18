@@ -4,6 +4,7 @@ import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.network.LaserDistancePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,7 +31,7 @@ public class ClientTickEventHandler {
             ItemStack mainHandStack = player.getMainHandItem();
             ItemStack offHandStack = player.getOffhandItem();
             if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
-                PacketDistributor.sendToServer(new LaserDistancePayload(RenderLevelStageEventHandler.laserDistance));
+                PacketDistributor.sendToServer(new LaserDistancePayload(LaserPointerHitHelper.getInstance().getLaserDistance()));
             }
             if (mainHandStack.is(laserPointerItem)) {
                 mainHandLaserTick++;

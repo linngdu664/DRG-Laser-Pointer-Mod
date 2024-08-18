@@ -1,10 +1,10 @@
 package com.linngdu664.drglaserpointer.item;
 
-import com.linngdu664.drglaserpointer.event.RenderLevelStageEventHandler;
 import com.linngdu664.drglaserpointer.item.component.LaserData;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
+import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +36,7 @@ public class LaserPointerItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
         if (pLevel.isClientSide) {
-            HitResult hitResult = RenderLevelStageEventHandler.hitResult;
+            HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
             byte color = itemStack.getOrDefault(DataComponentRegister.LASER_DATA, LaserData.EMPTY).colorId();
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;

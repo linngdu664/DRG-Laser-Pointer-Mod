@@ -134,7 +134,7 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
 
     @Override
     public boolean shouldRenderAtSqrDistance(double pDistance) {
-        double d0 = 96 * getViewScale();
+        double d0 = 64 * getViewScale();
         return pDistance < d0 * d0;
     }
 

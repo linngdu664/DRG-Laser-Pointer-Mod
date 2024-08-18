@@ -21,14 +21,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.util.Objects;
-
-public class LaserPickBlockPayload implements CustomPacketPayload {
+public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_pick_block"));
-
     public static final StreamCodec<ByteBuf, LaserPickBlockPayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.BYTE_ARRAY, LaserPickBlockPayload::toByteArray,
+            CustomStreamCodecs.VEC3_STREAM_CODEC, LaserPickBlockPayload::location,
+            BlockPos.STREAM_CODEC, LaserPickBlockPayload::blockPos,
+            ByteBufCodecs.BYTE, LaserPickBlockPayload::color,
             LaserPickBlockPayload::new
     );
 
@@ -56,62 +54,8 @@ public class LaserPickBlockPayload implements CustomPacketPayload {
         });
     }
 
-    private final Vec3 location;
-    private final BlockPos blockPos;
-    private final byte color;
-
-    public LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color) {
-        this.location = location;
-        this.blockPos = blockPos;
-        this.color = color;
-    }
-
-    private LaserPickBlockPayload(byte[] arr) {
-        ByteArrayInputStream bais = new ByteArrayInputStream(arr);
-        DataInputStream dis = new DataInputStream(bais);
-        Vec3 location = null;
-        BlockPos blockPos = null;
-        byte color = 0;
-        try {
-            location = new Vec3(dis.readDouble(), dis.readDouble(), dis.readDouble());
-            blockPos = new BlockPos(dis.readInt(), dis.readInt(), dis.readInt());
-            color = dis.readByte();
-        } catch (IOException ignored) {}
-        this.location = location;
-        this.blockPos = blockPos;
-        this.color = color;
-    }
-
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    private byte[] toByteArray() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dataOutputStream = new DataOutputStream(baos);
-        try {
-            dataOutputStream.writeDouble(location.x);
-            dataOutputStream.writeDouble(location.y);
-            dataOutputStream.writeDouble(location.z);
-            dataOutputStream.writeInt(blockPos.getX());
-            dataOutputStream.writeInt(blockPos.getY());
-            dataOutputStream.writeInt(blockPos.getZ());
-            dataOutputStream.writeByte(color);
-        } catch (IOException ignored) {}
-        return baos.toByteArray();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LaserPickBlockPayload that = (LaserPickBlockPayload) o;
-        return Objects.equals(location, that.location) && Objects.equals(blockPos, that.blockPos);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(location, blockPos);
     }
 }

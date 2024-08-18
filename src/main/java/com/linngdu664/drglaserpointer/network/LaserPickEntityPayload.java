@@ -17,16 +17,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
-public class LaserPickEntityPayload implements CustomPacketPayload {
+public record LaserPickEntityPayload(Vec3 location, int entityId, byte color) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<LaserPickEntityPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_pick_entity"));
     public static final StreamCodec<ByteBuf, LaserPickEntityPayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.DOUBLE, LaserPickEntityPayload::getLocationX,
-            ByteBufCodecs.DOUBLE, LaserPickEntityPayload::getLocationY,
-            ByteBufCodecs.DOUBLE, LaserPickEntityPayload::getLocationZ,
-            ByteBufCodecs.INT, LaserPickEntityPayload::getEntityId,
-            ByteBufCodecs.BYTE, LaserPickEntityPayload::getColor,
+            CustomStreamCodecs.VEC3_STREAM_CODEC, LaserPickEntityPayload::location,
+            ByteBufCodecs.VAR_INT, LaserPickEntityPayload::entityId,
+            ByteBufCodecs.BYTE, LaserPickEntityPayload::color,
             LaserPickEntityPayload::new
     );
 
@@ -45,55 +41,8 @@ public class LaserPickEntityPayload implements CustomPacketPayload {
         });
     }
 
-    private final Vec3 location;
-    private final int entityId;
-    private final byte color;
-
-    public LaserPickEntityPayload(Vec3 location, int entityId, byte color) {
-        this.location = location;
-        this.entityId = entityId;
-        this.color = color;
-    }
-
-    private LaserPickEntityPayload(double locationX, double locationY, double locationZ, int entityId, byte color) {
-        this(new Vec3(locationX, locationY, locationZ), entityId, color);
-    }
-
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    private double getLocationX() {
-        return location.x;
-    }
-
-    private double getLocationY() {
-        return location.y;
-    }
-
-    private double getLocationZ() {
-        return location.z;
-    }
-
-    public int getEntityId() {
-        return entityId;
-    }
-
-    private byte getColor() {
-        return color;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LaserPickEntityPayload that = (LaserPickEntityPayload) o;
-        return entityId == that.entityId && Objects.equals(location, that.location);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(location, entityId);
     }
 }

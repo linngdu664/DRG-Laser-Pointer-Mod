@@ -2,7 +2,6 @@ package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
-import com.linngdu664.drglaserpointer.util.LabelRenderHelper;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
@@ -10,7 +9,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,130 +32,156 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector4f;
 
 import java.util.List;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderGuiEventHandler {
+    public static final int MAX_TARGET_NAME_WIDTH = 108;
+    public static final int MAX_PLAYER_NAME_WIDTH = 153;
+    public static final int LABEL_HEIGHT = 36;
+    public static final int FRAME_PROTECT = 10;
+    public static final int ICON_WIDTH_WITH_MARGIN = 18;
+    public static final int MIN_REF_WIDTH = 40;
+
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        Window window = mc.getWindow();
-        if (!mc.options.hideGui) {
-            GameRenderer gameRenderer = mc.gameRenderer;
-            Camera camera = gameRenderer.getMainCamera();
-            Vec3 vec3 = camera.getPosition();
-            Matrix4f viewMatrix = new Matrix4f();
-            viewMatrix.rotation(camera.rotation().conjugate(new Quaternionf()));
-            viewMatrix.translate((float) -vec3.x, (float) -vec3.y, (float) -vec3.z);
-            double d0 = gameRenderer.getFov(camera, event.getPartialTick().getGameTimeDeltaPartialTick(true), true);
-            Matrix4f projectionMatrix = gameRenderer.getProjectionMatrix(d0);
-            GuiGraphics guiGraphics = event.getGuiGraphics();
-            PoseStack poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            int guiWidth, guiHeight;
-            float guiScale = (float) window.getGuiScale();
-            if (guiScale > 3F) {
-                float factor = 3F / guiScale;
-                poseStack.scale(factor, factor, factor);
-                guiWidth = Math.round((float) window.getWidth() / 3F);
-                guiHeight = Math.round((float) window.getHeight() / 3F);
-            } else {
-                guiWidth = guiGraphics.guiWidth();
-                guiHeight = guiGraphics.guiHeight();
-            }
-            Player player = mc.player;
-            Font font = mc.font;
-            List<LaserPointerLabelEntity> list = mc.level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(64));
-            for (LaserPointerLabelEntity entity : list) {
-                LabelRenderHelper helper = new LabelRenderHelper(entity, player, font, event.getPartialTick().getGameTimeDeltaPartialTick(true), viewMatrix, projectionMatrix);
-                helper.render(guiGraphics, font, guiWidth, guiHeight);
-            }
-            poseStack.popPose();
-
-
-//            poseStack.pushPose();
-//            poseStack.scale(0.75F, 0.75F, 0.75F);
-            // 渲染分3步（遍历列表三次）
-            // 1. 渲染方块/实体名和图标
-            // 2. 渲染玩家名和距离
-            // 3. 渲染边框
-
-            /*
-            Vector4f point = new Vector4f(10, 10, 10, 1);       // 空间中的一个点
-            viewMatrix.transform(point);        // 变换到视图坐标系
-            projectionMatrix.transform(point);  // 变换到投影坐标系
-            point.div(point.w);                 // 得到标准化设备坐标
-
-            // 我们不需要深度测试，只需要判断在摄像机的前面还是后面就行
-            if (point.z < 1) {
-                float xScreen = (int) ((point.x + 1.0F) * 0.5F * event.getGuiGraphics().guiWidth());
-                float yScreen = (int) ((1.0F - point.y) * 0.5F * event.getGuiGraphics().guiHeight());      // 变换到屏幕坐标系
-                guiGraphics.drawString(mc.font, "hello", xScreen, yScreen, 0xc0ffffff, true);
-            }*/
-//            font.split("asdf", 5);
-            /*
-            level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(64))
-                    .stream()
-                    .filter(label -> label.getOwnerUUID() != null)
-                    .forEach(label -> {
-                        // 玩家名\n实体/方块名\n距离
-                        Component playerNameComponent = level.getPlayerByUUID(label.getOwnerUUID()).getName();
-                        Vector4f labelPos;
-                        float distance;
-                        Component targetNameComponent;
-                        Entity entity = level.getEntity(label.getTargetEntityId());
-                        if (entity != null) {
-                            if (entity instanceof LivingEntity livingEntity) {
-                                labelPos = new Vector4f((float) livingEntity.getX(), (float) livingEntity.getEyeY(), (float) entity.getZ(), 1);
-                                distance = livingEntity.distanceTo(player);
-                            } else {
-                                labelPos = new Vector4f((float) label.getX(), (float) label.getY(), (float) label.getZ(), 1);
-                                distance = label.distanceTo(player);
-                            }
-                            targetNameComponent = entity.getName();
-                        } else {
-                            labelPos = new Vector4f((float) label.getX(), (float) label.getY(), (float) label.getZ(), 1);
-                            distance = label.distanceTo(player);
-                            targetNameComponent = level.getBlockState(label.getTargetBlockPos()).getBlock().getName();
-                        }
-                        Component distanceComponent = MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", distance)}));
-                        viewMatrix.transform(labelPos);         // 变换到视图坐标系
-                        projectionMatrix.transform(labelPos);   // 变换到投影坐标系
-                        labelPos.div(labelPos.w);               // 得到标准化设备坐标
-                        // 出现在最左侧：NDC z < 1 && x < -1 || z >= 1 && x > 0
-                        // 出现在最右侧：NDC z < 1 && x > 1 || z >= 1 && x <= 0
-                        // 出现在最下侧：NDC z < 1 && y < -1 || z >= 1 && y > 0
-                        // 出现在最上侧：NDC z < 1 && y > 1 || z >= 1 && y <= 0
-
-//                        font.width(playerNameComponent);
-//                        font.width(targetNameComponent);
-//                        font.width(distanceComponent);
-                        if (entity != null) {
-
-                        } else {
-                            guiGraphics.renderItem(level.getBlockState(label.getTargetBlockPos()).getBlock().asItem().getDefaultInstance(), 10, 10);
-                        }
-                    });*/
-
-
-//            PoseStack poseStack = guiGraphics.pose();
-//            poseStack.pushPose();
-//            poseStack.scale(0.5F, 0.5F, 0.5F);
-//            guiGraphics.drawString(font, "悬挂式深色橡木告示牌我测", 28, 10, 0xffcccc66, true);
-//            guiGraphics.drawString(font, "悬挂式深色橡木告示牌我测", 28, 19, 0xffcccc66, true);
-//            guiGraphics.drawString(font, "Dark Oak Hanging Sign", 28, 14 + 9, 0xffcccc66, true);
-//            poseStack.pushPose();
-//            poseStack.scale(0.8F, 0.8F, 0.8F);
-//            guiGraphics.drawString(font, "我测你们码我测你们码我测你们码我测你们", 13, 14 + 27, 0xffcccc66, true);
-//            poseStack.popPose();
-//            poseStack.popPose();
-//            guiGraphics.drawString(mc.font, "hello", 10, 10, 0x7fffffff, true);
-//            System.out.println("gui width: " + guiGraphics.guiWidth() + " height: " + guiGraphics.guiHeight());
-//            System.out.println("window width: " + mc.getWindow().getWidth() + " height: " + mc.getWindow().getHeight());
-//            System.out.println("gui scale: " + mc.getWindow().getGuiScale());
-            // guiscale <= 2 ok
-            // >2 scale to 2
+        if (mc.options.hideGui) {
+            return;
         }
+        GameRenderer gameRenderer = mc.gameRenderer;
+        Camera camera = gameRenderer.getMainCamera();
+        Vec3 cameraPos = camera.getPosition();
+        Matrix4f viewMatrix = new Matrix4f();
+        viewMatrix.rotation(camera.rotation().conjugate(new Quaternionf()));
+        viewMatrix.translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
+        double d0 = gameRenderer.getFov(camera, event.getPartialTick().getGameTimeDeltaPartialTick(true), true);
+        Matrix4f projectionMatrix = gameRenderer.getProjectionMatrix(d0);
+        GuiGraphics guiGraphics = event.getGuiGraphics();
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        int guiWidth, guiHeight;
+        Window window = mc.getWindow();
+        float guiScale = (float) window.getGuiScale();
+        if (guiScale > 3F) {
+            float factor = 3F / guiScale;
+            poseStack.scale(factor, factor, factor);
+            guiWidth = Math.round((float) window.getWidth() / 3F);
+            guiHeight = Math.round((float) window.getHeight() / 3F);
+        } else {
+            guiWidth = guiGraphics.guiWidth();
+            guiHeight = guiGraphics.guiHeight();
+        }
+        Player player = mc.player;
+        Font font = mc.font;
+        Level level = mc.level;
+        List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> p.distanceToSqr(player) <= 96 * 96 && p.getOwnerUUID() != null);
+        for (LaserPointerLabelEntity labelEntity : list) {
+            FormattedText playerText = font.ellipsize(level.getPlayerByUUID(labelEntity.getOwnerUUID()).getName(), MAX_PLAYER_NAME_WIDTH);
+            FormattedText distanceText;
+            List<FormattedCharSequence> targetTextList;
+            ItemStack blockItemStack = null;
+            ResourceLocation entityIconLocation = null;
+            Vector4f ndcPos;
+            Entity entity = level.getEntity(labelEntity.getTargetEntityId());
+            if (entity != null) {
+                if (entity instanceof LivingEntity) {
+                    ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+                    if (!(entity instanceof Player) && resourceLocation.getNamespace().equals("minecraft")) {
+                        entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/" + resourceLocation.getPath() + "_face.png");
+                    } else {
+                        entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
+                    }
+                    targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
+                    distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", entity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
+                    AABB aabb = entity.getBoundingBox();
+                    Vec3 vec3 = entity.getPosition(event.getPartialTick().getGameTimeDeltaPartialTick(true));
+                    ndcPos = new Vector4f((float) vec3.x, (float) (vec3.y + aabb.maxY - aabb.minY + 0.5), (float) vec3.z, 1.0F);
+                } else {
+                    if (entity instanceof ItemEntity itemEntity) {
+                        blockItemStack = itemEntity.getItem();
+                        targetTextList = font.split(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.item_entity_name", null, new Object[]{entity.getName()})), MAX_TARGET_NAME_WIDTH);
+                    } else {
+                        entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
+                        targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
+                    }
+                    distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
+                    ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY() + 1.0F, (float) labelEntity.getZ(), 1.0F);
+                }
+            } else {
+                Block block = labelEntity.getTargetBlockState().getBlock();
+                blockItemStack = block.asItem().getDefaultInstance();
+                targetTextList = font.split(block.getName(), MAX_TARGET_NAME_WIDTH);
+                distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
+                ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY() + 1.0F, (float) labelEntity.getZ(), 1.0F);
+            }
+            int mainWidth;
+            FormattedCharSequence targetTextLine1, targetTextLine2 = null;
+            if (targetTextList.size() == 1) {
+                targetTextLine1 = targetTextList.getFirst();
+                mainWidth = font.width(targetTextLine1) + ICON_WIDTH_WITH_MARGIN;
+            } else {
+                targetTextLine1 = targetTextList.getFirst();
+                targetTextLine2 = targetTextList.get(1);
+                mainWidth = Math.max(font.width(targetTextLine1), font.width(targetTextLine2)) + ICON_WIDTH_WITH_MARGIN;
+            }
+            int refWidth = Math.max(MIN_REF_WIDTH, Math.max(Math.round(Math.max(font.width(distanceText), font.width(playerText)) * 0.8F), mainWidth));
+            viewMatrix.transform(ndcPos);         // 变换到视图坐标系
+            projectionMatrix.transform(ndcPos);   // 变换到投影坐标系
+            ndcPos.div(ndcPos.w);                 // 得到标准化设备坐标
+
+            // todo: fix behind bug
+            int xScreen, yScreen, xOutFlag, yOutFlag;
+//          System.out.println(ndcPos);
+            if (ndcPos.x < -1) {
+                xScreen = refWidth / 2 + FRAME_PROTECT;
+                xOutFlag = -1;
+            } else if (ndcPos.x <= 1) {
+                xScreen = Mth.clamp((int) ((ndcPos.x + 1.0F) * 0.5F * guiWidth), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
+                xOutFlag = 0;
+            } else {
+                xScreen = guiWidth - (refWidth / 2 + FRAME_PROTECT);
+                xOutFlag = 1;
+            }
+            if (ndcPos.y < -1) {
+                yScreen = guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT);
+                yOutFlag = 1;
+            } else if (ndcPos.y <= 1) {
+                yScreen = Mth.clamp((int) ((1.0F - ndcPos.y) * 0.5F * guiHeight), LABEL_HEIGHT / 2 + FRAME_PROTECT, guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT));
+                yOutFlag = 0;
+            } else {
+                yScreen = LABEL_HEIGHT / 2 + FRAME_PROTECT;
+                yOutFlag = -1;
+            }
+            guiGraphics.fill(xScreen - refWidth / 2 - 2, yScreen - 11, xScreen + refWidth / 2 + 2, yScreen + 11, 0x40000000);
+            guiGraphics.vLine(xScreen - refWidth / 2 - 3, yScreen - 12, yScreen + 11, 0xffc1bd93);
+            guiGraphics.vLine(xScreen + refWidth / 2 + 2, yScreen - 12, yScreen + 11, 0xffc1bd93);
+            guiGraphics.hLine(xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen - 12, 0xffc1bd93);
+            guiGraphics.hLine(xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen + 11, 0xffc1bd93);
+            guiGraphics.hLine(xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen - 12, 0xffc1bd93);
+            guiGraphics.hLine(xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen + 11, 0xffc1bd93);
+            if (blockItemStack == null) {
+                guiGraphics.blit(entityIconLocation, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
+            } else {
+                guiGraphics.renderItem(blockItemStack, xScreen - refWidth / 2, yScreen - 8);
+            }
+            int targetTextCenterX = xScreen + (refWidth - ICON_WIDTH_WITH_MARGIN) / 2 - (refWidth / 2 - ICON_WIDTH_WITH_MARGIN);
+            if (targetTextLine2 == null) {
+                guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 4, 0xffc1bd93, false);
+            } else {
+                guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 9, 0xffc1bd93, false);
+                guiGraphics.drawString(font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) / 2, yScreen, 0xffc1bd93, false);
+            }
+            poseStack.pushPose();
+            poseStack.scale(0.8F, 0.8F, 0.8F);
+            xScreen = Math.round(xScreen * 1.25F);
+            yScreen = Math.round(yScreen * 1.25F);
+            guiGraphics.drawCenteredString(font, (Component) playerText, xScreen, yScreen - 24, 0xffc1bd93);
+            guiGraphics.drawCenteredString(font, (Component) distanceText, xScreen, yScreen + 17, 0xffc1bd93);
+            poseStack.popPose();
+        }
+        poseStack.popPose();
     }
 }
