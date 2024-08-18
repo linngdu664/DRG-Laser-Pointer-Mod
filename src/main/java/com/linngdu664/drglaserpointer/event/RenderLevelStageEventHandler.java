@@ -28,7 +28,7 @@ public class RenderLevelStageEventHandler {
     public static final double LASER_WIDTH = 0.005;
 
     private static void addLaserQuad(BufferBuilder bufferBuilder, Vec3 start, Vec3 end, Vec3 n, int color) {
-        int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerHitHelper.LASER_MAX_DISTANCE)));
+        int endAlpha = Math.min(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerHitHelper.LASER_MAX_DISTANCE)));
         Vec3 start1 = start.add(n);
         Vec3 start2 = start.subtract(n);
         Vec3 end1 = end.add(n);
