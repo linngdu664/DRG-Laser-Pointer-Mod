@@ -28,7 +28,7 @@ public class RenderLevelStageEventHandler {
     public static final double LASER_WIDTH = 0.005;
 
     private static void addLaserQuad(BufferBuilder bufferBuilder, Vec3 start, Vec3 end, Vec3 n, int color) {
-        int endAlpha = Math.min(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerHitHelper.LASER_MAX_DISTANCE)));
+        int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerHitHelper.LASER_MAX_DISTANCE)));
         Vec3 start1 = start.add(n);
         Vec3 start2 = start.subtract(n);
         Vec3 end1 = end.add(n);
@@ -87,7 +87,7 @@ public class RenderLevelStageEventHandler {
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
+        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_LEVEL)) {
             var bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
             Minecraft mc = Minecraft.getInstance();

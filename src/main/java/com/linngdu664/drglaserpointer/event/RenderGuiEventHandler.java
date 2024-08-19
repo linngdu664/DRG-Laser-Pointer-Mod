@@ -19,6 +19,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -89,7 +90,7 @@ public class RenderGuiEventHandler {
             if (entity != null) {
                 if (entity instanceof LivingEntity) {
                     ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
-                    if (!(entity instanceof Player) && resourceLocation.getNamespace().equals("minecraft")) {
+                    if (resourceLocation.getNamespace().equals("minecraft") && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
                         entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/" + resourceLocation.getPath() + "_face.png");
                     } else {
                         entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");

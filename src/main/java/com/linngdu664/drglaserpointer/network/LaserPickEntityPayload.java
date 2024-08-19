@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -31,12 +31,11 @@ public record LaserPickEntityPayload(Vec3 location, int entityId, byte color) im
             Player player = context.player();
             ServerLevel level = (ServerLevel) player.level();
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
-            for (Entity entity : level.getAllEntities()) {
-                if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerUUID().equals(player.getUUID())) {
-                    entity1.discard();
-                    break;
+            level.getAllEntities().forEach(p -> {
+                if (p instanceof LaserPointerLabelEntity entity1 && (entity1.getOwnerUUID().equals(player.getUUID()) || level.getEntity(payload.entityId) instanceof LivingEntity && entity1.getTargetEntityId() == payload.entityId)) {
+                    p.discard();
                 }
-            }
+            });
             level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.entityId, payload.color));
         });
     }
