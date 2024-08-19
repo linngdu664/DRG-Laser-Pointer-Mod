@@ -1,4 +1,4 @@
-package com.linngdu664.drglaserpointer.registry;
+package com.linngdu664.drglaserpointer.misc;
 
 import com.linngdu664.drglaserpointer.Main;
 import net.minecraft.resources.ResourceLocation;

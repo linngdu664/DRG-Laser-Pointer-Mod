@@ -3,6 +3,7 @@ package com.linngdu664.drglaserpointer.network;
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
 import com.linngdu664.drglaserpointer.item.component.AudioCooldownData;
+import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.registry.*;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
