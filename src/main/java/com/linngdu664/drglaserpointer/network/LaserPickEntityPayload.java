@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ public record LaserPickEntityPayload(Vec3 location, int entityId, byte color) im
         context.enqueueWork(() -> {
             Player player = context.player();
             ServerLevel level = (ServerLevel) player.level();
+            level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
             level.getAllEntities().forEach(p -> {
                 if (p instanceof LaserPointerLabelEntity entity1 && (entity1.getOwnerUUID().equals(player.getUUID()) || level.getEntity(payload.entityId) instanceof LivingEntity && entity1.getTargetEntityId() == payload.entityId)) {

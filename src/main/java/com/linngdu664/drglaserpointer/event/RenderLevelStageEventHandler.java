@@ -35,8 +35,8 @@ public class RenderLevelStageEventHandler {
         Vec3 end2 = end.subtract(n);
         bufferBuilder.addVertex((float) start1.x, (float) start1.y, (float) start1.z).setColor(color | (255 << 24));
         bufferBuilder.addVertex((float) start2.x, (float) start2.y, (float) start2.z).setColor(color | (255 << 24));
-        bufferBuilder.addVertex((float) end2.x, (float) end2.y, (float) end2.z).setColor(color | (endAlpha << 24));
-        bufferBuilder.addVertex((float) end1.x, (float) end1.y, (float) end1.z).setColor(color | (endAlpha << 24));
+        bufferBuilder.addVertex((float) end2.x, (float) end2.y, (float) end2.z).setColor(color & 0xffffff | (endAlpha << 24));
+        bufferBuilder.addVertex((float) end1.x, (float) end1.y, (float) end1.z).setColor(color & 0xffffff | (endAlpha << 24));
     }
 
     private static void addLaserToBuffer(BufferBuilder bufferBuilder, Vec3 start, Vec3 end, int color) {
@@ -145,11 +145,15 @@ public class RenderLevelStageEventHandler {
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
                         }
                     });
-
+//            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 0), new Vec3(64, 72, 0), 0xff78e0ff);
+//            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 1), new Vec3(64, 72, 1), 0xffff7864);
+//            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 2), new Vec3(64, 72, 2), 0xffffbc4c);
+//            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 3), new Vec3(64, 72, 3), 0xff78ff78);
             MeshData meshData = bufferBuilder.build();
             if (meshData != null) {
                 RenderSystem.depthMask(false);
                 RenderSystem.disableCull();
+                RenderSystem.enableDepthTest();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
@@ -161,6 +165,7 @@ public class RenderLevelStageEventHandler {
                 VertexBuffer.unbind();
                 RenderSystem.depthMask(true);
                 RenderSystem.enableCull();
+                RenderSystem.disableDepthTest();
                 RenderSystem.disableBlend();
             }
         }

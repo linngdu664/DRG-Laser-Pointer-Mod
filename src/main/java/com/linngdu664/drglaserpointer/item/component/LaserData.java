@@ -22,10 +22,10 @@ public record LaserData(float distance, byte colorId) {
 
     public int getColorARGB() {
         return switch (colorId) {
-            default -> 0xff78e0ff;//blue
-            case 1 -> 0xffff7864;//red
-            case 2 -> 0xffffbc4c;//yellow
-            case 3 -> 0xff78ff78;//green
+            default -> 0xff78e0ff;  // blue
+            case 1 -> 0xffff7864;   // red
+            case 2 -> 0xffffbc4c;   // yellow
+            case 3 -> 0xff78ff78;   // green
         };
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +47,7 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
         context.enqueueWork(() -> {
             Player player = context.player();
             ServerLevel level = (ServerLevel) player.level();
+            level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
             if (payload.canPlayAudio) {
                 BlockState blockState = level.getBlockState(payload.blockPos);
