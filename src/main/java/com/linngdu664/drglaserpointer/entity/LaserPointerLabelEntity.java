@@ -25,9 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
+public class LaserPointerLabelEntity extends Entity {
     private static final int MAX_TIME = 10 * 20;
-    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+//    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<BlockState> TARGET_BLOCK_STATE = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> TARGET_ENTITY_ID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Byte> COLOR = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BYTE);
@@ -44,7 +45,8 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         Entity entity = level.getEntity(entityId);
         if (entity != null && !entity.isRemoved()) {
             targetEntityUuid = entity.getUUID();
-            entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
+//            entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
+            entityData.set(OWNER_NAME, owner.getName().getString());
             entityData.set(TARGET_ENTITY_ID, entityId);
             if (entity instanceof LivingEntity) {
                 moveTo(entity.position());
@@ -57,7 +59,8 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
 
     public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockPos blockPos, byte color) {
         super(entityType, level);
-        entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
+//        entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
+        entityData.set(OWNER_NAME, owner.getName().getString());
         entityData.set(TARGET_BLOCK_STATE, level.getBlockState(blockPos));
         entityData.set(COLOR, color);
         moveTo(location);
@@ -65,7 +68,8 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(OWNER_UUID, Optional.empty());
+//        builder.define(OWNER_UUID, Optional.empty());
+        builder.define(OWNER_NAME, "");
         builder.define(TARGET_BLOCK_STATE, Blocks.AIR.defaultBlockState());
         builder.define(TARGET_ENTITY_ID, -1);
         builder.define(COLOR, (byte) -1);
@@ -73,9 +77,10 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        if (compoundTag.hasUUID("Owner")) {
-            entityData.set(OWNER_UUID, Optional.of(compoundTag.getUUID("Owner")));
-        }
+//        if (compoundTag.hasUUID("Owner")) {
+//            entityData.set(OWNER_UUID, Optional.of(compoundTag.getUUID("Owner")));
+//        }
+        entityData.set(OWNER_NAME, compoundTag.getString("OwnerName"));
         if (compoundTag.hasUUID("TargetEntity")) {
             targetEntityUuid = compoundTag.getUUID("TargetEntity");
         }
@@ -89,9 +94,10 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        if (getOwnerUUID() != null) {
-            compoundTag.putUUID("Owner", getOwnerUUID());
-        }
+//        if (getOwnerUUID() != null) {
+//            compoundTag.putUUID("Owner", getOwnerUUID());
+//        }
+        compoundTag.putString("OwnerName", entityData.get(OWNER_NAME));
         if (targetEntityUuid != null) {
             compoundTag.putUUID("TargetEntity", targetEntityUuid);
         }
@@ -138,10 +144,13 @@ public class LaserPointerLabelEntity extends Entity implements OwnableEntity {
         return pDistance < d0 * d0;
     }
 
-    @Nullable
-    @Override
-    public UUID getOwnerUUID() {
-        return entityData.get(OWNER_UUID).orElse(null);
+//    @Nullable
+//    @Override
+//    public UUID getOwnerUUID() {
+//        return entityData.get(OWNER_UUID).orElse(null);
+//    }
+    public String getOwnerName() {
+        return entityData.get(OWNER_NAME);
     }
 
     public BlockState getTargetBlockState() {

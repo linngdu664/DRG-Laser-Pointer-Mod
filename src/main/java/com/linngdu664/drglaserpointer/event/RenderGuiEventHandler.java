@@ -11,8 +11,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -78,9 +80,9 @@ public class RenderGuiEventHandler {
         Player player = mc.player;
         Font font = mc.font;
         Level level = mc.level;
-        List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> p.distanceToSqr(player) <= 96 * 96 && p.getOwnerUUID() != null);
+        List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> p.distanceToSqr(player) <= 96 * 96);
         for (LaserPointerLabelEntity labelEntity : list) {
-            FormattedText playerText = font.ellipsize(level.getPlayerByUUID(labelEntity.getOwnerUUID()).getName(), MAX_PLAYER_NAME_WIDTH);
+            FormattedText playerText = font.ellipsize(MutableComponent.create(new PlainTextContents.LiteralContents(labelEntity.getOwnerName())), MAX_PLAYER_NAME_WIDTH);
             FormattedText distanceText;
             List<FormattedCharSequence> targetTextList;
             ItemStack blockItemStack = null;

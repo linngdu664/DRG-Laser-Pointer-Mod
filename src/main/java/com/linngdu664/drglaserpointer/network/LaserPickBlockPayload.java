@@ -62,7 +62,7 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
                 }
             }
             for (Entity entity : level.getAllEntities()) {
-                if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerUUID().equals(player.getUUID())) {
+                if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerName().equals(player.getName().getString())) {
                     entity1.discard();
                     break;
                 }

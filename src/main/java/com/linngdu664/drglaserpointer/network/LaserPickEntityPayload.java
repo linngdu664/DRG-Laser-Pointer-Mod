@@ -34,7 +34,7 @@ public record LaserPickEntityPayload(Vec3 location, int entityId, byte color) im
             level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
             level.getAllEntities().forEach(p -> {
-                if (p instanceof LaserPointerLabelEntity entity1 && (entity1.getOwnerUUID().equals(player.getUUID()) || level.getEntity(payload.entityId) instanceof LivingEntity && entity1.getTargetEntityId() == payload.entityId)) {
+                if (p instanceof LaserPointerLabelEntity entity1 && (entity1.getOwnerName().equals(player.getName().getString()) || level.getEntity(payload.entityId) instanceof LivingEntity && entity1.getTargetEntityId() == payload.entityId)) {
                     p.discard();
                 }
             });
