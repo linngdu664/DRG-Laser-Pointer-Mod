@@ -5,6 +5,7 @@ import com.linngdu664.drglaserpointer.item.component.AudioCooldownData;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
+import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.model.HumanoidModel;
@@ -38,7 +39,7 @@ public class LaserPointerItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
-        if (pLevel.isClientSide) {
+        if (pLevel.isClientSide && (pUsedHand == InteractionHand.MAIN_HAND || !pPlayer.getMainHandItem().is(ItemRegister.LASER_POINTER))) {
             HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
             byte color = itemStack.getOrDefault(DataComponentRegister.LASER_DATA, LaserData.EMPTY).colorId();
             if (hitResult.getType() == HitResult.Type.BLOCK) {

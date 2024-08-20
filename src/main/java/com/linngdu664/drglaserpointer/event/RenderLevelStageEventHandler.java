@@ -87,7 +87,7 @@ public class RenderLevelStageEventHandler {
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_LEVEL)) {
+        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
             var bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
             Minecraft mc = Minecraft.getInstance();
@@ -151,9 +151,7 @@ public class RenderLevelStageEventHandler {
 //            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 3), new Vec3(64, 72, 3), 0xff78ff78);
             MeshData meshData = bufferBuilder.build();
             if (meshData != null) {
-                RenderSystem.depthMask(false);
                 RenderSystem.disableCull();
-                RenderSystem.enableDepthTest();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
@@ -163,9 +161,7 @@ public class RenderLevelStageEventHandler {
                 Matrix4f translatedModelViewMatrix = new Matrix4f(event.getModelViewMatrix()).translate((float) -view.x, (float) -view.y, (float) -view.z);
                 vertexBuffer.drawWithShader(translatedModelViewMatrix, event.getProjectionMatrix(), GameRenderer.getPositionColorShader());
                 VertexBuffer.unbind();
-                RenderSystem.depthMask(true);
                 RenderSystem.enableCull();
-                RenderSystem.disableDepthTest();
                 RenderSystem.disableBlend();
             }
         }

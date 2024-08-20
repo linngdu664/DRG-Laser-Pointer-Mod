@@ -11,7 +11,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -20,14 +19,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class LaserPointerLabelEntity extends Entity {
     private static final int MAX_TIME = 10 * 20;
-//    private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<BlockState> TARGET_BLOCK_STATE = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BLOCK_STATE);
     private static final EntityDataAccessor<Integer> TARGET_ENTITY_ID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.INT);
@@ -45,7 +41,6 @@ public class LaserPointerLabelEntity extends Entity {
         Entity entity = level.getEntity(entityId);
         if (entity != null && !entity.isRemoved()) {
             targetEntityUuid = entity.getUUID();
-//            entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
             entityData.set(OWNER_NAME, owner.getName().getString());
             entityData.set(TARGET_ENTITY_ID, entityId);
             if (entity instanceof LivingEntity) {
@@ -59,7 +54,6 @@ public class LaserPointerLabelEntity extends Entity {
 
     public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockPos blockPos, byte color) {
         super(entityType, level);
-//        entityData.set(OWNER_UUID, Optional.of(owner.getUUID()));
         entityData.set(OWNER_NAME, owner.getName().getString());
         entityData.set(TARGET_BLOCK_STATE, level.getBlockState(blockPos));
         entityData.set(COLOR, color);
@@ -68,7 +62,6 @@ public class LaserPointerLabelEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-//        builder.define(OWNER_UUID, Optional.empty());
         builder.define(OWNER_NAME, "");
         builder.define(TARGET_BLOCK_STATE, Blocks.AIR.defaultBlockState());
         builder.define(TARGET_ENTITY_ID, -1);
@@ -77,9 +70,6 @@ public class LaserPointerLabelEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-//        if (compoundTag.hasUUID("Owner")) {
-//            entityData.set(OWNER_UUID, Optional.of(compoundTag.getUUID("Owner")));
-//        }
         entityData.set(OWNER_NAME, compoundTag.getString("OwnerName"));
         if (compoundTag.hasUUID("TargetEntity")) {
             targetEntityUuid = compoundTag.getUUID("TargetEntity");
@@ -94,9 +84,6 @@ public class LaserPointerLabelEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-//        if (getOwnerUUID() != null) {
-//            compoundTag.putUUID("Owner", getOwnerUUID());
-//        }
         compoundTag.putString("OwnerName", entityData.get(OWNER_NAME));
         if (targetEntityUuid != null) {
             compoundTag.putUUID("TargetEntity", targetEntityUuid);
@@ -144,11 +131,6 @@ public class LaserPointerLabelEntity extends Entity {
         return pDistance < d0 * d0;
     }
 
-//    @Nullable
-//    @Override
-//    public UUID getOwnerUUID() {
-//        return entityData.get(OWNER_UUID).orElse(null);
-//    }
     public String getOwnerName() {
         return entityData.get(OWNER_NAME);
     }
