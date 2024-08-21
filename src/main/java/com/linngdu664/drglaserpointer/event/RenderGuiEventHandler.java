@@ -32,20 +32,23 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector4f;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.List;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderGuiEventHandler {
-    public static final int MAX_TARGET_NAME_WIDTH = 108;
-    public static final int MAX_PLAYER_NAME_WIDTH = 153;
-    public static final int LABEL_HEIGHT = 36;
-    public static final int FRAME_PROTECT = 10;
-    public static final int ICON_WIDTH_WITH_MARGIN = 18;
-    public static final int MIN_REF_WIDTH = 40;
+    private static final int MAX_TARGET_NAME_WIDTH = 108;
+    private static final int MAX_PLAYER_NAME_WIDTH = 153;
+    private static final int LABEL_HEIGHT = 36;
+    private static final int FRAME_PROTECT = 10;
+    private static final int ICON_WIDTH_WITH_MARGIN = 18;
+    private static final int MIN_REF_WIDTH = 40;
+    private static final ResourceLocation UP_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/up.png");
+    private static final ResourceLocation DOWN_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/down.png");
+    private static final ResourceLocation LEFT_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/left.png");
+    private static final ResourceLocation RIGHT_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/right.png");
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
@@ -56,16 +59,15 @@ public class RenderGuiEventHandler {
         GameRenderer gameRenderer = mc.gameRenderer;
         Camera camera = gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.getPosition();
-        Matrix4f viewMatrix = new Matrix4f();
-        viewMatrix.rotation(camera.rotation().conjugate(new Quaternionf()));
-        viewMatrix.translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
-        double d0 = gameRenderer.getFov(camera, event.getPartialTick().getGameTimeDeltaPartialTick(true), true);
-        Matrix4f projectionMatrix = gameRenderer.getProjectionMatrix(d0);
+        Matrix3f rotMat = new Matrix3f().rotation(camera.rotation().conjugate(new Quaternionf()));      // make rot mat
+        Window window = mc.getWindow();
+        float fovy = (float) gameRenderer.getFov(camera, event.getPartialTick().getGameTimeDeltaPartialTick(true), true) * Mth.DEG_TO_RAD;
+        float tanHalfFovy = Mth.sin(fovy * 0.5F) / Mth.cos(fovy * 0.5F);
+        float tanHalfFovx = tanHalfFovy * (float) window.getWidth() / (float) window.getHeight();
         GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         int guiWidth, guiHeight;
-        Window window = mc.getWindow();
         float guiScale = (float) window.getGuiScale();
         if (guiScale > 3F) {
             float factor = 3F / guiScale;
@@ -86,7 +88,8 @@ public class RenderGuiEventHandler {
             List<FormattedCharSequence> targetTextList;
             ItemStack blockItemStack = null;
             ResourceLocation entityIconLocation = null;
-            Vector4f ndcPos;
+            Vector3f labelPos;
+            Vector3f realPos;
             Entity entity = level.getEntity(labelEntity.getTargetEntityId());
             if (entity != null) {
                 if (entity instanceof LivingEntity) {
@@ -100,7 +103,8 @@ public class RenderGuiEventHandler {
                     distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", entity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
                     AABB aabb = entity.getBoundingBox();
                     Vec3 vec3 = entity.getPosition(event.getPartialTick().getGameTimeDeltaPartialTick(true));
-                    ndcPos = new Vector4f((float) vec3.x, (float) (vec3.y + aabb.maxY - aabb.minY + 0.5), (float) vec3.z, 1.0F);
+                    labelPos = new Vector3f((float) (vec3.x - cameraPos.x), (float) (vec3.y + aabb.getYsize() + 0.5 - cameraPos.y), (float) (vec3.z - cameraPos.z));
+                    realPos = new Vector3f(labelPos.x, (float) (vec3.y + aabb.getYsize() * 0.5 - cameraPos.y), labelPos.z);
                 } else {
                     if (entity instanceof ItemEntity itemEntity) {
                         blockItemStack = itemEntity.getItem();
@@ -110,14 +114,16 @@ public class RenderGuiEventHandler {
                         targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     }
                     distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
-                    ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY() + 1.0F, (float) labelEntity.getZ(), 1.0F);
+                    labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
+                    realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
                 }
             } else {
                 Block block = labelEntity.getTargetBlockState().getBlock();
                 blockItemStack = block.asItem().getDefaultInstance();
                 targetTextList = font.split(block.getName(), MAX_TARGET_NAME_WIDTH);
                 distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
-                ndcPos = new Vector4f((float) labelEntity.getX(), (float) labelEntity.getY() + 1.0F, (float) labelEntity.getZ(), 1.0F);
+                labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
+                realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
             }
             int mainWidth;
             FormattedCharSequence targetTextLine1, targetTextLine2 = null;
@@ -130,33 +136,15 @@ public class RenderGuiEventHandler {
                 mainWidth = Math.max(font.width(targetTextLine1), font.width(targetTextLine2)) + ICON_WIDTH_WITH_MARGIN;
             }
             int refWidth = Math.max(MIN_REF_WIDTH, Math.max(Math.round(Math.max(font.width(distanceText), font.width(playerText)) * 0.8F), mainWidth));
-            viewMatrix.transform(ndcPos);         // 变换到视图坐标系
-            projectionMatrix.transform(ndcPos);   // 变换到投影坐标系
-            ndcPos.div(ndcPos.w);                 // 得到标准化设备坐标
-
-            // todo: fix behind bug
-            int xScreen, yScreen, xOutFlag, yOutFlag;
-//          System.out.println(ndcPos);
-            if (ndcPos.x < -1) {
-                xScreen = refWidth / 2 + FRAME_PROTECT;
-                xOutFlag = -1;
-            } else if (ndcPos.x <= 1) {
-                xScreen = Mth.clamp((int) ((ndcPos.x + 1.0F) * 0.5F * guiWidth), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
-                xOutFlag = 0;
-            } else {
-                xScreen = guiWidth - (refWidth / 2 + FRAME_PROTECT);
-                xOutFlag = 1;
-            }
-            if (ndcPos.y < -1) {
-                yScreen = guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT);
-                yOutFlag = 1;
-            } else if (ndcPos.y <= 1) {
-                yScreen = Mth.clamp((int) ((1.0F - ndcPos.y) * 0.5F * guiHeight), LABEL_HEIGHT / 2 + FRAME_PROTECT, guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT));
-                yOutFlag = 0;
-            } else {
-                yScreen = LABEL_HEIGHT / 2 + FRAME_PROTECT;
-                yOutFlag = -1;
-            }
+            rotMat.transform(labelPos);
+            rotMat.transform(realPos);
+            // horizontal    tan = x / -z                         +right，-left
+            // vertical      tan = y / Mth.sqrt(x * x + z * z)    +up, -down
+            float rx = labelPos.x / -labelPos.z / tanHalfFovx;
+            int xScreen = labelPos.z >= 0 ? (labelPos.x >= 0 ? guiWidth - (refWidth / 2 + FRAME_PROTECT) : refWidth / 2 + FRAME_PROTECT) : Mth.clamp((int) (guiWidth * 0.5F * (1 + rx)), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
+            float ry1 = realPos.y / Mth.sqrt(realPos.x * realPos.x + realPos.z * realPos.z) / tanHalfFovy;
+            float ry2 = labelPos.y / Mth.sqrt(labelPos.x * labelPos.x + labelPos.z * labelPos.z) / tanHalfFovy;
+            int yScreen = Mth.clamp((int) (guiHeight * 0.5F * (1 - ry2)), LABEL_HEIGHT / 2 + FRAME_PROTECT, guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT));
             guiGraphics.fill(xScreen - refWidth / 2 - 2, yScreen - 11, xScreen + refWidth / 2 + 2, yScreen + 11, 0x40000000);
             guiGraphics.vLine(xScreen - refWidth / 2 - 3, yScreen - 12, yScreen + 11, 0xffc1bd93);
             guiGraphics.vLine(xScreen + refWidth / 2 + 2, yScreen - 12, yScreen + 11, 0xffc1bd93);
@@ -164,6 +152,15 @@ public class RenderGuiEventHandler {
             guiGraphics.hLine(xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen + 11, 0xffc1bd93);
             guiGraphics.hLine(xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen - 12, 0xffc1bd93);
             guiGraphics.hLine(xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen + 11, 0xffc1bd93);
+            if (labelPos.z >= 0 && labelPos.x < 0 || labelPos.z < 0 && rx < -1) {
+                guiGraphics.blit(LEFT_ICON, xScreen - refWidth / 2 - 9, yScreen - 2, 0, 0, 4, 4, 4, 4);
+            } else if (labelPos.z >= 0 && labelPos.x >= 0 || labelPos.z < 0 && rx > 1) {
+                guiGraphics.blit(RIGHT_ICON, xScreen + refWidth / 2 + 5, yScreen - 2, 0, 0,  4, 4, 4, 4);
+            } else if (ry1 > 1) {
+                guiGraphics.blit(UP_ICON, xScreen - 2, yScreen - LABEL_HEIGHT / 2 - 6, 0, 0, 4, 4, 4, 4);
+            } else if (ry1 < -1) {
+                guiGraphics.blit(DOWN_ICON, xScreen - 2, yScreen + LABEL_HEIGHT / 2 + 4, 0, 0, 4, 4, 4, 4);
+            }
             if (blockItemStack == null) {
                 guiGraphics.blit(entityIconLocation, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
             } else {
