@@ -47,6 +47,12 @@
         "drglaserpointer:screen_color": 2
       },
       "model": "drglaserpointer:item/laser_pointer_screen_red"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:screen_color": 3
+      },
+      "model": "drglaserpointer:item/laser_pointer_screen_yellow"
     }
   ]
 }
