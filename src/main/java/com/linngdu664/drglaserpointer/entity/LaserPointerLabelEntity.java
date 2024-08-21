@@ -52,10 +52,10 @@ public class LaserPointerLabelEntity extends Entity {
         }
     }
 
-    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockPos blockPos, byte color) {
+    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockState blockState, byte color) {
         super(entityType, level);
         entityData.set(OWNER_NAME, owner.getName().getString());
-        entityData.set(TARGET_BLOCK_STATE, level.getBlockState(blockPos));
+        entityData.set(TARGET_BLOCK_STATE, blockState);
         entityData.set(COLOR, color);
         moveTo(location);
     }

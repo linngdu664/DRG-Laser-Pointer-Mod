@@ -10,8 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +24,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color, boolean canPlayAudio) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_pick_block"));
+    public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_pick_block"));
     public static final StreamCodec<ByteBuf, LaserPickBlockPayload> STREAM_CODEC = StreamCodec.composite(
             CustomStreamCodecs.VEC3_STREAM_CODEC, LaserPickBlockPayload::location,
             BlockPos.STREAM_CODEC, LaserPickBlockPayload::blockPos,
@@ -49,9 +49,10 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
             Player player = context.player();
             ServerLevel level = (ServerLevel) player.level();
             level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
+            BlockState blockState = level.getBlockState(payload.blockPos);
+            TriggerTypeRegister.MARK_BLOCK_TRIGGER.get().trigger((ServerPlayer) player, blockState);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
             if (payload.canPlayAudio) {
-                BlockState blockState = level.getBlockState(payload.blockPos);
                 RandomSource random = level.getRandom();
                 if (blockState.is(ModTags.Blocks.RICH_BLOCKS)) {
                     level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
@@ -67,7 +68,7 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
                     break;
                 }
             }
-            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.blockPos, payload.color));
+            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, blockState, payload.color));
         });
     }
 

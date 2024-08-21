@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "drglaserpointer:laser_pointer",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancements.drglaserpointer.root.title"
+    },
+    "description": {
+      "translate": "advancements.drglaserpointer.root.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "frame": "task",
+    "show_toast": true,
+    "annouce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "join": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [["join"]]
+}

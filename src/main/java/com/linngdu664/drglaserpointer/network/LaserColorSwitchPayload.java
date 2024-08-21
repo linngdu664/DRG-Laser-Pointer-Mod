@@ -8,14 +8,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserColorSwitchPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Main.MODID, "laser_color_switch"));
+    public static final CustomPacketPayload.Type<LaserColorSwitchPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_color_switch"));
     public static final StreamCodec<ByteBuf, LaserColorSwitchPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, LaserColorSwitchPayload::isIncrease,
             LaserColorSwitchPayload::new

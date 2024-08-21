@@ -45,10 +45,10 @@ public class RenderGuiEventHandler {
     private static final int FRAME_PROTECT = 10;
     private static final int ICON_WIDTH_WITH_MARGIN = 18;
     private static final int MIN_REF_WIDTH = 40;
-    private static final ResourceLocation UP_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/up.png");
-    private static final ResourceLocation DOWN_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/down.png");
-    private static final ResourceLocation LEFT_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/left.png");
-    private static final ResourceLocation RIGHT_ICON = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/arrow/right.png");
+    private static final ResourceLocation UP_ICON = Main.makeResLoc("textures/gui/arrow/up.png");
+    private static final ResourceLocation DOWN_ICON = Main.makeResLoc("textures/gui/arrow/down.png");
+    private static final ResourceLocation LEFT_ICON = Main.makeResLoc("textures/gui/arrow/left.png");
+    private static final ResourceLocation RIGHT_ICON = Main.makeResLoc("textures/gui/arrow/right.png");
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
@@ -95,9 +95,9 @@ public class RenderGuiEventHandler {
                 if (entity instanceof LivingEntity) {
                     ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
                     if (resourceLocation.getNamespace().equals("minecraft") && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
-                        entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/" + resourceLocation.getPath() + "_face.png");
+                        entityIconLocation = Main.makeResLoc("textures/gui/face/" + resourceLocation.getPath() + "_face.png");
                     } else {
-                        entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
+                        entityIconLocation = Main.makeResLoc("textures/gui/face/unknown.png");
                     }
                     targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", entity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
@@ -110,7 +110,7 @@ public class RenderGuiEventHandler {
                         blockItemStack = itemEntity.getItem();
                         targetTextList = font.split(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.item_entity_name", null, new Object[]{entity.getName()})), MAX_TARGET_NAME_WIDTH);
                     } else {
-                        entityIconLocation = ResourceLocation.fromNamespaceAndPath(Main.MODID, "textures/gui/face/unknown.png");
+                        entityIconLocation = Main.makeResLoc("textures/gui/face/unknown.png");
                         targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     }
                     distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
