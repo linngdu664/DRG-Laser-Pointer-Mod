@@ -1,7 +1,0 @@
-{
-  "item.drglaserpointer.laser_pointer": "雷射指示器",
-
-  "tip.drglaserpointer.distance": "%1$s 米",
-  "tip.drglaserpointer.mark_key": "按%1$s進行標記",
-  "tip.drglaserpointer.item_entity_name": "%1$s (物)"
-}

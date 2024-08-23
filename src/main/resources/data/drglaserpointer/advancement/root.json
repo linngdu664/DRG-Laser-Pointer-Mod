@@ -17,9 +17,18 @@
     "hidden": false
   },
   "criteria": {
-    "join": {
-      "trigger": "minecraft:tick"
+    "obtain_laser_pointer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "drglaserpointer:laser_pointer"
+            ]
+          }
+        ]
+      }
     }
   },
-  "requirements": [["join"]]
+  "requirements": [["obtain_laser_pointer"]]
 }

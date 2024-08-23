@@ -1,7 +1,9 @@
 package com.linngdu664.drglaserpointer.util;
 
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -33,7 +35,7 @@ public class LaserPointerHitHelper {
         Vec3 scaledViewVec = player.getViewVector(partialTick).scale(LASER_MAX_DISTANCE);
         Vec3 traceEnd = traceBegin.add(scaledViewVec);
         AABB aabb = player.getBoundingBox().expandTowards(scaledViewVec).inflate(1.0);
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, traceBegin, traceEnd, aabb, p -> !p.isSpectator() && !(p instanceof LaserPointerLabelEntity), LASER_MAX_DISTANCE_SQ);
+        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, traceBegin, traceEnd, aabb, p -> !p.isSpectator() && (p.isPickable() || p instanceof ItemEntity || p instanceof Projectile), LASER_MAX_DISTANCE_SQ);
         if (entityHitResult != null && entityHitResult.getLocation().distanceTo(traceBegin) < distance) {
             hitResult = entityHitResult;
         }

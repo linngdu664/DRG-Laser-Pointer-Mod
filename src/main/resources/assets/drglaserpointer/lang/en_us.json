@@ -3,5 +3,12 @@
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s to mark",
-  "tip.drglaserpointer.item_entity_name": "%1$s (Item)"
+  "tip.drglaserpointer.item_entity_name": "%1$s (Item)",
+
+  "advancements.drglaserpointer.root.title": "root",
+  "advancements.drglaserpointer.root.description": "root",
+  "advancements.drglaserpointer.were_rich.title": "We're rich!",
+  "advancements.drglaserpointer.were_rich.description": "todo",
+  "advancements.drglaserpointer.mushroom.title": "Mushroom!",
+  "advancements.drglaserpointer.mushroom.description": "todo"
 }

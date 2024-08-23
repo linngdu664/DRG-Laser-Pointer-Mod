@@ -12,9 +12,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -83,7 +80,7 @@ public class RenderGuiEventHandler {
         Level level = mc.level;
         List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> p.distanceToSqr(player) <= 96 * 96);
         for (LaserPointerLabelEntity labelEntity : list) {
-            FormattedText playerText = font.ellipsize(MutableComponent.create(new PlainTextContents.LiteralContents(labelEntity.getOwnerName())), MAX_PLAYER_NAME_WIDTH);
+            FormattedText playerText = font.ellipsize(Component.literal(labelEntity.getOwnerName()), MAX_PLAYER_NAME_WIDTH);
             FormattedText distanceText;
             List<FormattedCharSequence> targetTextList;
             ItemStack blockItemStack = null;
@@ -100,7 +97,7 @@ public class RenderGuiEventHandler {
                         entityIconLocation = Main.makeResLoc("textures/gui/face/unknown.png");
                     }
                     targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
-                    distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", entity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
+                    distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", entity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
                     AABB aabb = entity.getBoundingBox();
                     Vec3 vec3 = entity.getPosition(event.getPartialTick().getGameTimeDeltaPartialTick(true));
                     labelPos = new Vector3f((float) (vec3.x - cameraPos.x), (float) (vec3.y + aabb.getYsize() + 0.5 - cameraPos.y), (float) (vec3.z - cameraPos.z));
@@ -108,12 +105,12 @@ public class RenderGuiEventHandler {
                 } else {
                     if (entity instanceof ItemEntity itemEntity) {
                         blockItemStack = itemEntity.getItem();
-                        targetTextList = font.split(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.item_entity_name", null, new Object[]{entity.getName()})), MAX_TARGET_NAME_WIDTH);
+                        targetTextList = font.split(Component.translatable("tip.drglaserpointer.item_entity_name", entity.getName()), MAX_TARGET_NAME_WIDTH);
                     } else {
                         entityIconLocation = Main.makeResLoc("textures/gui/face/unknown.png");
                         targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     }
-                    distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
+                    distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", labelEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
                     labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
                     realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
                 }
@@ -121,19 +118,19 @@ public class RenderGuiEventHandler {
                 Block block = labelEntity.getTargetBlockState().getBlock();
                 blockItemStack = block.asItem().getDefaultInstance();
                 targetTextList = font.split(block.getName(), MAX_TARGET_NAME_WIDTH);
-                distanceText = font.ellipsize(MutableComponent.create(new TranslatableContents("tip.drglaserpointer.distance", null, new Object[]{String.format("%.1f", labelEntity.distanceTo(player))})), MAX_PLAYER_NAME_WIDTH);
+                distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", labelEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
                 labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
                 realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
             }
-            int mainWidth;
-            FormattedCharSequence targetTextLine1, targetTextLine2 = null;
+            int mainWidth = ICON_WIDTH_WITH_MARGIN;
+            FormattedCharSequence targetTextLine1 = null, targetTextLine2 = null;
             if (targetTextList.size() == 1) {
                 targetTextLine1 = targetTextList.getFirst();
-                mainWidth = font.width(targetTextLine1) + ICON_WIDTH_WITH_MARGIN;
-            } else {
+                mainWidth += font.width(targetTextLine1);
+            } else if (targetTextList.size() >= 2) {
                 targetTextLine1 = targetTextList.getFirst();
                 targetTextLine2 = targetTextList.get(1);
-                mainWidth = Math.max(font.width(targetTextLine1), font.width(targetTextLine2)) + ICON_WIDTH_WITH_MARGIN;
+                mainWidth += Math.max(font.width(targetTextLine1), font.width(targetTextLine2));
             }
             int refWidth = Math.max(MIN_REF_WIDTH, Math.max(Math.round(Math.max(font.width(distanceText), font.width(playerText)) * 0.8F), mainWidth));
             rotMat.transform(labelPos);
@@ -167,11 +164,13 @@ public class RenderGuiEventHandler {
                 guiGraphics.renderItem(blockItemStack, xScreen - refWidth / 2, yScreen - 8);
             }
             int targetTextCenterX = xScreen + (refWidth - ICON_WIDTH_WITH_MARGIN) / 2 - (refWidth / 2 - ICON_WIDTH_WITH_MARGIN);
-            if (targetTextLine2 == null) {
-                guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 4, 0xffc1bd93, false);
-            } else {
-                guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 9, 0xffc1bd93, false);
-                guiGraphics.drawString(font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) / 2, yScreen, 0xffc1bd93, false);
+            if (targetTextLine1 != null) {
+                if (targetTextLine2 != null) {
+                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 9, 0xffc1bd93, false);
+                    guiGraphics.drawString(font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) / 2, yScreen, 0xffc1bd93, false);
+                } else {
+                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 4, 0xffc1bd93, false);
+                }
             }
             poseStack.pushPose();
             poseStack.scale(0.8F, 0.8F, 0.8F);
