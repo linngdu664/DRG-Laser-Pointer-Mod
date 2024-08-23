@@ -1,6 +1,5 @@
 package com.linngdu664.drglaserpointer.util;
 
-import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
