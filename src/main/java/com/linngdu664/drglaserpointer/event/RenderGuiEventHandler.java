@@ -2,6 +2,7 @@ package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import com.linngdu664.drglaserpointer.util.GuiUtil;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
@@ -38,10 +39,10 @@ import java.util.List;
 public class RenderGuiEventHandler {
     private static final int MAX_TARGET_NAME_WIDTH = 108;
     private static final int MAX_PLAYER_NAME_WIDTH = 153;
-    private static final int LABEL_HEIGHT = 36;
-    private static final int FRAME_PROTECT = 10;
-    private static final int ICON_WIDTH_WITH_MARGIN = 18;
-    private static final int MIN_REF_WIDTH = 40;
+    private static final float LABEL_HEIGHT = 36;
+    private static final float FRAME_PROTECT = 10;
+    private static final float ICON_WIDTH_WITH_MARGIN = 18;
+    private static final float MIN_REF_WIDTH = 40;
     private static final ResourceLocation UP_ICON = Main.makeResLoc("textures/gui/arrow/up.png");
     private static final ResourceLocation DOWN_ICON = Main.makeResLoc("textures/gui/arrow/down.png");
     private static final ResourceLocation LEFT_ICON = Main.makeResLoc("textures/gui/arrow/left.png");
@@ -122,7 +123,7 @@ public class RenderGuiEventHandler {
                 labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
                 realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
             }
-            int mainWidth = ICON_WIDTH_WITH_MARGIN;
+            float mainWidth = ICON_WIDTH_WITH_MARGIN;
             FormattedCharSequence targetTextLine1 = null, targetTextLine2 = null;
             if (targetTextList.size() == 1) {
                 targetTextLine1 = targetTextList.getFirst();
@@ -132,38 +133,38 @@ public class RenderGuiEventHandler {
                 targetTextLine2 = targetTextList.get(1);
                 mainWidth += Math.max(font.width(targetTextLine1), font.width(targetTextLine2));
             }
-            int refWidth = Math.max(MIN_REF_WIDTH, Math.max(Math.round(Math.max(font.width(distanceText), font.width(playerText)) * 0.8F), mainWidth));
+            float refWidth = Math.max(MIN_REF_WIDTH, Math.max(Math.round(Math.max(font.width(distanceText), font.width(playerText)) * 0.8F), mainWidth));
             rotMat.transform(labelPos);
             rotMat.transform(realPos);
             // horizontal    tan = x / -z                         +right，-left
             // vertical      tan = y / Mth.sqrt(x * x + z * z)    +up, -down
             float rx = labelPos.x / -labelPos.z / tanHalfFovx;
-            int xScreen = labelPos.z >= 0 ? (labelPos.x >= 0 ? guiWidth - (refWidth / 2 + FRAME_PROTECT) : refWidth / 2 + FRAME_PROTECT) : Mth.clamp((int) (guiWidth * 0.5F * (1 + rx)), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
+            float xScreen = labelPos.z >= 0 ? (labelPos.x >= 0 ? guiWidth - (refWidth / 2 + FRAME_PROTECT) : refWidth / 2 + FRAME_PROTECT) : Mth.clamp( guiWidth * 0.5F * (1 + rx), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
             float ry1 = realPos.y / Mth.sqrt(realPos.x * realPos.x + realPos.z * realPos.z) / tanHalfFovy;
             float ry2 = labelPos.y / Mth.sqrt(labelPos.x * labelPos.x + labelPos.z * labelPos.z) / tanHalfFovy;
-            int yScreen = Mth.clamp((int) (guiHeight * 0.5F * (1 - ry2)), LABEL_HEIGHT / 2 + FRAME_PROTECT, guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT));
-            guiGraphics.fill(xScreen - refWidth / 2 - 2, yScreen - 11, xScreen + refWidth / 2 + 2, yScreen + 11, 0x40000000);
-            guiGraphics.vLine(xScreen - refWidth / 2 - 3, yScreen - 12, yScreen + 11, 0xffc1bd93);
-            guiGraphics.vLine(xScreen + refWidth / 2 + 2, yScreen - 12, yScreen + 11, 0xffc1bd93);
-            guiGraphics.hLine(xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen - 12, 0xffc1bd93);
-            guiGraphics.hLine(xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen + 11, 0xffc1bd93);
-            guiGraphics.hLine(xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen - 12, 0xffc1bd93);
-            guiGraphics.hLine(xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen + 11, 0xffc1bd93);
+            float yScreen = Mth.clamp( guiHeight * 0.5F * (1 - ry2), LABEL_HEIGHT / 2 + FRAME_PROTECT, guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT));
+            GuiUtil.fill(guiGraphics,xScreen - refWidth / 2 - 2, yScreen - 11, xScreen + refWidth / 2 + 2, yScreen + 11, 0x40000000);
+            GuiUtil.vLine(guiGraphics,xScreen - refWidth / 2 - 3, yScreen - 12, yScreen + 11, 0xffc1bd93);
+            GuiUtil.vLine(guiGraphics,xScreen + refWidth / 2 + 2, yScreen - 12, yScreen + 11, 0xffc1bd93);
+            GuiUtil.hLine(guiGraphics,xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen - 12, 0xffc1bd93);
+            GuiUtil.hLine(guiGraphics,xScreen - refWidth / 2 - 3, xScreen - refWidth / 2 - 1, yScreen + 11, 0xffc1bd93);
+            GuiUtil.hLine(guiGraphics,xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen - 12, 0xffc1bd93);
+            GuiUtil.hLine(guiGraphics,xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen + 11, 0xffc1bd93);
             if (labelPos.z >= 0 && labelPos.x < 0 || labelPos.z < 0 && rx < -1) {
-                guiGraphics.blit(LEFT_ICON, xScreen - refWidth / 2 - 9, yScreen - 2, 0, 0, 4, 4, 4, 4);
+                GuiUtil.blit(guiGraphics,LEFT_ICON, xScreen - refWidth / 2 - 9, yScreen - 2, 0, 0, 4, 4, 4, 4);
             } else if (labelPos.z >= 0 && labelPos.x >= 0 || labelPos.z < 0 && rx > 1) {
-                guiGraphics.blit(RIGHT_ICON, xScreen + refWidth / 2 + 5, yScreen - 2, 0, 0,  4, 4, 4, 4);
+                GuiUtil.blit(guiGraphics,RIGHT_ICON, xScreen + refWidth / 2 + 5, yScreen - 2, 0, 0,  4, 4, 4, 4);
             } else if (ry1 > 1) {
-                guiGraphics.blit(UP_ICON, xScreen - 2, yScreen - LABEL_HEIGHT / 2 - 6, 0, 0, 4, 4, 4, 4);
+                GuiUtil.blit(guiGraphics,UP_ICON, xScreen - 2, yScreen - LABEL_HEIGHT / 2 - 6, 0, 0, 4, 4, 4, 4);
             } else if (ry1 < -1) {
-                guiGraphics.blit(DOWN_ICON, xScreen - 2, yScreen + LABEL_HEIGHT / 2 + 4, 0, 0, 4, 4, 4, 4);
+                GuiUtil.blit(guiGraphics,DOWN_ICON, xScreen - 2, yScreen + LABEL_HEIGHT / 2 + 4, 0, 0, 4, 4, 4, 4);
             }
             if (blockItemStack == null) {
-                guiGraphics.blit(entityIconLocation, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
+                GuiUtil.blit(guiGraphics,entityIconLocation, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
             } else {
-                guiGraphics.renderItem(blockItemStack, xScreen - refWidth / 2, yScreen - 8);
+                GuiUtil.renderItem(guiGraphics,blockItemStack, xScreen - refWidth / 2, yScreen - 8);
             }
-            int targetTextCenterX = xScreen + (refWidth - ICON_WIDTH_WITH_MARGIN) / 2 - (refWidth / 2 - ICON_WIDTH_WITH_MARGIN);
+            float targetTextCenterX = xScreen + (refWidth - ICON_WIDTH_WITH_MARGIN) / 2 - (refWidth / 2 - ICON_WIDTH_WITH_MARGIN);
             if (targetTextLine1 != null) {
                 if (targetTextLine2 != null) {
                     guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 9, 0xffc1bd93, false);
@@ -176,8 +177,8 @@ public class RenderGuiEventHandler {
             poseStack.scale(0.8F, 0.8F, 0.8F);
             xScreen = Math.round(xScreen * 1.25F);
             yScreen = Math.round(yScreen * 1.25F);
-            guiGraphics.drawCenteredString(font, (Component) playerText, xScreen, yScreen - 24, 0xffc1bd93);
-            guiGraphics.drawCenteredString(font, (Component) distanceText, xScreen, yScreen + 17, 0xffc1bd93);
+            GuiUtil.drawCenteredString(guiGraphics,font, (Component) playerText, xScreen, yScreen - 24, 0xffc1bd93);
+            GuiUtil.drawCenteredString(guiGraphics,font, (Component) distanceText, xScreen, yScreen + 17, 0xffc1bd93);
             poseStack.popPose();
         }
         poseStack.popPose();
