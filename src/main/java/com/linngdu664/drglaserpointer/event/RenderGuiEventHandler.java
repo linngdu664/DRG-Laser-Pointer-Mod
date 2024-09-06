@@ -167,10 +167,10 @@ public class RenderGuiEventHandler {
             float targetTextCenterX = xScreen + (refWidth - ICON_WIDTH_WITH_MARGIN) / 2 - (refWidth / 2 - ICON_WIDTH_WITH_MARGIN);
             if (targetTextLine1 != null) {
                 if (targetTextLine2 != null) {
-                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 9, 0xffc1bd93, false);
-                    guiGraphics.drawString(font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) / 2, yScreen, 0xffc1bd93, false);
+                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) * 0.5F, yScreen - 9, 0xffc1bd93, false);
+                    guiGraphics.drawString(font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) * 0.5F, yScreen, 0xffc1bd93, false);
                 } else {
-                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) / 2, yScreen - 4, 0xffc1bd93, false);
+                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) * 0.5F, yScreen - 4, 0xffc1bd93, false);
                 }
             }
             poseStack.pushPose();

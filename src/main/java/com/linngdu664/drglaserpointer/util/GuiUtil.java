@@ -45,7 +45,8 @@ public class GuiUtil {
         vertexconsumer.addVertex(matrix4f, maxX, minY, 0).setColor(color);
         guiGraphics.flushIfUnmanaged();
     }
-    public static void vLine(GuiGraphics guiGraphics,float x, float minY, float maxY, int color) {
+
+    public static void vLine(GuiGraphics guiGraphics, float x, float minY, float maxY, int color) {
         if (maxY < minY) {
             float i = minY;
             minY = maxY;
@@ -54,6 +55,7 @@ public class GuiUtil {
 
         fill(guiGraphics, x, minY + 1, x + 1, maxY, color);
     }
+
     public static void hLine(GuiGraphics guiGraphics, float minX, float maxX, float y, int color) {
         if (maxX < minX) {
             float i = minX;
@@ -63,16 +65,20 @@ public class GuiUtil {
 
         fill(guiGraphics, minX, y, maxX + 1, y + 1, color);
     }
-    public static void blit(GuiGraphics guiGraphics,ResourceLocation atlasLocation, float x, float y, float uOffset, float vOffset, float width, float height, float textureWidth, float textureHeight) {
-        blit(guiGraphics,atlasLocation, x, y, width, height, uOffset, vOffset, width, height, textureWidth, textureHeight);
+
+    public static void blit(GuiGraphics guiGraphics, ResourceLocation atlasLocation, float x, float y, float uOffset, float vOffset, float width, float height, float textureWidth, float textureHeight) {
+        blit(guiGraphics, atlasLocation, x, y, width, height, uOffset, vOffset, width, height, textureWidth, textureHeight);
     }
-    public static void blit(GuiGraphics guiGraphics,ResourceLocation atlasLocation, float x, float y, float width, float height, float uOffset, float vOffset, float uWidth, float vHeight, float textureWidth, float textureHeight) {
-        blit(guiGraphics,atlasLocation, x, x + width, y, y + height, 0, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
+
+    public static void blit(GuiGraphics guiGraphics, ResourceLocation atlasLocation, float x, float y, float width, float height, float uOffset, float vOffset, float uWidth, float vHeight, float textureWidth, float textureHeight) {
+        blit(guiGraphics, atlasLocation, x, x + width, y, y + height, 0, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
     }
-    public static void blit(GuiGraphics guiGraphics,ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float uWidth, float vHeight, float uOffset, float vOffset, float textureWidth, float textureHeight) {
-        innerBlit(guiGraphics,atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / textureWidth, (uOffset + uWidth) / textureWidth, (vOffset + 0.0F) / textureHeight, (vOffset + vHeight) / textureHeight);
+
+    public static void blit(GuiGraphics guiGraphics, ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float uWidth, float vHeight, float uOffset, float vOffset, float textureWidth, float textureHeight) {
+        innerBlit(guiGraphics, atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / textureWidth, (uOffset + uWidth) / textureWidth, (vOffset + 0.0F) / textureHeight, (vOffset + vHeight) / textureHeight);
     }
-    public static void innerBlit(GuiGraphics guiGraphics,ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float minU, float maxU, float minV, float maxV) {
+
+    public static void innerBlit(GuiGraphics guiGraphics, ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float minU, float maxU, float minV, float maxV) {
         RenderSystem.setShaderTexture(0, atlasLocation);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Matrix4f matrix4f = guiGraphics.pose.last().pose();
@@ -83,17 +89,20 @@ public class GuiUtil {
         bufferbuilder.addVertex(matrix4f, x2, y1, blitOffset).setUv(maxU, minV);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
-    public static void renderItem(GuiGraphics guiGraphics,ItemStack stack, float x, float y) {
-        renderItem(guiGraphics,guiGraphics.minecraft.player, guiGraphics.minecraft.level, stack, x, y, 0);
+
+    public static void renderItem(GuiGraphics guiGraphics, ItemStack stack, float x, float y) {
+        renderItem(guiGraphics, guiGraphics.minecraft.player, guiGraphics.minecraft.level, stack, x, y, 0);
     }
-    public static void renderItem(GuiGraphics guiGraphics,@Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, float x, float y, int seed) {
-        renderItem(guiGraphics,entity, level, stack, x, y, seed, 0);
+
+    public static void renderItem(GuiGraphics guiGraphics, @Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, float x, float y, int seed) {
+        renderItem(guiGraphics, entity, level, stack, x, y, seed, 0);
     }
-    public static void renderItem(GuiGraphics guiGraphics,@Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, float x, float y, int seed, int guiOffset) {
+
+    public static void renderItem(GuiGraphics guiGraphics, @Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, float x, float y, int seed, int guiOffset) {
         if (!stack.isEmpty()) {
             BakedModel bakedmodel = guiGraphics.minecraft.getItemRenderer().getModel(stack, level, entity, seed);
             guiGraphics.pose.pushPose();
-            guiGraphics.pose.translate(x + 8, y + 8, (float)(150 + (bakedmodel.isGui3d() ? guiOffset : 0)));
+            guiGraphics.pose.translate(x + 8, y + 8, (float) (150 + (bakedmodel.isGui3d() ? guiOffset : 0)));
 
             try {
                 guiGraphics.pose.scale(16.0F, -16.0F, 16.0F);
@@ -119,14 +128,17 @@ public class GuiUtil {
             guiGraphics.pose.popPose();
         }
     }
-    public static void drawCenteredString(GuiGraphics guiGraphics,Font font, Component text, float x, float y, int color) {
+
+    public static void drawCenteredString(GuiGraphics guiGraphics, Font font, Component text, float x, float y, int color) {
         FormattedCharSequence formattedcharsequence = text.getVisualOrderText();
-        drawString(guiGraphics,font, formattedcharsequence, x - (float) font.width(formattedcharsequence) / 2, y, color);
+        drawString(guiGraphics, font, formattedcharsequence, x - (float) font.width(formattedcharsequence) / 2, y, color);
     }
-    public static int drawString(GuiGraphics guiGraphics,Font font, FormattedCharSequence text, float x, float y, int color) {
-        return drawString(guiGraphics,font, text, x, y, color, true);
+
+    public static int drawString(GuiGraphics guiGraphics, Font font, FormattedCharSequence text, float x, float y, int color) {
+        return drawString(guiGraphics, font, text, x, y, color, true);
     }
-    public static int drawString(GuiGraphics guiGraphics,Font font, FormattedCharSequence text, float x, float y, int color, boolean dropShadow) {
+
+    public static int drawString(GuiGraphics guiGraphics, Font font, FormattedCharSequence text, float x, float y, int color, boolean dropShadow) {
         return guiGraphics.drawString(font, text, x, y, color, dropShadow);
     }
 }
