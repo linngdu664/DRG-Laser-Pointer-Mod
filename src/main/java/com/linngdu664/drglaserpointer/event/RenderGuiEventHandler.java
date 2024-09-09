@@ -66,7 +66,7 @@ public class RenderGuiEventHandler {
         GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
-        poseStack.translate(0F, 0F, 4933F);
+        poseStack.translate(0F, 0F, 4901F);
         int guiWidth, guiHeight;
         float guiScale = (float) window.getGuiScale();
         if (guiScale > 3F) {
