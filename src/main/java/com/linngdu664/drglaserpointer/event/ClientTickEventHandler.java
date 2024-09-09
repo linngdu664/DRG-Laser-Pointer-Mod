@@ -1,23 +1,31 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
 import com.linngdu664.drglaserpointer.network.LaserDistancePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.HashSet;
+import java.util.List;
+
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientTickEventHandler {
+    public static HashSet<Integer> glowingEntityIds = new HashSet<>();
     private static Item lastMainHandItem = Items.AIR;
     private static Item lastOffHandItem = Items.AIR;
     public static int mainHandLaserTick;
@@ -51,6 +59,16 @@ public class ClientTickEventHandler {
             }
             lastMainHandItem = mainHandStack.getItem();
             lastOffHandItem = offHandStack.getItem();
+
+            Level level = player.level();
+            List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> player.distanceToSqr(p) <= 96 * 96);
+            glowingEntityIds.clear();
+            for (LaserPointerLabelEntity labelEntity : list) {
+                Entity entity = level.getEntity(labelEntity.getTargetEntityId());
+                if (entity instanceof LivingEntity) {
+                    glowingEntityIds.add(labelEntity.getTargetEntityId());
+                }
+            }
         }
     }
 }

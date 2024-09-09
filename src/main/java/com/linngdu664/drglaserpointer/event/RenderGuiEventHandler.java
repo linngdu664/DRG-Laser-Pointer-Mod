@@ -37,6 +37,7 @@ import java.util.List;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderGuiEventHandler {
+    public static final int RENDER_LABEL_DISTANCE = 96;
     private static final int MAX_TARGET_NAME_WIDTH = 108;
     private static final int MAX_PLAYER_NAME_WIDTH = 153;
     private static final float LABEL_HEIGHT = 36;
@@ -65,6 +66,7 @@ public class RenderGuiEventHandler {
         GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
+        poseStack.translate(0F, 0F, 4933F);
         int guiWidth, guiHeight;
         float guiScale = (float) window.getGuiScale();
         if (guiScale > 3F) {
@@ -79,7 +81,7 @@ public class RenderGuiEventHandler {
         Player player = mc.player;
         Font font = mc.font;
         Level level = mc.level;
-        List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> p.distanceToSqr(player) <= 96 * 96);
+        List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(RENDER_LABEL_DISTANCE), p -> p.distanceToSqr(player) <= RENDER_LABEL_DISTANCE * RENDER_LABEL_DISTANCE);
         for (LaserPointerLabelEntity labelEntity : list) {
             FormattedText playerText = font.ellipsize(Component.literal(labelEntity.getOwnerName()), MAX_PLAYER_NAME_WIDTH);
             FormattedText distanceText;

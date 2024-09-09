@@ -1,13 +1,10 @@
 package com.linngdu664.drglaserpointer.entity;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -118,7 +115,7 @@ public class LaserPointerLabelEntity extends Entity {
                 }
                 if (entity instanceof LivingEntity livingEntity) {
                     moveTo(livingEntity.position());
-                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
+//                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
                 }
             }
             timer++;
