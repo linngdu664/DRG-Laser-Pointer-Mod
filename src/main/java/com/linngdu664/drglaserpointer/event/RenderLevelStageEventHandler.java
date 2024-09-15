@@ -103,7 +103,7 @@ public class RenderLevelStageEventHandler {
                 if (mainHandItemStack.is(laserPointer)) {
                     int color = mainHandItemStack.getOrDefault(componentType, LaserData.EMPTY).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {
-                        if (ClientTickEventHandler.mainHandLaserTick > 6) {
+                        if (mc.gameRenderer.itemInHandRenderer.mainHandHeight == 1 && ClientTickEventHandler.mainHandLaserTick > 6) {
                             Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
                         }
@@ -115,7 +115,7 @@ public class RenderLevelStageEventHandler {
                 if (offHandItemStack.is(laserPointer)) {
                     int color = offHandItemStack.getOrDefault(componentType, LaserData.EMPTY).getColorARGB();
                     if (mc.options.getCameraType().isFirstPerson()) {
-                        if (ClientTickEventHandler.offHandLaserTick > 6) {
+                        if (mc.gameRenderer.itemInHandRenderer.offHandHeight == 1 && ClientTickEventHandler.offHandLaserTick > 6) {
                             Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                             addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
                         }

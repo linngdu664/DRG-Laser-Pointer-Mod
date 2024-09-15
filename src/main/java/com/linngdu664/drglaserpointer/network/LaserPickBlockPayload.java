@@ -2,7 +2,6 @@ package com.linngdu664.drglaserpointer.network;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
-import com.linngdu664.drglaserpointer.item.component.AudioCooldownData;
 import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.registry.*;
 import io.netty.buffer.ByteBuf;
@@ -37,10 +36,10 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
         ItemStack mainHandStack = player.getMainHandItem();
         ItemStack offHandStack = player.getOffhandItem();
         if (mainHandStack.is(ItemRegister.LASER_POINTER)) {
-            mainHandStack.set(DataComponentRegister.AUDIO_COOLDOWN_DATA, new AudioCooldownData(20));
+            mainHandStack.set(DataComponentRegister.AUDIO_COOLDOWN, 20);
         }
         if (offHandStack.is(ItemRegister.LASER_POINTER)) {
-            offHandStack.set(DataComponentRegister.AUDIO_COOLDOWN_DATA, new AudioCooldownData(20));
+            offHandStack.set(DataComponentRegister.AUDIO_COOLDOWN, 20);
         }
     }
 
