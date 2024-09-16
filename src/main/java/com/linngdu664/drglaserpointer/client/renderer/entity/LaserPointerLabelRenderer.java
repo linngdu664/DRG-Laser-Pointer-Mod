@@ -1,6 +1,7 @@
 package com.linngdu664.drglaserpointer.client.renderer.entity;
 
 import com.linngdu664.drglaserpointer.client.model.LaserPointerLabelModel;
+import com.linngdu664.drglaserpointer.client.model.LaserPointerLabelModelBall;
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class LaserPointerLabelRenderer extends EntityRenderer<Entity> {
     private final LaserPointerLabelModel model;
+    private final LaserPointerLabelModelBall modelBall;
+
     private final RenderType renderType = RenderType.entityTranslucentCull(LaserPointerLabelModel.LAYER_LOCATION_BLUE.getModel());
 
     public LaserPointerLabelRenderer(EntityRendererProvider.Context context) {
@@ -23,6 +26,8 @@ public class LaserPointerLabelRenderer extends EntityRenderer<Entity> {
         this.shadowRadius = 0.1F;
         ModelPart modelpart = context.bakeLayer(LaserPointerLabelModel.LAYER_LOCATION_BLUE);
         model = new LaserPointerLabelModel<>(modelpart);
+        ModelPart modelpartBall = context.bakeLayer(LaserPointerLabelModelBall.LAYER_LOCATION_RED);
+        modelBall = new LaserPointerLabelModelBall<>(modelpartBall);
     }
 
     @Override
@@ -41,5 +46,6 @@ public class LaserPointerLabelRenderer extends EntityRenderer<Entity> {
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucentCull(getTextureLocation(p_entity)));
         int i = OverlayTexture.NO_OVERLAY;
         model.getBody().render(poseStack, vertexconsumer, 15728672, i);
+        modelBall.getBody().render(poseStack, vertexconsumer, 15728672, i);
     }
 }

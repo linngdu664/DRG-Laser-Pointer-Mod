@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
-public class LaserPointerLabelModel2<T extends LaserPointerLabelEntity> extends EntityModel<T> {
+public class LaserPointerLabelModelBall<T extends LaserPointerLabelEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
@@ -27,7 +27,7 @@ public class LaserPointerLabelModel2<T extends LaserPointerLabelEntity> extends 
 	public ModelPart getBody() {
 		return ball;
 	}
-	public LaserPointerLabelModel2(ModelPart root) {
+	public LaserPointerLabelModelBall(ModelPart root) {
 		this.ball = root.getChild("ball");
 	}
 

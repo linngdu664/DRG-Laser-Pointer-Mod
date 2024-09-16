@@ -2,6 +2,7 @@ package com.linngdu664.drglaserpointer.registry;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.client.model.LaserPointerLabelModel;
+import com.linngdu664.drglaserpointer.client.model.LaserPointerLabelModelBall;
 import com.linngdu664.drglaserpointer.client.renderer.entity.LaserPointerLabelRenderer;
 import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
 import net.minecraft.core.registries.Registries;
@@ -33,6 +34,7 @@ public class EntityRegister {
         @SubscribeEvent
         public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
             event.registerLayerDefinition(LaserPointerLabelModel.LAYER_LOCATION_BLUE, LaserPointerLabelModel::createBodyLayer);
+            event.registerLayerDefinition(LaserPointerLabelModelBall.LAYER_LOCATION_RED, LaserPointerLabelModelBall::createBodyLayer);
         }
     }
 }
