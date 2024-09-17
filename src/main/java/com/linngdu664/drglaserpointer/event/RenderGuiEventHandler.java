@@ -143,8 +143,10 @@ public class RenderGuiEventHandler {
             // vertical      tan = y / Mth.sqrt(x * x + z * z)    +up, -down
             float rx = labelPos.x / -labelPos.z / tanHalfFovx;
             float xScreen = labelPos.z >= 0 ? (labelPos.x >= 0 ? guiWidth - (refWidth / 2 + FRAME_PROTECT) : refWidth / 2 + FRAME_PROTECT) : Mth.clamp( guiWidth * 0.5F * (1 + rx), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
-            float ry1 = realPos.y / Mth.sqrt(realPos.x * realPos.x + realPos.z * realPos.z) / tanHalfFovy;
-            float ry2 = labelPos.y / Mth.sqrt(labelPos.x * labelPos.x + labelPos.z * labelPos.z) / tanHalfFovy;
+//            float ry1 = realPos.y / Mth.sqrt(realPos.x * realPos.x + realPos.z * realPos.z) / tanHalfFovy;
+//            float ry2 = labelPos.y / Mth.sqrt(labelPos.x * labelPos.x + labelPos.z * labelPos.z) / tanHalfFovy;
+            float ry1 = realPos.y / -realPos.z / tanHalfFovy;
+            float ry2 = labelPos.y / -labelPos.z / tanHalfFovy;
             float yScreen = Mth.clamp( guiHeight * 0.5F * (1 - ry2), LABEL_HEIGHT / 2 + FRAME_PROTECT, guiHeight - (LABEL_HEIGHT / 2 + FRAME_PROTECT));
             GuiUtil.fill(guiGraphics,xScreen - refWidth / 2 - 2, yScreen - 11, xScreen + refWidth / 2 + 2, yScreen + 11, 0x40000000);
             GuiUtil.vLine(guiGraphics,xScreen - refWidth / 2 - 3, yScreen - 12, yScreen + 11, 0xffc1bd93);
