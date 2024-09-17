@@ -1,7 +1,7 @@
 package com.linngdu664.drglaserpointer.network;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.registry.EntityRegister;
 import com.linngdu664.drglaserpointer.registry.SoundRegister;
 import io.netty.buffer.ByteBuf;
@@ -33,11 +33,11 @@ public record LaserPickEntityPayload(Vec3 location, int entityId, byte color) im
             level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
             level.getAllEntities().forEach(p -> {
-                if (p instanceof LaserPointerLabelEntity entity1 && (entity1.getOwnerName().equals(player.getName().getString()) || level.getEntity(payload.entityId) instanceof LivingEntity && entity1.getTargetEntityId() == payload.entityId)) {
+                if (p instanceof LaserPointerMarkEntity entity1 && (entity1.getOwnerName().equals(player.getName().getString()) || level.getEntity(payload.entityId) instanceof LivingEntity && entity1.getTargetEntityId() == payload.entityId)) {
                     p.discard();
                 }
             });
-            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, payload.entityId, payload.color));
+            level.addFreshEntity(new LaserPointerMarkEntity(EntityRegister.LASER_POINTER_MARK.get(), level, player, payload.location, payload.entityId, payload.color));
         });
     }
 

@@ -19,21 +19,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class LaserPointerLabelEntity extends Entity {
+public class LaserPointerMarkEntity extends Entity {
     private static final int MAX_TIME = 10 * 20;
-    private static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<BlockState> TARGET_BLOCK_STATE = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BLOCK_STATE);
-    private static final EntityDataAccessor<Integer> TARGET_ENTITY_ID = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Byte> COLOR = SynchedEntityData.defineId(LaserPointerLabelEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(LaserPointerMarkEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<BlockState> TARGET_BLOCK_STATE = SynchedEntityData.defineId(LaserPointerMarkEntity.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> TARGET_ENTITY_ID = SynchedEntityData.defineId(LaserPointerMarkEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Byte> COLOR = SynchedEntityData.defineId(LaserPointerMarkEntity.class, EntityDataSerializers.BYTE);
 
     private int timer = 0;
     private UUID targetEntityUuid = null;
 
-    public LaserPointerLabelEntity(EntityType<?> entityType, Level level) {
+    public LaserPointerMarkEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, int entityId, byte color) {
+    public LaserPointerMarkEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, int entityId, byte color) {
         super(entityType, level);
         Entity entity = level.getEntity(entityId);
         if (entity != null && !entity.isRemoved()) {
@@ -49,7 +49,7 @@ public class LaserPointerLabelEntity extends Entity {
         }
     }
 
-    public LaserPointerLabelEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockState blockState, byte color) {
+    public LaserPointerMarkEntity(EntityType<?> entityType, Level level, Player owner, Vec3 location, BlockState blockState, byte color) {
         super(entityType, level);
         entityData.set(OWNER_NAME, owner.getName().getString());
         entityData.set(TARGET_BLOCK_STATE, blockState);
@@ -115,7 +115,6 @@ public class LaserPointerLabelEntity extends Entity {
                 }
                 if (entity instanceof LivingEntity livingEntity) {
                     moveTo(livingEntity.position());
-//                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 1));
                 }
             }
             timer++;

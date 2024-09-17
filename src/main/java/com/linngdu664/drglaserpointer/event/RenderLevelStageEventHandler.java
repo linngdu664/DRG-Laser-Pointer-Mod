@@ -8,6 +8,7 @@ import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.util.Mth;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,12 +25,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
+import java.util.List;
+
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderLevelStageEventHandler {
     public static final double LASER_WIDTH = 0.005;
 
     private static void addLaserQuad(BufferBuilder bufferBuilder, Vec3 start, Vec3 end, Vec3 n, int color) {
-        int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerHitHelper.LASER_MAX_DISTANCE)));
+        int endAlpha = Math.max(0, (int) (255 * (1 - end.distanceTo(start) / LaserPointerHitHelper.LASER_RANGE)));
         Vec3 start1 = start.add(n);
         Vec3 start2 = start.subtract(n);
         Vec3 end1 = end.add(n);
@@ -125,26 +129,28 @@ public class RenderLevelStageEventHandler {
                     }
                 }
             }
-
-            mc.level.getEntitiesOfClass(Player.class, player.getBoundingBox().inflate(LaserPointerHitHelper.LASER_MAX_DISTANCE), p -> !p.equals(player) && !p.isSpectator() && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)))
-                    .forEach(p -> {
-                        ItemStack mainHandItemStack1 = p.getMainHandItem();
-                        ItemStack offHandItemStack1 = p.getOffhandItem();
-                        Vec3 eyePos = p.getEyePosition(partialTick);
-                        Vec3 viewVec = p.getViewVector(partialTick);
-                        if (mainHandItemStack1.is(laserPointer)) {
-                            LaserData data = mainHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
-                            Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.LEFT), partialTick);
-                            Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
-                            addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
-                        }
-                        if (offHandItemStack1.is(laserPointer)) {
-                            LaserData data = offHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
-                            Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
-                            Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
-                            addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
-                        }
-                    });
+            List<AbstractClientPlayer> playerList = mc.level.players();
+            AABB aabb = player.getBoundingBox().inflate(LaserPointerHitHelper.LASER_RANGE);
+            for (AbstractClientPlayer p : playerList) {
+                if (aabb.contains(p.getPosition(partialTick)) && !p.isSpectator() && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)) && !p.equals(player)) {
+                    ItemStack mainHandItemStack1 = p.getMainHandItem();
+                    ItemStack offHandItemStack1 = p.getOffhandItem();
+                    Vec3 eyePos = p.getEyePosition(partialTick);
+                    Vec3 viewVec = p.getViewVector(partialTick);
+                    if (mainHandItemStack1.is(laserPointer)) {
+                        LaserData data = mainHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
+                        Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.LEFT), partialTick);
+                        Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
+                        addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
+                    }
+                    if (offHandItemStack1.is(laserPointer)) {
+                        LaserData data = offHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
+                        Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
+                        Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
+                        addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
+                    }
+                }
+            }
 //            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 0), new Vec3(64, 72, 0), 0xff78e0ff);
 //            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 1), new Vec3(64, 72, 1), 0xffff7864);
 //            addLaserToBuffer(bufferBuilder, new Vec3(0, 72, 2), new Vec3(64, 72, 2), 0xffffbc4c);

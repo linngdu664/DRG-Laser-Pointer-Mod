@@ -1,10 +1,13 @@
 package com.linngdu664.drglaserpointer;
 
+import com.linngdu664.drglaserpointer.config.ClientConfig;
+import com.linngdu664.drglaserpointer.config.CommonConfig;
 import com.linngdu664.drglaserpointer.registry.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Main.MODID)
@@ -22,7 +25,7 @@ public class Main {
         SoundRegister.SOUNDS.register(modEventBus);
         TriggerTypeRegister.TRIGGER_TYPES.register(modEventBus);
 
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-//        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
     }
 }

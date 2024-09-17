@@ -1,5 +1,6 @@
 package com.linngdu664.drglaserpointer.util;
 
+import com.linngdu664.drglaserpointer.config.CommonConfig;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -10,9 +11,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class LaserPointerHitHelper {
-    public static final double LASER_MAX_DISTANCE = 64;
-    public static final double LASER_MAX_DISTANCE_SQ = 64 * 64;
-
+    public static final double LASER_RANGE = CommonConfig.LASER_RANGE.getConfigValue();
+    public static final double LASER_RANGE_SQ = LASER_RANGE * LASER_RANGE;
 
     private static class SingletonHandler {
         private static final LaserPointerHitHelper instance = new LaserPointerHitHelper();
@@ -28,13 +28,13 @@ public class LaserPointerHitHelper {
     }
 
     public void calcHitResult(Player player, float partialTick) {
-        HitResult hitResult = player.pick(LASER_MAX_DISTANCE, partialTick, false);
+        HitResult hitResult = player.pick(LASER_RANGE, partialTick, false);
         Vec3 traceBegin = player.getEyePosition(partialTick);
         double distance = hitResult.getLocation().distanceTo(traceBegin);
-        Vec3 scaledViewVec = player.getViewVector(partialTick).scale(LASER_MAX_DISTANCE);
+        Vec3 scaledViewVec = player.getViewVector(partialTick).scale(LASER_RANGE);
         Vec3 traceEnd = traceBegin.add(scaledViewVec);
         AABB aabb = player.getBoundingBox().expandTowards(scaledViewVec).inflate(1.0);
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, traceBegin, traceEnd, aabb, p -> !p.isSpectator() && (p.isPickable() || p instanceof ItemEntity || p instanceof Projectile), LASER_MAX_DISTANCE_SQ);
+        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, traceBegin, traceEnd, aabb, p -> !p.isSpectator() && (p.isPickable() || p instanceof ItemEntity || p instanceof Projectile), LASER_RANGE_SQ);
         if (entityHitResult != null && entityHitResult.getLocation().distanceTo(traceBegin) < distance) {
             hitResult = entityHitResult;
         }

@@ -1,7 +1,7 @@
 package com.linngdu664.drglaserpointer.network;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.registry.*;
 import io.netty.buffer.ByteBuf;
@@ -62,12 +62,12 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
                 }
             }
             for (Entity entity : level.getAllEntities()) {
-                if (entity instanceof LaserPointerLabelEntity entity1 && entity1.getOwnerName().equals(player.getName().getString())) {
+                if (entity instanceof LaserPointerMarkEntity entity1 && entity1.getOwnerName().equals(player.getName().getString())) {
                     entity1.discard();
                     break;
                 }
             }
-            level.addFreshEntity(new LaserPointerLabelEntity(EntityRegister.LASER_POINTER_LABEL.get(), level, player, payload.location, blockState, payload.color));
+            level.addFreshEntity(new LaserPointerMarkEntity(EntityRegister.LASER_POINTER_MARK.get(), level, player, payload.location, blockState, payload.color));
         });
     }
 

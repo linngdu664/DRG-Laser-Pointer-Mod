@@ -1,7 +1,8 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import com.linngdu664.drglaserpointer.config.ClientConfig;
+import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.util.GuiUtil;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -37,7 +38,6 @@ import java.util.List;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderGuiEventHandler {
-    public static final int RENDER_LABEL_DISTANCE = 96;
     private static final int MAX_TARGET_NAME_WIDTH = 108;
     private static final int MAX_PLAYER_NAME_WIDTH = 153;
     private static final float LABEL_HEIGHT = 36;
@@ -81,16 +81,17 @@ public class RenderGuiEventHandler {
         Player player = mc.player;
         Font font = mc.font;
         Level level = mc.level;
-        List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(RENDER_LABEL_DISTANCE), p -> p.distanceToSqr(player) <= RENDER_LABEL_DISTANCE * RENDER_LABEL_DISTANCE);
-        for (LaserPointerLabelEntity labelEntity : list) {
-            FormattedText playerText = font.ellipsize(Component.literal(labelEntity.getOwnerName()), MAX_PLAYER_NAME_WIDTH);
+        double markDisplayRangeSq = ClientConfig.MARK_DISPLAY_RANGE.getConfigValue() * ClientConfig.MARK_DISPLAY_RANGE.getConfigValue();
+        List<LaserPointerMarkEntity> list = level.getEntitiesOfClass(LaserPointerMarkEntity.class, player.getBoundingBox().inflate(ClientConfig.MARK_DISPLAY_RANGE.getConfigValue()), p -> p.distanceToSqr(player) <= markDisplayRangeSq);
+        for (LaserPointerMarkEntity markEntity : list) {
+            FormattedText playerText = font.ellipsize(Component.literal(markEntity.getOwnerName()), MAX_PLAYER_NAME_WIDTH);
             FormattedText distanceText;
             List<FormattedCharSequence> targetTextList;
             ItemStack blockItemStack = null;
             ResourceLocation entityIconLocation = null;
             Vector3f labelPos;
             Vector3f realPos;
-            Entity entity = level.getEntity(labelEntity.getTargetEntityId());
+            Entity entity = level.getEntity(markEntity.getTargetEntityId());
             if (entity != null) {
                 if (entity instanceof LivingEntity) {
                     ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
@@ -113,17 +114,17 @@ public class RenderGuiEventHandler {
                         entityIconLocation = Main.makeResLoc("textures/gui/face/unknown.png");
                         targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     }
-                    distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", labelEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
-                    labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
-                    realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
+                    distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", markEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
+                    labelPos = new Vector3f((float) (markEntity.getX() - cameraPos.x), (float) (markEntity.getY() + 1.0 - cameraPos.y), (float) (markEntity.getZ() - cameraPos.z));
+                    realPos = new Vector3f(labelPos.x, (float) (markEntity.getY() - cameraPos.y), labelPos.z);
                 }
             } else {
-                Block block = labelEntity.getTargetBlockState().getBlock();
+                Block block = markEntity.getTargetBlockState().getBlock();
                 blockItemStack = block.asItem().getDefaultInstance();
                 targetTextList = font.split(block.getName(), MAX_TARGET_NAME_WIDTH);
-                distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", labelEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
-                labelPos = new Vector3f((float) (labelEntity.getX() - cameraPos.x), (float) (labelEntity.getY() + 1.0 - cameraPos.y), (float) (labelEntity.getZ() - cameraPos.z));
-                realPos = new Vector3f(labelPos.x, (float) (labelEntity.getY() - cameraPos.y), labelPos.z);
+                distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", markEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
+                labelPos = new Vector3f((float) (markEntity.getX() - cameraPos.x), (float) (markEntity.getY() + 1.0 - cameraPos.y), (float) (markEntity.getZ() - cameraPos.z));
+                realPos = new Vector3f(labelPos.x, (float) (markEntity.getY() - cameraPos.y), labelPos.z);
             }
             float mainWidth = ICON_WIDTH_WITH_MARGIN;
             FormattedCharSequence targetTextLine1 = null, targetTextLine2 = null;

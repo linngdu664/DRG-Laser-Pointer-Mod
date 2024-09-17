@@ -1,7 +1,8 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import com.linngdu664.drglaserpointer.config.ClientConfig;
+import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.network.LaserDistancePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
@@ -25,11 +26,11 @@ import java.util.List;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientTickEventHandler {
-    public static HashSet<Integer> glowingEntityIds = new HashSet<>();
     private static Item lastMainHandItem = Items.AIR;
     private static Item lastOffHandItem = Items.AIR;
     public static int mainHandLaserTick;
     public static int offHandLaserTick;
+    public static HashSet<Integer> glowingEntityIds = new HashSet<>();
 
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
@@ -61,12 +62,13 @@ public class ClientTickEventHandler {
             lastOffHandItem = offHandStack.getItem();
 
             Level level = player.level();
-            List<LaserPointerLabelEntity> list = level.getEntitiesOfClass(LaserPointerLabelEntity.class, player.getBoundingBox().inflate(96), p -> player.distanceToSqr(p) <= 96 * 96);
+            double markDisplayRangeSq = ClientConfig.MARK_DISPLAY_RANGE.getConfigValue() * ClientConfig.MARK_DISPLAY_RANGE.getConfigValue();
+            List<LaserPointerMarkEntity> list = level.getEntitiesOfClass(LaserPointerMarkEntity.class, player.getBoundingBox().inflate(ClientConfig.MARK_DISPLAY_RANGE.getConfigValue()), p -> player.distanceToSqr(p) <= markDisplayRangeSq);
             glowingEntityIds.clear();
-            for (LaserPointerLabelEntity labelEntity : list) {
-                Entity entity = level.getEntity(labelEntity.getTargetEntityId());
+            for (LaserPointerMarkEntity markEntity : list) {
+                Entity entity = level.getEntity(markEntity.getTargetEntityId());
                 if (entity instanceof LivingEntity) {
-                    glowingEntityIds.add(labelEntity.getTargetEntityId());
+                    glowingEntityIds.add(markEntity.getTargetEntityId());
                 }
             }
         }

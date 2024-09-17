@@ -3,7 +3,7 @@ package com.linngdu664.drglaserpointer.client.model;// Made with Blockbench 4.10
 // Paste this class into your mod and generate all required imports
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerLabelEntity;
+import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
-public class LaserPointerLabelModelBall<T extends LaserPointerLabelEntity> extends EntityModel<T> {
+public class LaserPointerMarkModelBall<T extends LaserPointerMarkEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
@@ -27,7 +27,7 @@ public class LaserPointerLabelModelBall<T extends LaserPointerLabelEntity> exten
 	public ModelPart getBody() {
 		return ball;
 	}
-	public LaserPointerLabelModelBall(ModelPart root) {
+	public LaserPointerMarkModelBall(ModelPart root) {
 		this.ball = root.getChild("ball");
 	}
 
