@@ -1,5 +1,6 @@
 {
   "item.drglaserpointer.laser_pointer": "雷射指示器",
+  "laser_pointer.tooltip": "<%1$s+%2$s> 切換顏色",
 
   "tip.drglaserpointer.distance": "%1$s 米",
   "tip.drglaserpointer.mark_key": "按%1$s進行標記",

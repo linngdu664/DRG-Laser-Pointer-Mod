@@ -1,5 +1,6 @@
 {
   "item.drglaserpointer.laser_pointer": "Laser Pointer",
+  "laser_pointer.tooltip": "<%1$s+%2$s> switch color",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s to mark",
