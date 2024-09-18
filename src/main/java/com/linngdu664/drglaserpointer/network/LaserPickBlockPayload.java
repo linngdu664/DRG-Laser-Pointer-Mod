@@ -47,27 +47,29 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
         context.enqueueWork(() -> {
             Player player = context.player();
             ServerLevel level = (ServerLevel) player.level();
-            level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
-            BlockState blockState = level.getBlockState(payload.blockPos);
-            TriggerTypeRegister.MARK_BLOCK_TRIGGER.get().trigger((ServerPlayer) player, blockState);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
-            if (payload.canPlayAudio) {
-                RandomSource random = level.getRandom();
-                if (blockState.is(ModTags.Blocks.RICH_BLOCKS)) {
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
-                    setAudioCooldown(player);
-                } else if (blockState.is(ModTags.Blocks.MUSHROOMS)) {
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextFloat() > 0.5F ? SoundRegister.MUSHROOM1 : SoundRegister.MUSHROOM2, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
-                    setAudioCooldown(player);
+            if (level.hasChunkAt(payload.blockPos)) {
+                level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
+                BlockState blockState = level.getBlockState(payload.blockPos);
+                TriggerTypeRegister.MARK_BLOCK_TRIGGER.get().trigger((ServerPlayer) player, blockState);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
+                if (payload.canPlayAudio) {
+                    RandomSource random = level.getRandom();
+                    if (blockState.is(ModTags.Blocks.RICH_BLOCKS)) {
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
+                        setAudioCooldown(player);
+                    } else if (blockState.is(ModTags.Blocks.MUSHROOMS)) {
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextFloat() > 0.5F ? SoundRegister.MUSHROOM1 : SoundRegister.MUSHROOM2, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
+                        setAudioCooldown(player);
+                    }
                 }
-            }
-            for (Entity entity : level.getAllEntities()) {
-                if (entity instanceof LaserPointerMarkEntity entity1 && entity1.getOwnerName().equals(player.getName().getString())) {
-                    entity1.discard();
-                    break;
+                for (Entity entity : level.getAllEntities()) {
+                    if (entity instanceof LaserPointerMarkEntity entity1 && entity1.getOwnerName().equals(player.getName().getString())) {
+                        entity1.discard();
+                        break;
+                    }
                 }
+                level.addFreshEntity(new LaserPointerMarkEntity(EntityRegister.LASER_POINTER_MARK.get(), level, player, payload.location, blockState, payload.color));
             }
-            level.addFreshEntity(new LaserPointerMarkEntity(EntityRegister.LASER_POINTER_MARK.get(), level, player, payload.location, blockState, payload.color));
         });
     }
 
