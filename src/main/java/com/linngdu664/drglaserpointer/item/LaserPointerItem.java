@@ -88,6 +88,6 @@ public class LaserPointerItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("laser_pointer.tooltip").withStyle(ChatFormatting.DARK_GRAY));
+        tooltipComponents.add(Component.translatable("laser_pointer.tooltip",Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.DARK_GRAY));
     }
 }
