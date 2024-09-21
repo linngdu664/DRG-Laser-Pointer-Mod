@@ -180,8 +180,8 @@ public class RenderGuiEventHandler {
             }
             poseStack.pushPose();
             poseStack.scale(0.8F, 0.8F, 0.8F);
-            xScreen = Math.round(xScreen * 1.25F);
-            yScreen = Math.round(yScreen * 1.25F);
+            xScreen = xScreen * 1.25F;
+            yScreen = yScreen * 1.25F;
             GuiUtil.drawCenteredString(guiGraphics,font, (Component) playerText, xScreen, yScreen - 24, 0xffc1bd93);
             GuiUtil.drawCenteredString(guiGraphics,font, (Component) distanceText, xScreen, yScreen + 17, 0xffc1bd93);
             poseStack.popPose();
