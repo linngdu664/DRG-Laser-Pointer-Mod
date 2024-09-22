@@ -12,8 +12,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.GlowSquid;
 import org.jetbrains.annotations.NotNull;
 
 public class LaserPointerMarkRenderer extends EntityRenderer<Entity> {
@@ -43,16 +46,21 @@ public class LaserPointerMarkRenderer extends EntityRenderer<Entity> {
     }
 
     @Override
+    protected int getBlockLightLevel(Entity entity, BlockPos pos) {
+        return 15;
+    }
+
+    @Override
     public void render(@NotNull Entity p_entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucentCull(getTextureLocation(p_entity)));
         int i = OverlayTexture.NO_OVERLAY;
         if (ClientConfig.CUBE_MARK_MODEL.getConfigValue()) {
             poseStack.pushPose();
             poseStack.scale(0.75F, 0.75F, 0.75F);
-            model.getBody().render(poseStack, vertexconsumer, 15728672, i);
+            model.getBody().render(poseStack, vertexconsumer, packedLight, i);
             poseStack.popPose();
         } else {
-            modelBall.getBody().render(poseStack, vertexconsumer, 15728672, i);
+            modelBall.getBody().render(poseStack, vertexconsumer, packedLight, i);
         }
     }
 }
