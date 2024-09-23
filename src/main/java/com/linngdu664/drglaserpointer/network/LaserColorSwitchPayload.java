@@ -1,7 +1,6 @@
 package com.linngdu664.drglaserpointer.network;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.item.component.LaserData;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import io.netty.buffer.ByteBuf;
@@ -24,9 +23,8 @@ public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacke
         context.enqueueWork(() -> {
             Player player = context.player();
             ItemStack mainHandItemStack = player.getMainHandItem();
-            if (mainHandItemStack.is(ItemRegister.LASER_POINTER.get())) {
-                var data = mainHandItemStack.get(DataComponentRegister.LASER_DATA.get());
-                int colorId = data.colorId();
+            if (mainHandItemStack.is(ItemRegister.LASER_POINTER)) {
+                int colorId = mainHandItemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0);
                 if (payload.isIncrease()) {
                     colorId++;
                     if (colorId > 3) {
@@ -38,7 +36,7 @@ public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacke
                         colorId = 3;
                     }
                 }
-                mainHandItemStack.set(DataComponentRegister.LASER_DATA.get(), new LaserData(data.distance(), (byte) colorId));
+                mainHandItemStack.set(DataComponentRegister.LASER_COLOR, (byte) colorId);
             }
         });
     }

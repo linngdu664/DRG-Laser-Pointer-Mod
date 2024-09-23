@@ -3,11 +3,13 @@ package com.linngdu664.drglaserpointer.event;
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
-import com.linngdu664.drglaserpointer.network.LaserDistancePayload;
+import com.linngdu664.drglaserpointer.network.LaserDistanceRequestPayload;
+import com.linngdu664.drglaserpointer.network.LaserDistanceUpdatePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -15,12 +17,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,14 +38,12 @@ public class ClientTickEventHandler {
 
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
-        Player player = Minecraft.getInstance().player;
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
         if (player != null) {
             Item laserPointerItem = ItemRegister.LASER_POINTER.get();
             ItemStack mainHandStack = player.getMainHandItem();
             ItemStack offHandStack = player.getOffhandItem();
-            if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
-                PacketDistributor.sendToServer(new LaserDistancePayload(LaserPointerHitHelper.getInstance().getLaserDistance()));
-            }
             if (mainHandStack.is(laserPointerItem)) {
                 mainHandLaserTick++;
             } else {
@@ -52,12 +54,18 @@ public class ClientTickEventHandler {
             } else {
                 offHandLaserTick = 0;
             }
+
             // == is safe here
             if (mainHandStack.is(laserPointerItem) && lastMainHandItem != laserPointerItem || offHandStack.is(laserPointerItem) && lastOffHandItem != laserPointerItem) {
                 PacketDistributor.sendToServer(new LaserPlaySoundPayload(true));
             } else if (!mainHandStack.is(laserPointerItem) && lastMainHandItem == laserPointerItem || !offHandStack.is(laserPointerItem) && lastOffHandItem == laserPointerItem) {
                 PacketDistributor.sendToServer(new LaserPlaySoundPayload(false));
             }
+
+            if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
+                PacketDistributor.sendToServer(new LaserDistanceUpdatePayload(LaserPointerHitHelper.getInstance().getLaserDistance()));
+            }
+
             lastMainHandItem = mainHandStack.getItem();
             lastOffHandItem = offHandStack.getItem();
 
@@ -71,6 +79,16 @@ public class ClientTickEventHandler {
                     glowingEntityIds.add(markEntity.getTargetEntityId());
                 }
             }
+
+            List<AbstractClientPlayer> playerList = mc.level.players();
+            AABB aabb = player.getBoundingBox().inflate(LaserPointerHitHelper.LASER_RANGE);
+            ArrayList<Integer> ids = new ArrayList<>();
+            for (AbstractClientPlayer p : playerList) {
+                if (aabb.contains(p.getPosition(1)) && !p.isSpectator() && (p.getMainHandItem().is(laserPointerItem) || p.getOffhandItem().is(laserPointerItem)) && !p.equals(player)) {
+                    ids.add(p.getId());
+                }
+            }
+            PacketDistributor.sendToServer(new LaserDistanceRequestPayload(ids));
         }
     }
 }

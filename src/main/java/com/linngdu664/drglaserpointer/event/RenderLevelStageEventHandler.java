@@ -1,7 +1,8 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.item.component.LaserData;
+import com.linngdu664.drglaserpointer.item.LaserPointerItem;
+import com.linngdu664.drglaserpointer.network.LaserDistanceResponsePayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
@@ -10,7 +11,6 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +26,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
 import java.util.List;
+import java.util.Objects;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class RenderLevelStageEventHandler {
@@ -99,13 +100,12 @@ public class RenderLevelStageEventHandler {
             ItemStack mainHandItemStack = player.getMainHandItem();
             ItemStack offHandItemStack = player.getOffhandItem();
             Item laserPointer = ItemRegister.LASER_POINTER.get();
-            DataComponentType<LaserData> componentType = DataComponentRegister.LASER_DATA.get();
             if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR && (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer))) {
                 LaserPointerHitHelper helper = LaserPointerHitHelper.getInstance();
                 helper.calcHitResult(player, partialTick);
                 Vec3 targetPos = helper.getHitResult().getLocation();
                 if (mainHandItemStack.is(laserPointer)) {
-                    int color = mainHandItemStack.getOrDefault(componentType, LaserData.EMPTY).getColorARGB();
+                    int color = LaserPointerItem.getLaserColorARGB(mainHandItemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0));
                     if (mc.options.getCameraType().isFirstPerson()) {
                         if (mc.gameRenderer.itemInHandRenderer.mainHandHeight == 1 && ClientTickEventHandler.mainHandLaserTick > 6) {
                             Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
@@ -115,9 +115,10 @@ public class RenderLevelStageEventHandler {
                         Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                         addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
                     }
+                    mainHandItemStack.set(DataComponentRegister.SCREEN_COLOR, helper.getScreenColor(player.level()));
                 }
                 if (offHandItemStack.is(laserPointer)) {
-                    int color = offHandItemStack.getOrDefault(componentType, LaserData.EMPTY).getColorARGB();
+                    int color = LaserPointerItem.getLaserColorARGB(offHandItemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0));
                     if (mc.options.getCameraType().isFirstPerson()) {
                         if (mc.gameRenderer.itemInHandRenderer.offHandHeight == 1 && ClientTickEventHandler.offHandLaserTick > 6) {
                             Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
@@ -127,6 +128,7 @@ public class RenderLevelStageEventHandler {
                         Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                         addLaserToBuffer(bufferBuilder, startPos, targetPos, color);
                     }
+                    offHandItemStack.set(DataComponentRegister.SCREEN_COLOR, helper.getScreenColor(player.level()));
                 }
             }
             List<AbstractClientPlayer> playerList = mc.level.players();
@@ -138,16 +140,14 @@ public class RenderLevelStageEventHandler {
                     Vec3 eyePos = p.getEyePosition(partialTick);
                     Vec3 viewVec = p.getViewVector(partialTick);
                     if (mainHandItemStack1.is(laserPointer)) {
-                        LaserData data = mainHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
                         Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.LEFT), partialTick);
-                        Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
-                        addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
+                        Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), 0F)));
+                        addLaserToBuffer(bufferBuilder, startPos, targetPos, LaserPointerItem.getLaserColorARGB(mainHandItemStack1.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0)));
                     }
                     if (offHandItemStack1.is(laserPointer)) {
-                        LaserData data = offHandItemStack1.getOrDefault(componentType, LaserData.EMPTY);
                         Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
-                        Vec3 targetPos = eyePos.add(viewVec.scale(data.distance()));
-                        addLaserToBuffer(bufferBuilder, startPos, targetPos, data.getColorARGB());
+                        Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), 0F)));
+                        addLaserToBuffer(bufferBuilder, startPos, targetPos, LaserPointerItem.getLaserColorARGB(offHandItemStack1.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0)));
                     }
                 }
             }

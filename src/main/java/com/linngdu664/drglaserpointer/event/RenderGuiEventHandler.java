@@ -140,7 +140,7 @@ public class RenderGuiEventHandler {
             rotMat.transform(labelPos);
             rotMat.transform(realPos);
             // horizontal    tan = x / -z                         +right，-left
-            // vertical      tan = y / Mth.sqrt(x * x + z * z)    +up, -down
+            // vertical      tan = y / -z    +up, -down
             float rx = labelPos.x / -labelPos.z / tanHalfFovx;
             float xScreen = labelPos.z >= 0 ? (labelPos.x >= 0 ? guiWidth - (refWidth / 2 + FRAME_PROTECT) : refWidth / 2 + FRAME_PROTECT) : Mth.clamp( guiWidth * 0.5F * (1 + rx), refWidth / 2 + FRAME_PROTECT, guiWidth - (refWidth / 2 + FRAME_PROTECT));
 //            float ry1 = realPos.y / Mth.sqrt(realPos.x * realPos.x + realPos.z * realPos.z) / tanHalfFovy;

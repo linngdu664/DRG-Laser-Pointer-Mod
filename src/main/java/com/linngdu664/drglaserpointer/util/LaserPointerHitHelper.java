@@ -1,14 +1,17 @@
 package com.linngdu664.drglaserpointer.util;
 
 import com.linngdu664.drglaserpointer.config.CommonConfig;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.*;
+import net.neoforged.neoforge.common.Tags;
 
 public class LaserPointerHitHelper {
     public static final double LASER_RANGE = CommonConfig.LASER_RANGE.getConfigValue();
@@ -48,5 +51,21 @@ public class LaserPointerHitHelper {
 
     public float getLaserDistance() {
         return laserDistance;
+    }
+
+    public byte getScreenColor(Level level) {
+        if (hitResult == null) return 0;    // dark green
+        if (hitResult.getType() == HitResult.Type.ENTITY) {
+            Entity entity = ((EntityHitResult) hitResult).getEntity();
+            if (entity instanceof Enemy) return 2;          // red
+            return 1;       // green
+        }
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockState blockState = level.getBlockState(((BlockHitResult) hitResult).getBlockPos());
+            if (blockState.is(Tags.Blocks.ORES)) return 1;          // green
+            if (blockState.getBlock() == Blocks.DIRT) return 3;     // yellow
+            return 0;       // dark green
+        }
+        return 0;           // dark green
     }
 }

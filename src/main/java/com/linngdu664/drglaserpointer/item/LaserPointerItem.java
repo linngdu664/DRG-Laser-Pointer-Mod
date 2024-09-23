@@ -1,6 +1,5 @@
 package com.linngdu664.drglaserpointer.item;
 
-import com.linngdu664.drglaserpointer.item.component.LaserData;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
@@ -9,7 +8,6 @@ import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -37,7 +35,8 @@ public class LaserPointerItem extends Item {
     public LaserPointerItem() {
         super(new Properties()
                 .stacksTo(1)
-                .component(DataComponentRegister.LASER_DATA, LaserData.EMPTY)
+                .component(DataComponentRegister.LASER_COLOR, (byte) 0)
+                .component(DataComponentRegister.SCREEN_COLOR, (byte) 0)
                 .component(DataComponentRegister.AUDIO_COOLDOWN, 0));
     }
 
@@ -46,7 +45,7 @@ public class LaserPointerItem extends Item {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
         if (pLevel.isClientSide && (pUsedHand == InteractionHand.MAIN_HAND || !pPlayer.getMainHandItem().is(ItemRegister.LASER_POINTER))) {
             HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
-            byte color = itemStack.getOrDefault(DataComponentRegister.LASER_DATA, LaserData.EMPTY).colorId();
+            byte color = itemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0);
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                 PacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color, itemStack.getOrDefault(DataComponentRegister.AUDIO_COOLDOWN, 0) == 0));
@@ -63,6 +62,9 @@ public class LaserPointerItem extends Item {
         int cd = stack.getOrDefault(DataComponentRegister.AUDIO_COOLDOWN, 0);
         if (cd > 0) {
             stack.set(DataComponentRegister.AUDIO_COOLDOWN, cd - 1);
+        }
+        if (level.isClientSide && !isSelected && slotId != 40) {
+            stack.set(DataComponentRegister.SCREEN_COLOR, (byte) 0);
         }
     }
 
@@ -89,5 +91,14 @@ public class LaserPointerItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         tooltipComponents.add(Component.translatable("laser_pointer.tooltip",Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.DARK_GRAY));
+    }
+
+    public static int getLaserColorARGB(byte laserColor) {
+        return switch (laserColor) {
+            default -> 0xff78e0ff;  // blue
+            case 1 -> 0xffff7864;   // red
+            case 2 -> 0xffffbc4c;   // yellow
+            case 3 -> 0xff78ff78;   // green
+        };
     }
 }
