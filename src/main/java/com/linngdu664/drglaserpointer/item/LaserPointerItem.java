@@ -1,5 +1,6 @@
 package com.linngdu664.drglaserpointer.item;
 
+import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -32,12 +34,13 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LaserPointerItem extends Item {
+    int audioCooldown = 0;      // client only
+
     public LaserPointerItem() {
         super(new Properties()
                 .stacksTo(1)
                 .component(DataComponentRegister.LASER_COLOR, (byte) 0)
-                .component(DataComponentRegister.SCREEN_COLOR, (byte) 0)
-                .component(DataComponentRegister.AUDIO_COOLDOWN, 0));
+                .component(DataComponentRegister.SCREEN_COLOR, (byte) 0));
     }
 
     @Override
@@ -48,7 +51,11 @@ public class LaserPointerItem extends Item {
             byte color = itemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0);
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-                PacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color, itemStack.getOrDefault(DataComponentRegister.AUDIO_COOLDOWN, 0) == 0));
+                PacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color, audioCooldown == 0));
+                BlockState blockState = pLevel.getBlockState(blockHitResult.getBlockPos());
+                if (audioCooldown == 0 && (blockState.is(ModTags.Blocks.RICH_BLOCKS) || blockState.is(ModTags.Blocks.MUSHROOMS))) {
+                    audioCooldown = 30;
+                }
             } else if (hitResult.getType() == HitResult.Type.ENTITY) {
                 EntityHitResult entityHitResult = (EntityHitResult) hitResult;
                 PacketDistributor.sendToServer(new LaserPickEntityPayload(entityHitResult.getLocation(), entityHitResult.getEntity().getId(), color));
@@ -59,12 +66,13 @@ public class LaserPointerItem extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        int cd = stack.getOrDefault(DataComponentRegister.AUDIO_COOLDOWN, 0);
-        if (cd > 0) {
-            stack.set(DataComponentRegister.AUDIO_COOLDOWN, cd - 1);
-        }
-        if (level.isClientSide && !isSelected && slotId != 40) {
-            stack.set(DataComponentRegister.SCREEN_COLOR, (byte) 0);
+        if (level.isClientSide) {
+            if (!isSelected && slotId != 40) {
+                stack.set(DataComponentRegister.SCREEN_COLOR, (byte) 0);
+            }
+            if (audioCooldown > 0) {
+                audioCooldown--;
+            }
         }
     }
 
@@ -90,7 +98,7 @@ public class LaserPointerItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("laser_pointer.tooltip",Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.DARK_GRAY));
+        tooltipComponents.add(Component.translatable("laser_pointer.tooltip", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.DARK_GRAY));
     }
 
     public static int getLaserColorARGB(byte laserColor) {

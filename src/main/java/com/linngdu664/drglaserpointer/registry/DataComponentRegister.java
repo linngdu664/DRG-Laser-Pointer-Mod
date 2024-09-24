@@ -9,11 +9,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class DataComponentRegister {
     public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Main.MODID);
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> AUDIO_COOLDOWN =
-            DATA_COMPONENTS.registerComponentType(
-                    "audio_cooldown",
-                    builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT)
-            );
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Byte>> LASER_COLOR =
             DATA_COMPONENTS.registerComponentType(
                     "laser_color",

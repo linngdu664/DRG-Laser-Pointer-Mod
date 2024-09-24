@@ -10,7 +10,7 @@ public class ClientConfig extends Config {
                     .define("cubeMarkModel", false));
     public static ConfigValueHolder<Integer> MARK_DISPLAY_RANGE = new ConfigValueHolder(Main.MODID, "client/mark_display_range", (builder) ->
             builder.comment("The display range of marks. Default value: 96")
-                    .defineInRange("markDisplayRange", 96, 0, Integer.MAX_VALUE));
+                    .defineInRange("markDisplayRange", 96, 0, 511));
 
     public static final ClientConfig INSTANCE;
     public static final ModConfigSpec SPEC;

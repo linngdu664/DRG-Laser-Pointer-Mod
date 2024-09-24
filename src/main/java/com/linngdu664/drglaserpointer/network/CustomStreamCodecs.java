@@ -1,6 +1,7 @@
 package com.linngdu664.drglaserpointer.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -24,16 +25,16 @@ public class CustomStreamCodecs {
         }
     };
 
-    public static final StreamCodec<ByteBuf, Pair<Integer, Float>> IF_PAIR_STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<ByteBuf, Pair<Integer, Short>> IS_PAIR_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(@NotNull ByteBuf byteBuf, @NotNull Pair<Integer, Float> pair) {
-            byteBuf.writeInt(pair.getA());
-            byteBuf.writeFloat(pair.getB());
+        public void encode(@NotNull ByteBuf byteBuf, @NotNull Pair<Integer, Short> pair) {
+            VarInt.write(byteBuf, pair.getA());
+            byteBuf.writeShort(pair.getB());
         }
 
         @Override
-        public @NotNull Pair<Integer, Float> decode(@NotNull ByteBuf byteBuf) {
-            return new Pair<>(byteBuf.readInt(), byteBuf.readFloat());
+        public @NotNull Pair<Integer, Short> decode(@NotNull ByteBuf byteBuf) {
+            return new Pair<>(VarInt.read(byteBuf), byteBuf.readShort());
         }
     };
 }

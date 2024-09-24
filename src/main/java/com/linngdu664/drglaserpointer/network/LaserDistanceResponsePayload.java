@@ -12,21 +12,19 @@ import oshi.util.tuples.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public record LaserDistanceResponsePayload(ArrayList<Pair<Integer, Float>> disList) implements CustomPacketPayload {
-    public static final HashMap<Integer, Float> clientDisMap = new HashMap<>();
+public record LaserDistanceResponsePayload(ArrayList<Pair<Integer, Short>> disList) implements CustomPacketPayload {
+    public static final HashMap<Integer, Short> clientDisMap = new HashMap<>();
     public static final CustomPacketPayload.Type<LaserDistanceResponsePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_distance_response"));
     public static final StreamCodec<ByteBuf, LaserDistanceResponsePayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.collection(ArrayList::new, CustomStreamCodecs.IF_PAIR_STREAM_CODEC), LaserDistanceResponsePayload::disList,
+            ByteBufCodecs.collection(ArrayList::new, CustomStreamCodecs.IS_PAIR_STREAM_CODEC), LaserDistanceResponsePayload::disList,
             LaserDistanceResponsePayload::new
     );
 
     public static void handleDataInClient(final LaserDistanceResponsePayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            clientDisMap.clear();
-            for (Pair<Integer, Float> pair : payload.disList) {
-                clientDisMap.put(pair.getA(), pair.getB());
-            }
-        });
+        clientDisMap.clear();
+        for (Pair<Integer, Short> pair : payload.disList) {
+            clientDisMap.put(pair.getA(), pair.getB());
+        }
     }
 
     @Override

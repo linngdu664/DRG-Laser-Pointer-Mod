@@ -9,18 +9,16 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 
-public record LaserDistanceUpdatePayload(float distance) implements CustomPacketPayload {
-    public static final HashMap<Integer, Float> disMap = new HashMap<>();
+public record LaserDistanceUpdatePayload(short distance) implements CustomPacketPayload {
+    public static final HashMap<Integer, Short> disMap = new HashMap<>();
     public static final CustomPacketPayload.Type<LaserDistanceUpdatePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_distance_update"));
     public static final StreamCodec<ByteBuf, LaserDistanceUpdatePayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.FLOAT, LaserDistanceUpdatePayload::distance,
+            ByteBufCodecs.SHORT, LaserDistanceUpdatePayload::distance,
             LaserDistanceUpdatePayload::new
     );
 
     public static void handleDataInServer(final LaserDistanceUpdatePayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            disMap.put(context.player().getId(), payload.distance);
-        });
+        disMap.put(context.player().getId(), payload.distance);
     }
 
     @Override

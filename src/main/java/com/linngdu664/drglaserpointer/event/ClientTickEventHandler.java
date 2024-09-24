@@ -30,6 +30,7 @@ import java.util.List;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientTickEventHandler {
+    private static short distance0 = -1;
     private static Item lastMainHandItem = Items.AIR;
     private static Item lastOffHandItem = Items.AIR;
     public static int mainHandLaserTick;
@@ -58,12 +59,17 @@ public class ClientTickEventHandler {
             // == is safe here
             if (mainHandStack.is(laserPointerItem) && lastMainHandItem != laserPointerItem || offHandStack.is(laserPointerItem) && lastOffHandItem != laserPointerItem) {
                 PacketDistributor.sendToServer(new LaserPlaySoundPayload(true));
+                distance0 = -1;
             } else if (!mainHandStack.is(laserPointerItem) && lastMainHandItem == laserPointerItem || !offHandStack.is(laserPointerItem) && lastOffHandItem == laserPointerItem) {
                 PacketDistributor.sendToServer(new LaserPlaySoundPayload(false));
             }
 
             if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
-                PacketDistributor.sendToServer(new LaserDistanceUpdatePayload(LaserPointerHitHelper.getInstance().getLaserDistance()));
+                short dis = (short) Math.round(LaserPointerHitHelper.getInstance().getLaserDistance() * 64F);
+                if (distance0 != dis) {
+                    PacketDistributor.sendToServer(new LaserDistanceUpdatePayload(dis));
+                    distance0 = dis;
+                }
             }
 
             lastMainHandItem = mainHandStack.getItem();
@@ -88,7 +94,9 @@ public class ClientTickEventHandler {
                     ids.add(p.getId());
                 }
             }
-            PacketDistributor.sendToServer(new LaserDistanceRequestPayload(ids));
+            if (!ids.isEmpty()) {
+                PacketDistributor.sendToServer(new LaserDistanceRequestPayload(ids));
+            }
         }
     }
 }

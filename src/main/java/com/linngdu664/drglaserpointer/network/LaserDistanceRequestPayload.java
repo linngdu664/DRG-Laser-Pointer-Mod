@@ -21,14 +21,12 @@ public record LaserDistanceRequestPayload(ArrayList<Integer> ids) implements Cus
     );
 
     public static void handleDataInServer(final LaserDistanceRequestPayload payload, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ArrayList<Pair<Integer, Float>> arrayList = new ArrayList<>();
-            for (int id : payload.ids()) {
-                Float f = LaserDistanceUpdatePayload.disMap.get(id);
-                arrayList.add(new Pair<>(id, Objects.requireNonNullElse(f, 0F)));
-            }
-            PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new LaserDistanceResponsePayload(arrayList));
-        });
+        ArrayList<Pair<Integer, Short>> arrayList = new ArrayList<>();
+        for (int id : payload.ids()) {
+            Short s = LaserDistanceUpdatePayload.disMap.get(id);
+            arrayList.add(new Pair<>(id, Objects.requireNonNullElse(s, (short) 0)));
+        }
+        PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new LaserDistanceResponsePayload(arrayList));
     }
 
     @Override

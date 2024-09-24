@@ -141,12 +141,12 @@ public class RenderLevelStageEventHandler {
                     Vec3 viewVec = p.getViewVector(partialTick);
                     if (mainHandItemStack1.is(laserPointer)) {
                         Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.LEFT), partialTick);
-                        Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), 0F)));
+                        Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), (short) 0) / 64F));
                         addLaserToBuffer(bufferBuilder, startPos, targetPos, LaserPointerItem.getLaserColorARGB(mainHandItemStack1.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0)));
                     }
                     if (offHandItemStack1.is(laserPointer)) {
                         Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
-                        Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), 0F)));
+                        Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), (short) 0) / 64F));
                         addLaserToBuffer(bufferBuilder, startPos, targetPos, LaserPointerItem.getLaserColorARGB(offHandItemStack1.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0)));
                     }
                 }

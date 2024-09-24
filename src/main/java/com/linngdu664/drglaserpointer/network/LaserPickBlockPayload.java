@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -32,17 +31,6 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
             LaserPickBlockPayload::new
     );
 
-    private static void setAudioCooldown(Player player) {
-        ItemStack mainHandStack = player.getMainHandItem();
-        ItemStack offHandStack = player.getOffhandItem();
-        if (mainHandStack.is(ItemRegister.LASER_POINTER)) {
-            mainHandStack.set(DataComponentRegister.AUDIO_COOLDOWN, 20);
-        }
-        if (offHandStack.is(ItemRegister.LASER_POINTER)) {
-            offHandStack.set(DataComponentRegister.AUDIO_COOLDOWN, 20);
-        }
-    }
-
     public static void handleDataInServer(final LaserPickBlockPayload payload, final IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
@@ -56,10 +44,8 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
                     RandomSource random = level.getRandom();
                     if (blockState.is(ModTags.Blocks.RICH_BLOCKS)) {
                         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
-                        setAudioCooldown(player);
                     } else if (blockState.is(ModTags.Blocks.MUSHROOMS)) {
-                        level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextFloat() > 0.5F ? SoundRegister.MUSHROOM1 : SoundRegister.MUSHROOM2, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
-                        setAudioCooldown(player);
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextIntBetweenInclusive(0, 1) == 0 ? SoundRegister.MUSHROOM1 : SoundRegister.MUSHROOM2, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
                     }
                 }
                 for (Entity entity : level.getAllEntities()) {

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class CommonConfig extends Config {
     public static ConfigValueHolder<Integer> LASER_RANGE = new ConfigValueHolder(Main.MODID, "common/laser_range", (builder) ->
             builder.comment("The range of laser. Default value: 64")
-                    .defineInRange("laserRange", 64, 0, Integer.MAX_VALUE));
+                    .defineInRange("laserRange", 64, 0, 511));
 
     public static final CommonConfig INSTANCE;
     public static final ModConfigSpec SPEC;
