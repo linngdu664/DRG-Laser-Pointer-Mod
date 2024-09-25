@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "Wskaźnik laserowy",
+  "laser_pointer.tooltip": "<%1$s+Przewijanie myszką> zmiana koloru",
+
+  "tip.drglaserpointer.distance": "%1$s m",
+  "tip.drglaserpointer.mark_key": "%1$s, aby zaznaczyć",
+  "tip.drglaserpointer.item_entity_name": "%1$s (Przedmiot)",
+
+  "advancements.drglaserpointer.root.title": "Skała i Kamień",
+  "advancements.drglaserpointer.root.description": "Skała i Kamień",
+  "advancements.drglaserpointer.were_rich.title": "Jesteśmy bogaci!",
+  "advancements.drglaserpointer.were_rich.description": "Tak, tak, jesteś bogaty. Rusz się, zarząd stoi mi nad głową!",
+  "advancements.drglaserpointer.mushroom.title": "Grzyb!",
+  "advancements.drglaserpointer.mushroom.description": "\"Grzyb, grzyb\", CISZA! Wracaj do pracy!"
+}
