@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "雷射指示器",
+  "laser_pointer.tooltip": "<%1$s+鼠標滾輪> 切換顏色",
+
+  "tip.drglaserpointer.distance": "%1$s 米",
+  "tip.drglaserpointer.mark_key": "按%1$s進行標記",
+  "tip.drglaserpointer.item_entity_name": "%1$s (物品)",
+
+  "advancements.drglaserpointer.root.title": "岩 與 石！",
+  "advancements.drglaserpointer.root.description": "岩 與 石！",
+  "advancements.drglaserpointer.were_rich.title": "我們發財了！",
+  "advancements.drglaserpointer.were_rich.description": "是，是，是，你發財了。行行好趕緊走吧，管理層就在我身後站著呢！",
+  "advancements.drglaserpointer.mushroom.title": "蘑菇！",
+  "advancements.drglaserpointer.mushroom.description": "專注點，小隊！別他娘的蘑菇了！"
+}

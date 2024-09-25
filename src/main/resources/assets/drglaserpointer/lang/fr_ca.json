@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "Pointeur Laser",
+  "laser_pointer.tooltip": "<%1$s+Molette de la souris> changer de couleur",
+
+  "tip.drglaserpointer.distance": "%1$s m",
+  "tip.drglaserpointer.mark_key": "%1$s pour marquer",
+  "tip.drglaserpointer.item_entity_name": "%1$s (Objet)",
+
+  "advancements.drglaserpointer.root.title": "Roche Et Pierre",
+  "advancements.drglaserpointer.root.description": "Roche Et Pierre",
+  "advancements.drglaserpointer.were_rich.title": "Nous sommes riches!",
+  "advancements.drglaserpointer.were_rich.description": "Oui, oui, vous êtes riches. Veuillez avancer, la direction me surveille de près ici!",
+  "advancements.drglaserpointer.mushroom.title": "Champignon!",
+  "advancements.drglaserpointer.mushroom.description": "\"Champignon, champignon\", TAIS-TOI! Retourne au travail!"
+}

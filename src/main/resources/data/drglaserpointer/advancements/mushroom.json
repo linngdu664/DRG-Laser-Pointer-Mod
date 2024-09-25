@@ -1,0 +1,144 @@
+{
+  "parent": "drglaserpointer:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:brown_mushroom",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancements.drglaserpointer.mushroom.title"
+    },
+    "description": {
+      "translate": "advancements.drglaserpointer.mushroom.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "annouce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "point_to_mushroom1": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:red_mushroom"
+      }
+    },
+    "point_to_mushroom2": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:brown_mushroom"
+      }
+    },
+    "point_to_mushroom3": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:crimson_fungus"
+      }
+    },
+    "point_to_mushroom4": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:warped_fungus"
+      }
+    },
+    "point_to_mushroom5": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:potted_red_mushroom"
+      }
+    },
+    "point_to_mushroom6": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:potted_brown_mushroom"
+      }
+    },
+    "point_to_mushroom7": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:potted_crimson_fungus"
+      }
+    },
+    "point_to_mushroom8": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:potted_warped_fungus"
+      }
+    },
+    "point_to_mushroom9": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:red_mushroom_block"
+      }
+    },
+    "point_to_mushroom10": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:brown_mushroom_block"
+      }
+    },
+    "point_to_mushroom11": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:nether_wart_block"
+      }
+    },
+    "point_to_mushroom12": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:warped_wart_block"
+      }
+    },
+    "point_to_mushroom13": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:mushroom_stem"
+      }
+    },
+    "point_to_mushroom14": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:crimson_stem"
+      }
+    },
+    "point_to_mushroom15": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:warped_stem"
+      }
+    },
+    "point_to_mushroom16": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:stripped_crimson_stem"
+      }
+    },
+    "point_to_mushroom17": {
+      "trigger": "drglaserpointer:mark_block_trigger",
+      "conditions": {
+        "block": "minecraft:stripped_warped_stem"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "point_to_mushroom1",
+      "point_to_mushroom2",
+      "point_to_mushroom3",
+      "point_to_mushroom4",
+      "point_to_mushroom5",
+      "point_to_mushroom6",
+      "point_to_mushroom7",
+      "point_to_mushroom8",
+      "point_to_mushroom9",
+      "point_to_mushroom10",
+      "point_to_mushroom11",
+      "point_to_mushroom12",
+      "point_to_mushroom13",
+      "point_to_mushroom14",
+      "point_to_mushroom15",
+      "point_to_mushroom16",
+      "point_to_mushroom17"
+    ]
+  ]
+}

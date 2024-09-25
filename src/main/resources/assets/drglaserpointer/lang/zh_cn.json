@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "激光指示器",
+  "laser_pointer.tooltip": "<%1$s+鼠标滚轮> 切换颜色",
+
+  "tip.drglaserpointer.distance": "%1$s 米",
+  "tip.drglaserpointer.mark_key": "按%1$s进行标记",
+  "tip.drglaserpointer.item_entity_name": "%1$s (物品)",
+
+  "advancements.drglaserpointer.root.title": "岩 与 石！",
+  "advancements.drglaserpointer.root.description": "岩 与 石！",
+  "advancements.drglaserpointer.were_rich.title": "我们发财了！",
+  "advancements.drglaserpointer.were_rich.description": "是，是，是，你发财了。行行好赶紧走吧，管理层就在我身后站着呢！",
+  "advancements.drglaserpointer.mushroom.title": "蘑菇！",
+  "advancements.drglaserpointer.mushroom.description": "专注点，小队！别他娘的蘑菇了！"
+}

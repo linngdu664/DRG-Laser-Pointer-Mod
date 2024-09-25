@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "Puntero Láser",
+  "laser_pointer.tooltip": "<%1$s+Desplazamiento del ratón> cambiar color",
+
+  "tip.drglaserpointer.distance": "%1$s m",
+  "tip.drglaserpointer.mark_key": "%1$s para marcar",
+  "tip.drglaserpointer.item_entity_name": "%1$s (Objeto)",
+
+  "advancements.drglaserpointer.root.title": "¡Roca y Piedra!",
+  "advancements.drglaserpointer.root.description": "¡Roca y Piedra!",
+  "advancements.drglaserpointer.were_rich.title": "¡Somos ricos!",
+  "advancements.drglaserpointer.were_rich.description": "Sí, sí, eres rico. Por favor, muévete, ¡tengo a la gerencia respirando en mi cuello aquí!",
+  "advancements.drglaserpointer.mushroom.title": "¡Hongo!",
+  "advancements.drglaserpointer.mushroom.description": "\"Hongo, hongo\", ¡CÁLLATE! ¡Vuelve al trabajo!"
+}

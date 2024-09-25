@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "光指器",
+  "laser_pointer.tooltip": "<%1$s+鼠滚> 易色",
+
+  "tip.drglaserpointer.distance": "%1$s 丈",
+  "tip.drglaserpointer.mark_key": "按%1$s以记",
+  "tip.drglaserpointer.item_entity_name": "%1$s (物)",
+
+  "advancements.drglaserpointer.root.title": "岩与石",
+  "advancements.drglaserpointer.root.description": "岩与石",
+  "advancements.drglaserpointer.were_rich.title": "吾等富矣！",
+  "advancements.drglaserpointer.were_rich.description": "是，是，汝富矣。行行好速行，吾受上司督促也！",
+  "advancements.drglaserpointer.mushroom.title": "菌！",
+  "advancements.drglaserpointer.mushroom.description": "专注，队伍！勿言菌也！"
+}

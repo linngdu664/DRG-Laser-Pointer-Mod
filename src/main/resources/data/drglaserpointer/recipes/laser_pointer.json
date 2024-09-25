@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FBA",
+    "CD ",
+    " E "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:glass"
+    },
+    "B": {
+      "item": "minecraft:redstone_lamp"
+    },
+    "C": {
+      "item": "minecraft:stone_button"
+    },
+    "D": {
+      "item": "minecraft:copper_ingot"
+    },
+    "E": {
+      "item": "minecraft:iron_ingot"
+    },
+    "F": {
+      "item": "minecraft:spyglass"
+    }
+  },
+  "result": {
+    "item": "drglaserpointer:laser_pointer",
+    "count": 1
+  }
+}

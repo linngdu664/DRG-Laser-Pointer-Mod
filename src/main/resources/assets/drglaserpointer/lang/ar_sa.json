@@ -1,0 +1,15 @@
+{
+  "item.drglaserpointer.laser_pointer": "مؤشر الليزر",
+  "laser_pointer.tooltip": "<%1$s+تمرير الفأرة> لتغيير اللون",
+
+  "tip.drglaserpointer.distance": "%1$s م",
+  "tip.drglaserpointer.mark_key": "%1$s للعلامة",
+  "tip.drglaserpointer.item_entity_name": "%1$s (عنصر)",
+
+  "advancements.drglaserpointer.root.title": "صخرة وحجر",
+  "advancements.drglaserpointer.root.description": "صخرة وحجر",
+  "advancements.drglaserpointer.were_rich.title": "نحن أغنياء!",
+  "advancements.drglaserpointer.were_rich.description": "نعم، نعم، أنت غني. لطفًا تحرك، الإدارة تراقبني هنا!",
+  "advancements.drglaserpointer.mushroom.title": "فطر!",
+  "advancements.drglaserpointer.mushroom.description": "\"فطر، فطر\"، اصمت! عد إلى العمل!"
+}

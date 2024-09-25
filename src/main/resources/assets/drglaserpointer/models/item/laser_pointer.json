@@ -1,0 +1,122 @@
+{
+  "parent": "drglaserpointer:custom/laser_pointer",
+  "textures": {
+    "laser_light": "drglaserpointer:item/laser_light_yellow",
+    "body": "drglaserpointer:item/laser_pointer_body",
+    "screen": "drglaserpointer:item/laser_screen_dark_green"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 0,
+        "drglaserpointer:screen_color": 0
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix00"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 0,
+        "drglaserpointer:screen_color": 1
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix01"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 0,
+        "drglaserpointer:screen_color": 2
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix02"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 0,
+        "drglaserpointer:screen_color": 3
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix03"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 1,
+        "drglaserpointer:screen_color": 0
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix10"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 1,
+        "drglaserpointer:screen_color": 1
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix11"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 1,
+        "drglaserpointer:screen_color": 2
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix12"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 1,
+        "drglaserpointer:screen_color": 3
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix13"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 2,
+        "drglaserpointer:screen_color": 0
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix20"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 2,
+        "drglaserpointer:screen_color": 1
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix21"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 2,
+        "drglaserpointer:screen_color": 2
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix22"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 2,
+        "drglaserpointer:screen_color": 3
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix23"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 3,
+        "drglaserpointer:screen_color": 0
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix30"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 3,
+        "drglaserpointer:screen_color": 1
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix31"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 3,
+        "drglaserpointer:screen_color": 2
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix32"
+    },
+    {
+      "predicate": {
+        "drglaserpointer:light_color": 3,
+        "drglaserpointer:screen_color": 3
+      },
+      "model": "drglaserpointer:item/laser_pointer_mix33"
+    }
+  ]
+}
