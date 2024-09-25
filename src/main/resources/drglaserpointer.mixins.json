@@ -1,9 +1,0 @@
-{
-  "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_21",
-  "package": "com.linngdu664.drglaserpointer.mixin",
-  "refmap": "drglaserpointer.mixins.refmap.json",
-  "mixins": [],
-  "client": ["MinecraftMixin"],
-  "server": []
-}
