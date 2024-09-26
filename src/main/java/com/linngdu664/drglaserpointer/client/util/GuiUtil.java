@@ -1,4 +1,4 @@
-package com.linngdu664.drglaserpointer.util;
+package com.linngdu664.drglaserpointer.client.util;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;

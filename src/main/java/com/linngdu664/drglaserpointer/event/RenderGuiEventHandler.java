@@ -3,7 +3,7 @@ package com.linngdu664.drglaserpointer.event;
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
-import com.linngdu664.drglaserpointer.util.GuiUtil;
+import com.linngdu664.drglaserpointer.client.util.GuiUtil;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;

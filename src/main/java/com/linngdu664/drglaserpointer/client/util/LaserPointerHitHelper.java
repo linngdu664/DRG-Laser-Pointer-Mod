@@ -1,4 +1,4 @@
-package com.linngdu664.drglaserpointer.util;
+package com.linngdu664.drglaserpointer.client.util;
 
 import com.linngdu664.drglaserpointer.config.CommonConfig;
 import net.minecraft.world.entity.Entity;

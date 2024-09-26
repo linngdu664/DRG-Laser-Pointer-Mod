@@ -7,7 +7,7 @@ import com.linngdu664.drglaserpointer.network.LaserDistanceRequestPayload;
 import com.linngdu664.drglaserpointer.network.LaserDistanceUpdatePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
-import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
+import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;

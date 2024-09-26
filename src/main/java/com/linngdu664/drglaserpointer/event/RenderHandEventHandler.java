@@ -2,7 +2,7 @@ package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
-import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
+import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,7 +36,6 @@ public class RenderHandEventHandler {
 
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
-        event.getPackedLight();
         if (event.getItemStack().is(ItemRegister.LASER_POINTER) && event.getEquipProgress() == 0 && event.getSwingProgress() == 0) {
             Minecraft mc = Minecraft.getInstance();
             Level level = mc.level;

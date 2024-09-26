@@ -5,7 +5,7 @@ import com.linngdu664.drglaserpointer.item.LaserPointerItem;
 import com.linngdu664.drglaserpointer.network.LaserDistanceResponsePayload;
 import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
-import com.linngdu664.drglaserpointer.util.LaserPointerHitHelper;
+import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
