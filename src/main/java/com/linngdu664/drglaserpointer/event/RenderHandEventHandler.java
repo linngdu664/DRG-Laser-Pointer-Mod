@@ -36,7 +36,6 @@ public class RenderHandEventHandler {
 
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
-        event.getPackedLight();
         if (event.getItemStack().is(ItemRegister.LASER_POINTER.get()) && event.getEquipProgress() == 0 && event.getSwingProgress() == 0) {
             Minecraft mc = Minecraft.getInstance();
             Level level = mc.level;
