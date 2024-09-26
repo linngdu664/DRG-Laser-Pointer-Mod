@@ -767,7 +767,7 @@
 			}
 		},
 		{
-			"neoforge_data": {
+			"forge_data": {
 				"block_light": 15,
 				"sky_light": 15,
 				"ambient_occlusion": false
@@ -789,7 +789,7 @@
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, -0.7, 0]},
 			"faces": {
 				"north": {
-					"neoforge_data": {
+					"forge_data": {
 						"block_light": 15,
 						"sky_light": 15,
 						"ambient_occlusion": false
