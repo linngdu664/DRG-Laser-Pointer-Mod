@@ -1,14 +1,13 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.network.LaserDistanceRequestPayload;
 import com.linngdu664.drglaserpointer.network.LaserDistanceUpdatePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
-import com.linngdu664.drglaserpointer.registry.NetworkRegister;
-import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,10 +18,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,16 +59,16 @@ public class ClientTickEventHandler {
 
                 // == is safe here
                 if (mainHandStack.is(laserPointerItem) && lastMainHandItem != laserPointerItem || offHandStack.is(laserPointerItem) && lastOffHandItem != laserPointerItem) {
-                    NetworkRegister.PACKET_HANDLER.sendToServer(new LaserPlaySoundPayload(true));
+                    PacketDistributor.SERVER.noArg().send(new LaserPlaySoundPayload(true));
                     distance0 = -1;
                 } else if (!mainHandStack.is(laserPointerItem) && lastMainHandItem == laserPointerItem || !offHandStack.is(laserPointerItem) && lastOffHandItem == laserPointerItem) {
-                    NetworkRegister.PACKET_HANDLER.sendToServer(new LaserPlaySoundPayload(false));
+                    PacketDistributor.SERVER.noArg().send(new LaserPlaySoundPayload(false));
                 }
 
                 if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
                     short dis = (short) Math.round(LaserPointerHitHelper.getInstance().getLaserDistance() * 64F);
                     if (distance0 != dis) {
-                        NetworkRegister.PACKET_HANDLER.sendToServer(new LaserDistanceUpdatePayload(dis));
+                        PacketDistributor.SERVER.noArg().send(new LaserDistanceUpdatePayload(dis));
                         distance0 = dis;
                     }
                 }
@@ -96,7 +96,7 @@ public class ClientTickEventHandler {
                     }
                 }
                 if (!ids.isEmpty()) {
-                    NetworkRegister.PACKET_HANDLER.sendToServer(new LaserDistanceRequestPayload(ids));
+                    PacketDistributor.SERVER.noArg().send(new LaserDistanceRequestPayload(ids));
                 }
             }
         }

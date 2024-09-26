@@ -19,7 +19,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
@@ -119,12 +118,10 @@ public class GuiUtil {
                 if (flag) {
                     Lighting.setupFor3DItems();
                 }
-            } catch (Throwable var12) {
-                Throwable throwable = var12;
+            } catch (Throwable throwable) {
                 CrashReport crashreport = CrashReport.forThrowable(throwable, "Rendering item");
                 CrashReportCategory crashreportcategory = crashreport.addCategory("Item being rendered");
-                crashreportcategory.setDetail("Item Type", () -> String.valueOf(stack.getItem()));
-                crashreportcategory.setDetail("Registry Name", () -> String.valueOf(ForgeRegistries.ITEMS.getKey(stack.getItem())));
+                crashreportcategory.setDetail("Item Type / Registry Name", () -> String.valueOf(stack.getItem()));
                 crashreportcategory.setDetail("Item Damage", () -> String.valueOf(stack.getDamageValue()));
                 crashreportcategory.setDetail("Item NBT", () -> String.valueOf(stack.getTag()));
                 crashreportcategory.setDetail("Item Foil", () -> String.valueOf(stack.hasFoil()));

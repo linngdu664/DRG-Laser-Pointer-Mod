@@ -1,7 +1,7 @@
 package com.linngdu664.drglaserpointer.config;
 
 import com.linngdu664.drglaserpointer.Main;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class CommonConfig extends Config {
@@ -10,14 +10,14 @@ public class CommonConfig extends Config {
                     .defineInRange("laserRange", 64, 0, 511));
 
     public static final CommonConfig INSTANCE;
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
-    public CommonConfig(ForgeConfigSpec.Builder builder) {
+    public CommonConfig(ModConfigSpec.Builder builder) {
         super(Main.MODID, "common", builder);
     }
 
     static {
-        Pair<CommonConfig, ForgeConfigSpec> specPair = (new ForgeConfigSpec.Builder()).configure(CommonConfig::new);
+        Pair<CommonConfig, ModConfigSpec> specPair = (new ModConfigSpec.Builder()).configure(CommonConfig::new);
         SPEC = specPair.getRight();
         INSTANCE = specPair.getLeft();
     }

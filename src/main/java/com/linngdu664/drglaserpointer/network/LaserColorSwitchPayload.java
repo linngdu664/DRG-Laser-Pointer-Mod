@@ -1,26 +1,34 @@
 package com.linngdu664.drglaserpointer.network;
 
+import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-import java.util.function.Supplier;
+public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacketPayload {
+    public static final ResourceLocation ID = Main.makeResLoc("laser_color_switch");
 
-public record LaserColorSwitchPayload(boolean isIncrease) {
-    public static void encoder(LaserColorSwitchPayload message, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(message.isIncrease);
+    public LaserColorSwitchPayload(final FriendlyByteBuf buffer) {
+        this(buffer.readBoolean());
     }
 
-    public static LaserColorSwitchPayload decoder(FriendlyByteBuf buffer) {
-        return new LaserColorSwitchPayload(buffer.readBoolean());
+    @Override
+    public void write(FriendlyByteBuf buffer) {
+        buffer.writeBoolean(isIncrease);
     }
 
-    public static void messageConsumer(LaserColorSwitchPayload message, Supplier<NetworkEvent.Context> ctxSupplier) {
-        NetworkEvent.Context context = ctxSupplier.get();
-        context.enqueueWork(() -> {
-            Player player = context.getSender();
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public static void handleDataInServer(LaserColorSwitchPayload message, PlayPayloadContext context) {
+        context.workHandler().submitAsync(() -> {
+            Player player = context.player().get();
             ItemStack mainHandItemStack = player.getMainHandItem();
             if (mainHandItemStack.is(ItemRegister.LASER_POINTER.get())) {
                 int colorId = mainHandItemStack.getOrCreateTag().getByte("LaserColor");
@@ -38,6 +46,5 @@ public record LaserColorSwitchPayload(boolean isIncrease) {
                 mainHandItemStack.getOrCreateTag().putByte("LaserColor", (byte) colorId);
             }
         });
-        context.setPacketHandled(true);
     }
 }

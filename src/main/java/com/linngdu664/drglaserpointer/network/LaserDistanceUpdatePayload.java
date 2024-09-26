@@ -1,25 +1,32 @@
 package com.linngdu664.drglaserpointer.network;
 
+import com.linngdu664.drglaserpointer.Main;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.HashMap;
-import java.util.function.Supplier;
 
-public record LaserDistanceUpdatePayload(short distance) {
+public record LaserDistanceUpdatePayload(short distance) implements CustomPacketPayload {
     public static final HashMap<Integer, Short> disMap = new HashMap<>();
+    public static final ResourceLocation ID = Main.makeResLoc("laser_distance_update");
 
-    public static void encoder(LaserDistanceUpdatePayload message, FriendlyByteBuf buffer) {
-        buffer.writeShort(message.distance);
+    public LaserDistanceUpdatePayload(FriendlyByteBuf buffer) {
+        this(buffer.readShort());
     }
 
-    public static LaserDistanceUpdatePayload decoder(FriendlyByteBuf buffer) {
-        return new LaserDistanceUpdatePayload(buffer.readShort());
+    @Override
+    public void write(FriendlyByteBuf buffer) {
+        buffer.writeShort(distance);
     }
 
-    public static void messageConsumer(LaserDistanceUpdatePayload message, Supplier<NetworkEvent.Context> ctxSupplier) {
-        NetworkEvent.Context context = ctxSupplier.get();
-        disMap.put(context.getSender().getId(), message.distance);
-        context.setPacketHandled(true);
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public static void handleDataInServer(LaserDistanceUpdatePayload message, PlayPayloadContext context) {
+        disMap.put(context.player().get().getId(), message.distance);
     }
 }

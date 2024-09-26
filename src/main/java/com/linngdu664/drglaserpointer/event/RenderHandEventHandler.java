@@ -1,8 +1,8 @@
 package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
+import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -22,10 +22,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -36,7 +36,6 @@ public class RenderHandEventHandler {
 
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
-        event.getPackedLight();
         if (event.getItemStack().is(ItemRegister.LASER_POINTER.get()) && event.getEquipProgress() == 0 && event.getSwingProgress() == 0) {
             Minecraft mc = Minecraft.getInstance();
             Level level = mc.level;

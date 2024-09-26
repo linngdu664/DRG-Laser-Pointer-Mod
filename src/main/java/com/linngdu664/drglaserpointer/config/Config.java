@@ -1,7 +1,7 @@
 package com.linngdu664.drglaserpointer.config;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Config {
     public static final ConcurrentHashMap<Pair<String, ConfigPath>, ArrayList<ConfigValueHolder>> VALUE_HOLDERS = new ConcurrentHashMap();
 
-    public Config(String modId, String configType, ForgeConfigSpec.Builder builder) {
+    public Config(String modId, String configType, ModConfigSpec.Builder builder) {
         Iterator var4 = VALUE_HOLDERS.entrySet().iterator();
 
         while (true) {
@@ -23,7 +23,6 @@ public class Config {
                 next = (Map.Entry) var4.next();
                 s = (Pair) next.getKey();
             } while (!s.getFirst().equals(modId + "/" + configType));
-
             builder.push(List.of(((ConfigPath)s.getSecond()).strings));
             ArrayList<ConfigValueHolder> h = (ArrayList) next.getValue();
 
@@ -62,7 +61,7 @@ public class Config {
 
     public static class ConfigValueHolder<T> {
         private final BuilderSupplier<T> valueSupplier;
-        private ForgeConfigSpec.ConfigValue<T> config;
+        private ModConfigSpec.ConfigValue<T> config;
 
         public ConfigValueHolder(String modId, String path, BuilderSupplier<T> valueSupplier) {
             this.valueSupplier = valueSupplier;
@@ -71,7 +70,7 @@ public class Config {
             VALUE_HOLDERS.computeIfAbsent(Pair.of(configType, new ConfigPath(entirePath.toArray(new String[0]))), (s) -> new ArrayList()).add(this);
         }
 
-        public void setConfig(ForgeConfigSpec.Builder builder) {
+        public void setConfig(ModConfigSpec.Builder builder) {
             this.config = this.valueSupplier.createBuilder(builder);
         }
 
@@ -79,7 +78,7 @@ public class Config {
             this.config.set(t);
         }
 
-        public ForgeConfigSpec.ConfigValue<T> getConfig() {
+        public ModConfigSpec.ConfigValue<T> getConfig() {
             return this.config;
         }
 
@@ -89,6 +88,6 @@ public class Config {
     }
 
     public interface BuilderSupplier<T> {
-        ForgeConfigSpec.ConfigValue<T> createBuilder(ForgeConfigSpec.Builder var1);
+        ModConfigSpec.ConfigValue<T> createBuilder(ModConfigSpec.Builder var1);
     }
 }

@@ -3,14 +3,14 @@ package com.linngdu664.drglaserpointer.event;
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.network.LaserColorSwitchPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
-import com.linngdu664.drglaserpointer.registry.NetworkRegister;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class InputEventHandler {
@@ -20,7 +20,7 @@ public class InputEventHandler {
         Player player = minecraft.player;
         ItemStack itemStack = player.getMainHandItem();
         if (itemStack.is(ItemRegister.LASER_POINTER.get()) && player.isShiftKeyDown()) {
-            NetworkRegister.PACKET_HANDLER.sendToServer(new LaserColorSwitchPayload(event.getScrollDelta() > 0));
+            PacketDistributor.SERVER.noArg().send(new LaserColorSwitchPayload(event.getScrollDeltaY() > 0));
             event.setCanceled(true);
         }
     }

@@ -1,11 +1,10 @@
 package com.linngdu664.drglaserpointer.item;
 
+import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
-import com.linngdu664.drglaserpointer.registry.NetworkRegister;
-import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -25,7 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,14 +49,14 @@ public class LaserPointerItem extends Item {
             byte color = itemStack.getOrCreateTag().getByte("LaserColor");
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-                NetworkRegister.PACKET_HANDLER.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color, audioCooldown == 0));
+                PacketDistributor.SERVER.noArg().send(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color, audioCooldown == 0));
                 BlockState blockState = pLevel.getBlockState(blockHitResult.getBlockPos());
                 if (audioCooldown == 0 && (blockState.is(ModTags.Blocks.RICH_BLOCKS) || blockState.is(ModTags.Blocks.MUSHROOMS))) {
                     audioCooldown = 30;
                 }
             } else if (hitResult.getType() == HitResult.Type.ENTITY) {
                 EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-                NetworkRegister.PACKET_HANDLER.sendToServer(new LaserPickEntityPayload(entityHitResult.getLocation(), entityHitResult.getEntity().getId(), color));
+                PacketDistributor.SERVER.noArg().send(new LaserPickEntityPayload(entityHitResult.getLocation(), entityHitResult.getEntity().getId(), color));
             }
         }
         return InteractionResultHolder.pass(itemStack);
