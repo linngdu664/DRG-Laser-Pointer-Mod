@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class CriterionTriggerRegister {
+public class TriggerTypeRegister {
     @SubscribeEvent
     public static void onSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
