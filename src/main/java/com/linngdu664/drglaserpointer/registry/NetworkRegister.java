@@ -19,5 +19,6 @@ public class NetworkRegister {
         registrar.play(LaserPickBlockPayload.ID, LaserPickBlockPayload::new, handler -> handler.server(LaserPickBlockPayload::handleDataInServer));
         registrar.play(LaserPickEntityPayload.ID, LaserPickEntityPayload::new, handler -> handler.server(LaserPickEntityPayload::handleDataInServer));
         registrar.play(LaserPlaySoundPayload.ID, LaserPlaySoundPayload::new, handler -> handler.server(LaserPlaySoundPayload::handleDataInServer));
+        registrar.play(SwitchInventoryPayload.ID, SwitchInventoryPayload::new, SwitchInventoryPayload::handleDataInServer);
     }
 }

@@ -2,8 +2,11 @@ package com.linngdu664.drglaserpointer.event;
 
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.network.LaserColorSwitchPayload;
+import com.linngdu664.drglaserpointer.network.SwitchInventoryPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.registry.KeyMappingRegister;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -11,6 +14,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class InputEventHandler {
@@ -29,6 +33,28 @@ public class InputEventHandler {
     public static void onInteractionKeyMappingTriggered(InputEvent.InteractionKeyMappingTriggered event) {
         if (Minecraft.getInstance().player.getMainHandItem().is(ItemRegister.LASER_POINTER.get()) && event.isAttack()) {
             event.setCanceled(true);
+        }
+    }
+    private static int oldSlot = -1;
+
+    @SubscribeEvent
+    public static void onKeyInput(InputEvent.Key event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen == null && event.getKey() == KeyMappingRegister.SWITCH_TO_LASER_POINTER.getKey().getValue()) {
+            Player player = mc.player;
+            if (event.getAction() == GLFW.GLFW_PRESS && !player.getMainHandItem().is(ItemRegister.LASER_POINTER) && !player.getOffhandItem().is(ItemRegister.LASER_POINTER)) {
+                Inventory inventory = player.getInventory();
+                for (int i = 0, k = inventory.getContainerSize(); i < k; i++) {
+                    ItemStack stack = inventory.getItem(i);
+                    if (stack.is(ItemRegister.LASER_POINTER)) {
+                        oldSlot = i;
+                        PacketDistributor.SERVER.noArg().send(new SwitchInventoryPayload(oldSlot));
+                        return;
+                    }
+                }
+            } else if (event.getAction() == GLFW.GLFW_RELEASE && (player.getMainHandItem().is(ItemRegister.LASER_POINTER) || player.getOffhandItem().is(ItemRegister.LASER_POINTER))) {
+                PacketDistributor.SERVER.noArg().send(new SwitchInventoryPayload(oldSlot));
+            }
         }
     }
 }
