@@ -34,5 +34,6 @@ public class NetworkRegister {
         NetworkRegister.addNetworkMessage(LaserPickBlockPayload.class, LaserPickBlockPayload::encoder, LaserPickBlockPayload::decoder, LaserPickBlockPayload::messageConsumer);
         NetworkRegister.addNetworkMessage(LaserPickEntityPayload.class, LaserPickEntityPayload::encoder, LaserPickEntityPayload::decoder, LaserPickEntityPayload::messageConsumer);
         NetworkRegister.addNetworkMessage(LaserPlaySoundPayload.class, LaserPlaySoundPayload::encoder, LaserPlaySoundPayload::decoder, LaserPlaySoundPayload::messageConsumer);
+        NetworkRegister.addNetworkMessage(SwitchInventoryPayload.class, SwitchInventoryPayload::encoder, SwitchInventoryPayload::decoder,SwitchInventoryPayload::messageConsumer);
     }
 }
