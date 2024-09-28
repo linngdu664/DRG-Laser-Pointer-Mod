@@ -11,5 +11,7 @@
   "advancements.drglaserpointer.were_rich.title": "Nous sommes riches!",
   "advancements.drglaserpointer.were_rich.description": "Oui, oui, vous êtes riches. Veuillez avancer, la direction me surveille de près ici!",
   "advancements.drglaserpointer.mushroom.title": "Champignon!",
-  "advancements.drglaserpointer.mushroom.description": "\"Champignon, champignon\", TAIS-TOI! Retourne au travail!"
+  "advancements.drglaserpointer.mushroom.description": "\"Champignon, champignon\", TAIS-TOI! Retourne au travail!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Changer pour Pointeur Laser"
 }

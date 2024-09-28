@@ -11,5 +11,7 @@
   "advancements.drglaserpointer.were_rich.title": "Jesteśmy bogaci!",
   "advancements.drglaserpointer.were_rich.description": "Tak, tak, jesteś bogaty. Rusz się, zarząd stoi mi nad głową!",
   "advancements.drglaserpointer.mushroom.title": "Grzyb!",
-  "advancements.drglaserpointer.mushroom.description": "\"Grzyb, grzyb\", CISZA! Wracaj do pracy!"
+  "advancements.drglaserpointer.mushroom.description": "\"Grzyb, grzyb\", CISZA! Wracaj do pracy!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Przełącz na wskaźnik laserowy"
 }

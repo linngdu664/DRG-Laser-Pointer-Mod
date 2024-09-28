@@ -11,5 +11,7 @@
   "advancements.drglaserpointer.were_rich.title": "Siamo ricchi!",
   "advancements.drglaserpointer.were_rich.description": "Sì, sì, sei ricco. Per favore, muoviti, ho la gestione che mi sta addosso!",
   "advancements.drglaserpointer.mushroom.title": "Fungo!",
-  "advancements.drglaserpointer.mushroom.description": "\"Fungo, fungo\", BASTA! Torna al lavoro!"
+  "advancements.drglaserpointer.mushroom.description": "\"Fungo, fungo\", BASTA! Torna al lavoro!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Passa al Puntatore Laser"
 }
