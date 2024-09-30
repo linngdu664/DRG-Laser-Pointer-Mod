@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "레이저 포인터",
   "laser_pointer.tooltip": "<%1$s+마우스 스크롤> 색상 전환",
+  "laser_pointer1.tooltip": "<%1$s> 손으로 전환",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s로 표시",

@@ -1,8 +1,9 @@
 {
   "item.drglaserpointer.laser_pointer": "レーザーポインター",
   "laser_pointer.tooltip": "<%1$s+マウススクロール> 色を切り替える",
+  "laser_pointer1.tooltip": "<%1$s> 手に切り替える",
 
-  "tip.drglaserpointer.distance": "%1$s メートル",
+  "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s でマーク",
   "tip.drglaserpointer.item_entity_name": "%1$s (アイテム)",
 

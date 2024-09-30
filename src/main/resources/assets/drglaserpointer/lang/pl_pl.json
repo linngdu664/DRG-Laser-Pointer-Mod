@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Wskaźnik laserowy",
   "laser_pointer.tooltip": "<%1$s+Przewijanie myszką> zmiana koloru",
+  "laser_pointer1.tooltip": "<%1$s> Przełącz na rękę",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s, aby zaznaczyć",

@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Puntatore Laser",
   "laser_pointer.tooltip": "<%1$s+Scorrimento del mouse> cambia colore",
+  "laser_pointer1.tooltip": "<%1$s> Passa alla mano",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s per segnare",

@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "激光指示器",
   "laser_pointer.tooltip": "<%1$s+鼠标滚轮> 切换颜色",
+  "laser_pointer1.tooltip": "<%1$s> 切换到手上",
 
   "tip.drglaserpointer.distance": "%1$s 米",
   "tip.drglaserpointer.mark_key": "按%1$s进行标记",

@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Лазерная указка",
   "laser_pointer.tooltip": "<%1$s+Прокрутка мыши> сменить цвет",
+  "laser_pointer1.tooltip": "<%1$s> Переключиться на руку",
 
   "tip.drglaserpointer.distance": "%1$s м",
   "tip.drglaserpointer.mark_key": "%1$s для отметки",
