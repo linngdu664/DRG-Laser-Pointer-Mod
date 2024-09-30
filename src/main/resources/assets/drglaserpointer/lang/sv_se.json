@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Laserpekare",
   "laser_pointer.tooltip": "<%1$s+Musscroll> byt färg",
+  "laser_pointer1.tooltip": "<%1$s> Byt till hand",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s för att markera",
