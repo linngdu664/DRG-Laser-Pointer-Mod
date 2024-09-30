@@ -4,6 +4,7 @@ import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.registry.KeyMappingRegister;
 import com.linngdu664.drglaserpointer.registry.NetworkRegister;
 import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import net.minecraft.ChatFormatting;
@@ -106,7 +107,8 @@ public class LaserPointerItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("laser_pointer.tooltip", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.DARK_GRAY));
+        pTooltipComponents.add(Component.translatable("laser_pointer.tooltip", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("laser_pointer.tooltip", KeyMappingRegister.SWITCH_TO_LASER_POINTER.getTranslatedKeyMessage()).withStyle(ChatFormatting.GRAY));
     }
 
     public static int getLaserColorARGB(byte laserColor) {

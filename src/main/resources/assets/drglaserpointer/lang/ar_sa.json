@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "مؤشر الليزر",
   "laser_pointer.tooltip": "<%1$s+تمرير الفأرة> لتغيير اللون",
+  "laser_pointer1.tooltip": "<%1$s> التبديل إلى اليد",
 
   "tip.drglaserpointer.distance": "%1$s م",
   "tip.drglaserpointer.mark_key": "%1$s للعلامة",
