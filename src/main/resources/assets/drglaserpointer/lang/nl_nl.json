@@ -1,0 +1,18 @@
+{
+  "item.drglaserpointer.laser_pointer": "Laserpointer",
+  "laser_pointer.tooltip": "<%1$s+Muis Scroll> wissel kleur",
+  "laser_pointer1.tooltip": "<%1$s> Schakel over naar hand",
+
+  "tip.drglaserpointer.distance": "%1$s m",
+  "tip.drglaserpointer.mark_key": "%1$s om te markeren",
+  "tip.drglaserpointer.item_entity_name": "%1$s (Item)",
+
+  "advancements.drglaserpointer.root.title": "Rots en Steen",
+  "advancements.drglaserpointer.root.description": "Rots en Steen",
+  "advancements.drglaserpointer.were_rich.title": "We zijn rijk!",
+  "advancements.drglaserpointer.were_rich.description": "Ja, ja, je bent rijk. Ga alsjeblieft verder, het management zit me op de nek!",
+  "advancements.drglaserpointer.mushroom.title": "Paddenstoel!",
+  "advancements.drglaserpointer.mushroom.description": "\"Paddenstoel, paddenstoel\", HOU JE MOND! Ga aan het werk!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Overschakelen naar Laserpointer"
+}

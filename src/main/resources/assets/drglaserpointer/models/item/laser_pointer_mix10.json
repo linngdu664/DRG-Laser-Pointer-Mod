@@ -1,0 +1,7 @@
+{
+  "parent": "drglaserpointer:item/laser_pointer",
+  "textures": {
+    "laser_light": "drglaserpointer:item/laser_light_red",
+    "screen": "drglaserpointer:item/laser_screen_dark_green"
+  }
+}

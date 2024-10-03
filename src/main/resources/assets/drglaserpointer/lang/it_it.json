@@ -1,0 +1,18 @@
+{
+  "item.drglaserpointer.laser_pointer": "Puntatore Laser",
+  "laser_pointer.tooltip": "<%1$s+Scorrimento del mouse> cambia colore",
+  "laser_pointer1.tooltip": "<%1$s> Passa alla mano",
+
+  "tip.drglaserpointer.distance": "%1$s m",
+  "tip.drglaserpointer.mark_key": "%1$s per segnare",
+  "tip.drglaserpointer.item_entity_name": "%1$s (Oggetto)",
+
+  "advancements.drglaserpointer.root.title": "Roccia e Pietra",
+  "advancements.drglaserpointer.root.description": "Roccia e Pietra",
+  "advancements.drglaserpointer.were_rich.title": "Siamo ricchi!",
+  "advancements.drglaserpointer.were_rich.description": "Sì, sì, sei ricco. Per favore, muoviti, ho la gestione che mi sta addosso!",
+  "advancements.drglaserpointer.mushroom.title": "Fungo!",
+  "advancements.drglaserpointer.mushroom.description": "\"Fungo, fungo\", BASTA! Torna al lavoro!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Passa al Puntatore Laser"
+}
