@@ -105,10 +105,10 @@ public class LaserPointerItem extends Item {
 
     public static int getLaserColorARGB(byte laserColor) {
         return switch (laserColor) {
-            default -> 0xff78e0ff;  // blue
             case 1 -> 0xffff7864;   // red
             case 2 -> 0xffffbc4c;   // yellow
             case 3 -> 0xff78ff78;   // green
+            default -> 0xff78e0ff;  // blue
         };
     }
 }
