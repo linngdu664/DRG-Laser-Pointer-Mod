@@ -16,9 +16,9 @@ public class NetworkRegister {
         registrar.playToServer(LaserPlaySoundPayload.TYPE, LaserPlaySoundPayload.STREAM_CODEC, LaserPlaySoundPayload::handleDataInServer);
         registrar.playToServer(LaserPickEntityPayload.TYPE, LaserPickEntityPayload.STREAM_CODEC, LaserPickEntityPayload::handleDataInServer);
         registrar.playToServer(LaserPickBlockPayload.TYPE, LaserPickBlockPayload.STREAM_CODEC, LaserPickBlockPayload::handleDataInServer);
-
         registrar.playToServer(LaserDistanceUpdatePayload.TYPE, LaserDistanceUpdatePayload.STREAM_CODEC, LaserDistanceUpdatePayload::handleDataInServer);
         registrar.playToServer(LaserDistanceRequestPayload.TYPE, LaserDistanceRequestPayload.STREAM_CODEC, LaserDistanceRequestPayload::handleDataInServer);
         registrar.playToClient(LaserDistanceResponsePayload.TYPE, LaserDistanceResponsePayload.STREAM_CODEC, LaserDistanceResponsePayload::handleDataInClient);
+        registrar.playToServer(SwitchInventoryPayload.TYPE, SwitchInventoryPayload.STREAM_CODEC, SwitchInventoryPayload::handleDataInServer);
     }
 }
