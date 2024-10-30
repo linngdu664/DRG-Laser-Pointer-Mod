@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Laserpointer",
   "laser_pointer.tooltip": "<%1$s+Mausrad> Farbe wechseln",
+  "laser_pointer1.tooltip": "<%1$s> Wechsle zur Hand",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s zum Markieren",
@@ -11,5 +12,7 @@
   "advancements.drglaserpointer.were_rich.title": "Wir sind reich!",
   "advancements.drglaserpointer.were_rich.description": "Ja, ja, ihr seid reich. Bitte macht weiter, das Management sitzt mir im Nacken!",
   "advancements.drglaserpointer.mushroom.title": "Pilz!",
-  "advancements.drglaserpointer.mushroom.description": "\"Pilz, Pilz\", HALT DIE KLAPPE! Zurück an die Arbeit!"
+  "advancements.drglaserpointer.mushroom.description": "\"Pilz, Pilz\", HALT DIE KLAPPE! Zurück an die Arbeit!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Wechsel zum Laserpointer"
 }

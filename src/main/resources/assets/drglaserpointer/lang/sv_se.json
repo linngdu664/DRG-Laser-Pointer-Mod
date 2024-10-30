@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Laserpekare",
   "laser_pointer.tooltip": "<%1$s+Musscroll> byt färg",
+  "laser_pointer1.tooltip": "<%1$s> Byt till hand",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s för att markera",
@@ -11,5 +12,7 @@
   "advancements.drglaserpointer.were_rich.title": "Vi är rika!",
   "advancements.drglaserpointer.were_rich.description": "Ja, ja, du är rik. Var snäll och skynda på, jag har ledningen flåsande i nacken!",
   "advancements.drglaserpointer.mushroom.title": "Svamp!",
-  "advancements.drglaserpointer.mushroom.description": "\"Svamp, svamp\", TYST! Återgå till arbetet!"
+  "advancements.drglaserpointer.mushroom.description": "\"Svamp, svamp\", TYST! Återgå till arbetet!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Byt till laserpekare"
 }

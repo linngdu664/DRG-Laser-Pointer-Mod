@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Лазерная указка",
   "laser_pointer.tooltip": "<%1$s+Прокрутка мыши> сменить цвет",
+  "laser_pointer1.tooltip": "<%1$s> Переключиться на руку",
 
   "tip.drglaserpointer.distance": "%1$s м",
   "tip.drglaserpointer.mark_key": "%1$s для отметки",
@@ -11,5 +12,7 @@
   "advancements.drglaserpointer.were_rich.title": "Мы богаты!",
   "advancements.drglaserpointer.were_rich.description": "Да, да, вы богаты. Пожалуйста, двигайтесь, у меня тут начальство на хвосте!",
   "advancements.drglaserpointer.mushroom.title": "Гриб!",
-  "advancements.drglaserpointer.mushroom.description": "\"Гриб, гриб\", ЗАТКНИСЬ! Возвращайся к работе!"
+  "advancements.drglaserpointer.mushroom.description": "\"Гриб, гриб\", ЗАТКНИСЬ! Возвращайся к работе!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Переключиться на лазерную указку"
 }

@@ -1,6 +1,7 @@
 {
   "item.drglaserpointer.laser_pointer": "Puntero Láser",
   "laser_pointer.tooltip": "<%1$s+Desplazamiento del ratón> cambiar color",
+  "laser_pointer1.tooltip": "<%1$s> Cambiar a mano",
 
   "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s para marcar",
@@ -11,5 +12,7 @@
   "advancements.drglaserpointer.were_rich.title": "¡Somos ricos!",
   "advancements.drglaserpointer.were_rich.description": "Sí, sí, eres rico. Por favor, muévete, ¡tengo a la gerencia respirando en mi cuello aquí!",
   "advancements.drglaserpointer.mushroom.title": "¡Hongo!",
-  "advancements.drglaserpointer.mushroom.description": "\"Hongo, hongo\", ¡CÁLLATE! ¡Vuelve al trabajo!"
+  "advancements.drglaserpointer.mushroom.description": "\"Hongo, hongo\", ¡CÁLLATE! ¡Vuelve al trabajo!",
+
+  "key.laserpointer.switch_to_laser_pointer": "Cambiar a Puntero Láser"
 }

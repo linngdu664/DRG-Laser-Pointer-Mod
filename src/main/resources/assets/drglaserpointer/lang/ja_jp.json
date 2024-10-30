@@ -1,8 +1,9 @@
 {
   "item.drglaserpointer.laser_pointer": "レーザーポインター",
   "laser_pointer.tooltip": "<%1$s+マウススクロール> 色を切り替える",
+  "laser_pointer1.tooltip": "<%1$s> 手に切り替える",
 
-  "tip.drglaserpointer.distance": "%1$s メートル",
+  "tip.drglaserpointer.distance": "%1$s m",
   "tip.drglaserpointer.mark_key": "%1$s でマーク",
   "tip.drglaserpointer.item_entity_name": "%1$s (アイテム)",
 
@@ -11,5 +12,7 @@
   "advancements.drglaserpointer.were_rich.title": "私たちは金持ちだ！",
   "advancements.drglaserpointer.were_rich.description": "そうそう、君は金持ちだ。早く進んでくれ、管理が私の首を絞めているんだ！",
   "advancements.drglaserpointer.mushroom.title": "キノコ！",
-  "advancements.drglaserpointer.mushroom.description": "「キノコ、キノコ」、黙れ！仕事に戻れ！"
+  "advancements.drglaserpointer.mushroom.description": "「キノコ、キノコ」、黙れ！仕事に戻れ！",
+
+  "key.laserpointer.switch_to_laser_pointer": "レーザーポインターに切り替える"
 }
