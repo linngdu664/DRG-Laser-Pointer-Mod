@@ -92,7 +92,7 @@ public class RenderLevelStageEventHandler {
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
+        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)) {
             var bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
             Minecraft mc = Minecraft.getInstance();
