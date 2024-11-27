@@ -86,7 +86,7 @@ public class RenderLevelStageEventHandler {
     private static Vec3 getFirstViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         double d4 = 960.0 / mc.options.fov().get();
-        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.3F).scale(d4);
+        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.56F : 0.56F, -0.36F).scale(d4);
         return player.getEyePosition(partialTick).add(vec3);
     }
 
@@ -159,6 +159,7 @@ public class RenderLevelStageEventHandler {
             if (meshData != null) {
                 RenderSystem.disableCull();
                 RenderSystem.enableBlend();
+                RenderSystem.enableDepthTest();
                 RenderSystem.defaultBlendFunc();
                 VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
                 vertexBuffer.bind();
@@ -169,6 +170,7 @@ public class RenderLevelStageEventHandler {
                 VertexBuffer.unbind();
                 RenderSystem.enableCull();
                 RenderSystem.disableBlend();
+                RenderSystem.disableDepthTest();
             }
         }
     }
