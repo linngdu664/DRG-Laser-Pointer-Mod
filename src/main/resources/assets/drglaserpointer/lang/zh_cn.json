@@ -14,5 +14,6 @@
   "advancements.drglaserpointer.mushroom.title": "蘑菇！",
   "advancements.drglaserpointer.mushroom.description": "专注点，小队！别他娘的蘑菇了！",
 
-  "key.laserpointer.switch_to_laser_pointer": "切换至激光指示器"
+  "key.laserpointer.switch_to_laser_pointer": "切换至激光指示器",
+  "entity.drglaserpointer.laser_pointer_mark": "激光标记"
 }
