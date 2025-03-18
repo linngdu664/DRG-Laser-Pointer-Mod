@@ -77,7 +77,7 @@ public class RenderHandEventHandler {
                 if (hitResult.getType() == HitResult.Type.BLOCK) {
                     BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                     component = level.getBlockState(blockHitResult.getBlockPos()).getBlock().getName();
-                } else if (hitResult.getType() == HitResult.Type.BLOCK) {
+                } else if (hitResult.getType() == HitResult.Type.ENTITY) {
                     EntityHitResult entityHitResult = (EntityHitResult) hitResult;
                     component = entityHitResult.getEntity().getName();
                 }else{
