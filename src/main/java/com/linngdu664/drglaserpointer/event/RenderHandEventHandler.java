@@ -77,9 +77,11 @@ public class RenderHandEventHandler {
                 if (hitResult.getType() == HitResult.Type.BLOCK) {
                     BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                     component = level.getBlockState(blockHitResult.getBlockPos()).getBlock().getName();
-                } else {
+                } else if (hitResult.getType() == HitResult.Type.BLOCK) {
                     EntityHitResult entityHitResult = (EntityHitResult) hitResult;
                     component = entityHitResult.getEntity().getName();
+                }else{
+                    component = Component.literal("unknown");
                 }
                 var splitList = font.split(component, 108);
                 if (splitList.size() == 1) {

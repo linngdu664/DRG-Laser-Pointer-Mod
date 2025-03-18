@@ -72,13 +72,13 @@ public class RenderLevelStageEventHandler {
     private static Vec3 getFirstViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         double d4 = 960.0 / mc.options.fov().get();
-        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.525F : 0.525F, -0.3F).scale(d4);
+        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane().getPointOnPlane(isLeftHand ? -0.56F : 0.56F, -0.36F).scale(d4);
         return player.getEyePosition(partialTick).add(vec3);
     }
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
+        if (event.getStage().equals(RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)) {
             BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
             bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
             float partialTick = event.getPartialTick();
