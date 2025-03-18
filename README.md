@@ -1,4 +1,4 @@
-![](src\main\resources\logo.png)
+![](src/main/resources/logo.png)
 Add the laser pointer from Deep Rock Galactic into Minecraft.
 
 ROCK AND STONE!!!
