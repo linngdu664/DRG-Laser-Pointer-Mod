@@ -10,7 +10,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -81,9 +83,11 @@ public class RenderHandEventHandler {
                 if (hitResult.getType() == HitResult.Type.BLOCK) {
                     BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                     component = level.getBlockState(blockHitResult.getBlockPos()).getBlock().getName();
-                } else {
+                } else if(hitResult.getType() == HitResult.Type.ENTITY) {
                     EntityHitResult entityHitResult = (EntityHitResult) hitResult;
                     component = entityHitResult.getEntity().getName();
+                }else{
+                    component = Component.literal("unknown");
                 }
                 var splitList = font.split(component, 108);
                 if (splitList.size() == 1) {
