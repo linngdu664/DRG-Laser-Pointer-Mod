@@ -19,7 +19,7 @@ public abstract class MinecraftMixin extends ReentrantBlockableEventLoop<Runnabl
 
     @Inject(method = "shouldEntityAppearGlowing", at = @At(value = "HEAD"), cancellable = true)
     private void shouldEntityAppearGlowing(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (ClientTickEventHandler.glowingEntityIds.contains(pEntity.getId())) {
+        if (pEntity != null && ClientTickEventHandler.glowingEntityIds.contains(pEntity.getId())) {
             cir.setReturnValue(true);
         }
     }
