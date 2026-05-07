@@ -22,7 +22,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color, boolean canPlayAudio) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_pick_block"));
+    public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_pick_block"));
     public static final StreamCodec<ByteBuf, LaserPickBlockPayload> STREAM_CODEC = StreamCodec.composite(
             CustomStreamCodecs.VEC3_STREAM_CODEC, LaserPickBlockPayload::location,
             BlockPos.STREAM_CODEC, LaserPickBlockPayload::blockPos,

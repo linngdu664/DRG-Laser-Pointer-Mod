@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public record LaserDistanceRequestPayload(ArrayList<Integer> ids) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserDistanceRequestPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_distance_request"));
+    public static final CustomPacketPayload.Type<LaserDistanceRequestPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_distance_request"));
     public static final StreamCodec<ByteBuf, LaserDistanceRequestPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.VAR_INT), LaserDistanceRequestPayload::ids,
             LaserDistanceRequestPayload::new

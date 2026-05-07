@@ -1,7 +1,8 @@
 package com.linngdu664.drglaserpointer.criterion_trigger;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.EnterBlockTrigger;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;

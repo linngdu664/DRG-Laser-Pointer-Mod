@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserPlaySoundPayload(boolean isOn) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserPlaySoundPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_play_sound"));
+    public static final CustomPacketPayload.Type<LaserPlaySoundPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_play_sound"));
     public static final StreamCodec<ByteBuf, LaserPlaySoundPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, LaserPlaySoundPayload::isOn,
             LaserPlaySoundPayload::new

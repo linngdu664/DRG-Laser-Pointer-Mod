@@ -13,10 +13,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public class InputEventHandler {
     @SubscribeEvent
     public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
@@ -24,7 +24,7 @@ public class InputEventHandler {
         Player player = minecraft.player;
         ItemStack itemStack = player.getMainHandItem();
         if (itemStack.is(ItemRegister.LASER_POINTER) && player.isShiftKeyDown()) {
-            PacketDistributor.sendToServer(new LaserColorSwitchPayload(event.getScrollDeltaY() > 0));
+            ClientPacketDistributor.sendToServer(new LaserColorSwitchPayload(event.getScrollDeltaY() > 0));
             event.setCanceled(true);
         }
     }
@@ -49,12 +49,12 @@ public class InputEventHandler {
                     ItemStack stack = inventory.getItem(i);
                     if (stack.is(ItemRegister.LASER_POINTER)) {
                         oldSlot = i;
-                        PacketDistributor.sendToServer(new SwitchInventoryPayload(oldSlot));
+                        ClientPacketDistributor.sendToServer(new SwitchInventoryPayload(oldSlot));
                         return;
                     }
                 }
             } else if (event.getAction() == GLFW.GLFW_RELEASE && (player.getMainHandItem().is(ItemRegister.LASER_POINTER) || player.getOffhandItem().is(ItemRegister.LASER_POINTER))) {
-                PacketDistributor.sendToServer(new SwitchInventoryPayload(oldSlot));
+                ClientPacketDistributor.sendToServer(new SwitchInventoryPayload(oldSlot));
             }
         }
     }

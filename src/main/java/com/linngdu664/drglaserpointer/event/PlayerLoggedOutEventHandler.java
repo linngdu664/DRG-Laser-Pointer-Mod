@@ -6,7 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Main.MODID)
 public class PlayerLoggedOutEventHandler {
     @SubscribeEvent
     public static void onPlayerLoggedOut(final PlayerEvent.PlayerLoggedOutEvent event) {

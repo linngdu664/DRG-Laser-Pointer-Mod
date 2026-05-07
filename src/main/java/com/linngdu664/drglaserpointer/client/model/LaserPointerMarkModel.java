@@ -12,16 +12,17 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class LaserPointerMarkModel<T extends LaserPointerMarkEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_GREEN = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_green.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_YELLOW = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_yellow.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_EMPTY = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_empty.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_GREEN = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_green.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_YELLOW = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_yellow.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_EMPTY = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_empty.png"), "main");
 	private final ModelPart bone;
 	public ModelPart getBody() {
 		return bone;

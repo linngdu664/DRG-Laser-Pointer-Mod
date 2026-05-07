@@ -18,7 +18,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserPickEntityPayload(Vec3 location, int entityId, byte color) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserPickEntityPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_pick_entity"));
+    public static final CustomPacketPayload.Type<LaserPickEntityPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_pick_entity"));
     public static final StreamCodec<ByteBuf, LaserPickEntityPayload> STREAM_CODEC = StreamCodec.composite(
             CustomStreamCodecs.VEC3_STREAM_CODEC, LaserPickEntityPayload::location,
             ByteBufCodecs.VAR_INT, LaserPickEntityPayload::entityId,

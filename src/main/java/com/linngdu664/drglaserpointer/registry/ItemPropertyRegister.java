@@ -1,24 +1,18 @@
 package com.linngdu664.drglaserpointer.registry;
 
 import com.linngdu664.drglaserpointer.Main;
-import net.minecraft.client.renderer.item.ItemProperties;
+import com.linngdu664.drglaserpointer.client.renderer.item.properties.numeric.LightColor;
+import com.linngdu664.drglaserpointer.client.renderer.item.properties.numeric.ScreenColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 
-@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public class ItemPropertyRegister {
     @SubscribeEvent
-    public static void setupClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ItemProperties.register(ItemRegister.LASER_POINTER.get(), Main.makeResLoc("light_color"), (itemStack, level, livingEntity, num) -> itemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0));
-            ItemProperties.register(ItemRegister.LASER_POINTER.get(), Main.makeResLoc("screen_color"), (itemStack, level, livingEntity, num) -> {
-                if (livingEntity == null) {
-                    return 0;
-                }
-                return itemStack.getOrDefault(DataComponentRegister.SCREEN_COLOR, (byte) 0);
-            });
-        });
+    public static void registerRangeSelectItemModelProperty(RegisterRangeSelectItemModelPropertyEvent event) {
+        event.register(Main.makeMyIdentifier("light_color"), LightColor.MAP_CODEC);
+        event.register(Main.makeMyIdentifier("screen_color"), ScreenColor.MAP_CODEC);
     }
 }

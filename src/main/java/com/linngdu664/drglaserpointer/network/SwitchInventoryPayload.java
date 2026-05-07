@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SwitchInventoryPayload(int slot) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SwitchInventoryPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("switch_inventory"));
+    public static final CustomPacketPayload.Type<SwitchInventoryPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("switch_inventory"));
     public static final StreamCodec<ByteBuf, SwitchInventoryPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SwitchInventoryPayload::slot,
             SwitchInventoryPayload::new
@@ -24,9 +24,9 @@ public record SwitchInventoryPayload(int slot) implements CustomPacketPayload {
             if (payload.slot < 0 || payload.slot >= inventory.getContainerSize()) {
                 return;
             }
-            ItemStack itemStack1 = inventory.getSelected();
+            ItemStack itemStack1 = inventory.getSelectedItem();
             ItemStack itemStack2 = inventory.getItem(payload.slot);
-            inventory.setItem(inventory.selected, itemStack2);
+            inventory.setItem(inventory.getSelectedSlot(), itemStack2);
             inventory.setItem(payload.slot, itemStack1);
         });
     }

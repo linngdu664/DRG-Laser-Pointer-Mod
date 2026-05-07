@@ -22,13 +22,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public class ClientTickEventHandler {
     private static short distance0 = -1;
     private static Item lastMainHandItem = Items.AIR;
@@ -58,16 +58,16 @@ public class ClientTickEventHandler {
 
             // == is safe here
             if (mainHandStack.is(laserPointerItem) && lastMainHandItem != laserPointerItem || offHandStack.is(laserPointerItem) && lastOffHandItem != laserPointerItem) {
-                PacketDistributor.sendToServer(new LaserPlaySoundPayload(true));
+                ClientPacketDistributor.sendToServer(new LaserPlaySoundPayload(true));
                 distance0 = -1;
             } else if (!mainHandStack.is(laserPointerItem) && lastMainHandItem == laserPointerItem || !offHandStack.is(laserPointerItem) && lastOffHandItem == laserPointerItem) {
-                PacketDistributor.sendToServer(new LaserPlaySoundPayload(false));
+                ClientPacketDistributor.sendToServer(new LaserPlaySoundPayload(false));
             }
 
             if (mainHandStack.is(laserPointerItem) || offHandStack.is(laserPointerItem)) {
                 short dis = (short) Math.round(LaserPointerHitHelper.getInstance().getLaserDistance() * 64F);
                 if (distance0 != dis) {
-                    PacketDistributor.sendToServer(new LaserDistanceUpdatePayload(dis));
+                    ClientPacketDistributor.sendToServer(new LaserDistanceUpdatePayload(dis));
                     distance0 = dis;
                 }
             }
@@ -95,7 +95,7 @@ public class ClientTickEventHandler {
                 }
             }
             if (!ids.isEmpty()) {
-                PacketDistributor.sendToServer(new LaserDistanceRequestPayload(ids));
+                ClientPacketDistributor.sendToServer(new LaserDistanceRequestPayload(ids));
             }
         }
     }

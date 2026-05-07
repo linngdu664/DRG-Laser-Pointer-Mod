@@ -6,6 +6,7 @@ import com.linngdu664.drglaserpointer.client.model.LaserPointerMarkModelBall;
 import com.linngdu664.drglaserpointer.client.renderer.entity.LaserPointerMarkRenderer;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.api.distmarker.Dist;
@@ -21,10 +22,10 @@ public class EntityRegister {
     public static final DeferredHolder<EntityType<?>, EntityType<?>> LASER_POINTER_MARK =
             ENTITY_TYPES.register("laser_pointer_mark", () -> EntityType.Builder.of(LaserPointerMarkEntity::new, MobCategory.MISC)
                     .sized(0.0625f, 0.0625f).clientTrackingRange(8).fireImmune()
-                    .build(Main.makeResLoc("laser_pointer_mark").toString()));
+                    .build(ResourceKey.create(ENTITY_TYPES.getRegistryKey(), Main.makeMyIdentifier("laser_pointer_mark"))));
 
 
-    @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
     public static class RendererRegister {
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {

@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public record LaserDistanceUpdatePayload(short distance) implements CustomPacketPayload {
     public static final HashMap<Integer, Short> disMap = new HashMap<>();
-    public static final CustomPacketPayload.Type<LaserDistanceUpdatePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_distance_update"));
+    public static final CustomPacketPayload.Type<LaserDistanceUpdatePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_distance_update"));
     public static final StreamCodec<ByteBuf, LaserDistanceUpdatePayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.SHORT, LaserDistanceUpdatePayload::distance,
             LaserDistanceUpdatePayload::new

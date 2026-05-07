@@ -3,7 +3,7 @@ package com.linngdu664.drglaserpointer;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.config.CommonConfig;
 import com.linngdu664.drglaserpointer.registry.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -14,8 +14,8 @@ import net.neoforged.fml.config.ModConfig;
 public class Main {
     public static final String MODID = "drglaserpointer";
 
-    public static ResourceLocation makeResLoc(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier makeMyIdentifier(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
     public Main(IEventBus modEventBus, ModContainer modContainer) {

@@ -1,10 +1,11 @@
 package com.linngdu664.drglaserpointer.entity;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,8 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -41,10 +43,10 @@ public class LaserPointerMarkEntity extends Entity {
             entityData.set(OWNER_NAME, owner.getName().getString());
             entityData.set(TARGET_ENTITY_ID, entityId);
             if (entity instanceof LivingEntity) {
-                moveTo(entity.position());
+                moveOrInterpolateTo(entity.position());
             } else {
                 entityData.set(COLOR, color);
-                moveTo(location);
+                moveOrInterpolateTo(location);
             }
         }
     }
@@ -54,7 +56,7 @@ public class LaserPointerMarkEntity extends Entity {
         entityData.set(OWNER_NAME, owner.getName().getString());
         entityData.set(TARGET_BLOCK_STATE, blockState);
         entityData.set(COLOR, color);
-        moveTo(location);
+        moveOrInterpolateTo(location);
     }
 
     @Override
@@ -66,28 +68,26 @@ public class LaserPointerMarkEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        entityData.set(OWNER_NAME, compoundTag.getString("OwnerName"));
-        if (compoundTag.hasUUID("TargetEntity")) {
-            targetEntityUuid = compoundTag.getUUID("TargetEntity");
-        }
-        ItemStack stack = ItemStack.parseOptional(registryAccess(), compoundTag.getCompound("TargetBlockItemStack"));
+    protected void readAdditionalSaveData(ValueInput valueInput) {
+        entityData.set(OWNER_NAME, valueInput.getStringOr("OwnerName", ""));
+        valueInput.read("TargetEntity", UUIDUtil.CODEC).ifPresent(value -> targetEntityUuid = value);
+        ItemStack stack = valueInput.read("TargetBlockItemStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
         if (stack.getItem() instanceof BlockItem blockItem) {
             entityData.set(TARGET_BLOCK_STATE, blockItem.getBlock().defaultBlockState());
         }
-        entityData.set(COLOR, compoundTag.getByte("Color"));
-        timer = compoundTag.getInt("Timer");
+        entityData.set(COLOR, (byte) valueInput.getIntOr("Color", 0));
+        timer = valueInput.getIntOr("Timer", 0);
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        compoundTag.putString("OwnerName", entityData.get(OWNER_NAME));
+    protected void addAdditionalSaveData(ValueOutput valueOutput) {
+        valueOutput.putString("OwnerName", entityData.get(OWNER_NAME));
         if (targetEntityUuid != null) {
-            compoundTag.putUUID("TargetEntity", targetEntityUuid);
+            valueOutput.store("TargetEntity", UUIDUtil.CODEC, targetEntityUuid);
         }
-        compoundTag.put("TargetBlockItemStack", entityData.get(TARGET_BLOCK_STATE).getBlock().asItem().getDefaultInstance().saveOptional(registryAccess()));
-        compoundTag.putInt("Color", entityData.get(COLOR));
-        compoundTag.putInt("Timer", timer);
+        valueOutput.storeNullable("TargetBlockItemStack", ItemStack.CODEC, entityData.get(TARGET_BLOCK_STATE).getBlock().asItem().getDefaultInstance());
+        valueOutput.putInt("Color", entityData.get(COLOR));
+        valueOutput.putInt("Timer", timer);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class LaserPointerMarkEntity extends Entity {
             }
             if (targetEntityUuid != null) {
                 if (entityData.get(TARGET_ENTITY_ID) == -1) {
-                    Entity entity = ((ServerLevel) level).getEntity(targetEntityUuid);
+                    Entity entity = level.getEntity(targetEntityUuid);
                     if (entity == null || entity.isRemoved()) {
                         discard();
                         return;
@@ -114,11 +114,16 @@ public class LaserPointerMarkEntity extends Entity {
                     return;
                 }
                 if (entity instanceof LivingEntity livingEntity) {
-                    moveTo(livingEntity.position());
+                    moveOrInterpolateTo(livingEntity.position());
                 }
             }
             timer++;
         }
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float v) {
+        return false;
     }
 
     @Override

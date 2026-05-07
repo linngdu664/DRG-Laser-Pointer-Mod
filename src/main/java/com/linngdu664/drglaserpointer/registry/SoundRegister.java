@@ -17,6 +17,6 @@ public class SoundRegister {
     public static final DeferredHolder<SoundEvent, SoundEvent> WERE_RICH = registerHelper("were_rich");
 
     public static DeferredHolder<SoundEvent, SoundEvent> registerHelper(String name) {
-        return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(Main.makeResLoc(name)));
+        return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(Main.makeMyIdentifier(name)));
     }
 }

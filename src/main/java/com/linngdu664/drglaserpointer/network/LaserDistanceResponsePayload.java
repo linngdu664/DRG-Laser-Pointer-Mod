@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public record LaserDistanceResponsePayload(ArrayList<Pair<Integer, Short>> disList) implements CustomPacketPayload {
     public static final HashMap<Integer, Short> clientDisMap = new HashMap<>();
-    public static final CustomPacketPayload.Type<LaserDistanceResponsePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeResLoc("laser_distance_response"));
+    public static final CustomPacketPayload.Type<LaserDistanceResponsePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_distance_response"));
     public static final StreamCodec<ByteBuf, LaserDistanceResponsePayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, CustomStreamCodecs.IS_PAIR_STREAM_CODEC), LaserDistanceResponsePayload::disList,
             LaserDistanceResponsePayload::new
