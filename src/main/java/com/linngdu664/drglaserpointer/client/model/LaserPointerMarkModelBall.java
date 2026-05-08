@@ -3,31 +3,31 @@ package com.linngdu664.drglaserpointer.client.model;// Made with Blockbench 4.10
 // Paste this class into your mod and generate all required imports
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.linngdu664.drglaserpointer.client.renderer.entity.state.LaserPointerMarkRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("unused")
-public class LaserPointerMarkModelBall<T extends LaserPointerMarkEntity> extends EntityModel<T> {
+public class LaserPointerMarkModelBall extends EntityModel<LaserPointerMarkRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_GREEN = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_green.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_YELLOW = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_yellow.png"), "main");
-	public static final ModelLayerLocation LAYER_LOCATION_EMPTY = new ModelLayerLocation(ResourceLocation.tryBuild(Main.MODID, "textures/models/laser_pointer_label_empty.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_GREEN = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_green.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_YELLOW = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_yellow.png"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_EMPTY = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_empty.png"), "main");
+
 	private final ModelPart ball;
 
 	public ModelPart getBody() {
 		return ball;
 	}
+
 	public LaserPointerMarkModelBall(ModelPart root) {
+		super(root);
 		this.ball = root.getChild("ball");
 	}
 
@@ -1523,12 +1523,12 @@ public class LaserPointerMarkModelBall<T extends LaserPointerMarkEntity> extends
 	}
 
 	@Override
-	public void setupAnim(@NotNull T t, float v, float v1, float v2, float v3, float v4) {
+	public void setupAnim(LaserPointerMarkRenderState state) {
 
 	}
 
-	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
-		ball.render(poseStack, vertexConsumer, i, i1, i2);
-	}
+//	@Override
+//	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
+//		ball.render(poseStack, vertexConsumer, i, i1, i2);
+//	}
 }

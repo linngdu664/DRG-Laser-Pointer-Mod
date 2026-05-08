@@ -3,15 +3,18 @@ package com.linngdu664.drglaserpointer.event;
 import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
+import com.linngdu664.drglaserpointer.item.LaserPointerItem;
 import com.linngdu664.drglaserpointer.network.LaserDistanceRequestPayload;
 import com.linngdu664.drglaserpointer.network.LaserDistanceUpdatePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
+import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
 import com.linngdu664.drglaserpointer.registry.ItemRegister;
 import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +41,7 @@ public class ClientTickEventHandler {
     public static HashSet<Integer> glowingEntityIds = new HashSet<>();
 
     @SubscribeEvent
-    public static void onTick(ClientTickEvent.Pre event) {
+    public static void onPreTick(ClientTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player != null) {
@@ -97,6 +100,28 @@ public class ClientTickEventHandler {
             if (!ids.isEmpty()) {
                 ClientPacketDistributor.sendToServer(new LaserDistanceRequestPayload(ids));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPostTick(ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) {
+            return;
+        }
+        Inventory inventory = player.getInventory();
+        int size = inventory.getContainerSize();
+        int selectedSlot = inventory.getSelectedSlot();
+        for (int i = 0; i < size; i++) {
+            ItemStack itemStack = inventory.getItem(i);
+            // 40 = offhand
+            if (itemStack.is(ItemRegister.LASER_POINTER.get()) && i != selectedSlot && i != 40) {
+                itemStack.set(DataComponentRegister.SCREEN_COLOR, (byte) 0);
+            }
+        }
+        if (LaserPointerItem.audioCooldown > 0) {
+            LaserPointerItem.audioCooldown--;
         }
     }
 }

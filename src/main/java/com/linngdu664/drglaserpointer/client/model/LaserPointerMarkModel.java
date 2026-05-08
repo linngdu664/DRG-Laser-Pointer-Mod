@@ -4,19 +4,15 @@ package com.linngdu664.drglaserpointer.client.model;// Made with Blockbench 4.10
 
 
 import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.linngdu664.drglaserpointer.client.renderer.entity.state.LaserPointerMarkRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
-public class LaserPointerMarkModel<T extends LaserPointerMarkEntity> extends EntityModel<T> {
+public class LaserPointerMarkModel extends EntityModel<LaserPointerMarkRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION_BLUE = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_blue.png"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_RED = new ModelLayerLocation(Identifier.tryBuild(Main.MODID, "textures/models/laser_pointer_label_red.png"), "main");
@@ -29,6 +25,7 @@ public class LaserPointerMarkModel<T extends LaserPointerMarkEntity> extends Ent
 	}
 
 	public LaserPointerMarkModel(ModelPart root) {
+		super(root);
 		this.bone = root.getChild("bone");
 	}
 
@@ -43,12 +40,12 @@ public class LaserPointerMarkModel<T extends LaserPointerMarkEntity> extends Ent
 	}
 
 	@Override
-	public void setupAnim(@NotNull T t, float v, float v1, float v2, float v3, float v4) {
+	public void setupAnim(LaserPointerMarkRenderState state) {
 
 	}
 
-	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
-		bone.render(poseStack, vertexConsumer, i, i1, i2);
-	}
+//	@Override
+//	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
+//		bone.render(poseStack, vertexConsumer, i, i1, i2);
+//	}
 }

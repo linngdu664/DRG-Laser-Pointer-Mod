@@ -7,6 +7,7 @@ import com.linngdu664.drglaserpointer.client.renderer.entity.LaserPointerMarkRen
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.api.distmarker.Dist;
@@ -29,7 +30,7 @@ public class EntityRegister {
     public static class RendererRegister {
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(LASER_POINTER_MARK.get(), LaserPointerMarkRenderer::new);
+            event.registerEntityRenderer((EntityType<LaserPointerMarkEntity>) LASER_POINTER_MARK.get(), LaserPointerMarkRenderer::new);
         }
 
         @SubscribeEvent

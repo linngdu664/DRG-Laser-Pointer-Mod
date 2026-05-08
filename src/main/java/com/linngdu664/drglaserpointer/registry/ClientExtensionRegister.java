@@ -13,7 +13,7 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import org.jspecify.annotations.NonNull;
 
 @EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
-public class ClientExtensionsRegister {
+public class ClientExtensionRegister {
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {

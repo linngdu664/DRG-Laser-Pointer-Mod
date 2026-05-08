@@ -7,12 +7,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -32,7 +32,7 @@ import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-@EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public class RenderHandEventHandler {
     public static Quaternionf Y_AXIS_180 = new Quaternionf(new AxisAngle4f(Mth.PI, 0, 1, 0));
 
@@ -44,29 +44,34 @@ public class RenderHandEventHandler {
             Player player = mc.player;
             Font font = mc.font;
             PoseStack poseStack = event.getPoseStack();
-            MultiBufferSource bufferSource = event.getMultiBufferSource();
             boolean isLeftHand = event.getHand() == InteractionHand.MAIN_HAND && player.getMainArm() == HumanoidArm.LEFT
                     || event.getHand() == InteractionHand.OFF_HAND && player.getMainArm() == HumanoidArm.RIGHT;
             HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
             if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                 ItemStack itemStack = level.getBlockState(blockHitResult.getBlockPos()).getBlock().asItem().getDefaultInstance();
-                ItemRenderer itemRenderer = mc.getItemRenderer();
+                ItemModelResolver resolver = mc.getItemModelResolver();
+                ItemStackRenderState state = new ItemStackRenderState();
+                SubmitNodeCollector collector = event.getSubmitNodeCollector();
+                resolver.updateForTopItem(state, itemStack, ItemDisplayContext.GUI, level, null, 0);
                 poseStack.pushPose();
                 poseStack.pushPose();
                 poseStack.translate(isLeftHand ? -0.437f : 0.437f, -0.155f, -0.74f);
                 poseStack.scale(0.05f, 0.05f, 0.05f);
 //                poseStack.mulPose(new Quaternionf(new AxisAngle4f(-0.4f, 0f, 1f, 0f)));
 //                poseStack.mulPose(new Quaternionf(new AxisAngle4f(-0.15f, 1f, 0f, 0f)));
-                itemRenderer.renderStatic(itemStack, ItemDisplayContext.GUI, 15728880, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, level, 0);
+                state.submit(poseStack, collector, 15728880, OverlayTexture.NO_OVERLAY, 0);
+
                 poseStack.popPose();
                 poseStack.translate(isLeftHand ? -0.67f : 0.67f, -0.155f, -0.74f);
                 poseStack.scale(0.05f, 0.05f, 0.05f);
 //                poseStack.mulPose(new Quaternionf(new AxisAngle4f(-0.58f, 0f, 1f, 0f)));
 //                poseStack.mulPose(new Quaternionf(new AxisAngle4f(-0.15f, 1f, 0f, 0f)));
-                itemRenderer.renderStatic(itemStack, ItemDisplayContext.GUI, 15728880, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, level, 0);
+                state.submit(poseStack, collector, 15728880, OverlayTexture.NO_OVERLAY, 0);
                 poseStack.popPose();
             }
+            MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+
             poseStack.pushPose();
             poseStack.translate(isLeftHand ? -0.56f : 0.56f, -0.205f, -0.75f);
             poseStack.scale(-0.0035f, -0.0035f, -0.0035f);
@@ -86,7 +91,7 @@ public class RenderHandEventHandler {
                 } else if(hitResult.getType() == HitResult.Type.ENTITY) {
                     EntityHitResult entityHitResult = (EntityHitResult) hitResult;
                     component = entityHitResult.getEntity().getName();
-                }else{
+                } else {
                     component = Component.literal("unknown");
                 }
                 var splitList = font.split(component, 108);

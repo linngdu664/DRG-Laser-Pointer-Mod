@@ -1,5 +1,6 @@
 package com.linngdu664.drglaserpointer.item;
 
+import com.linngdu664.drglaserpointer.Main;
 import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
@@ -9,7 +10,9 @@ import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import com.linngdu664.drglaserpointer.registry.KeyMappingRegister;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,10 +38,11 @@ import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 public class LaserPointerItem extends Item {
-    int audioCooldown = 0;      // client only
+    public static int audioCooldown = 0;      // client only
 
     public LaserPointerItem() {
         super(new Properties()
+                .setId(ResourceKey.create(Registries.ITEM, Main.makeMyIdentifier("laser_pointer")))
                 .stacksTo(1)
                 .component(DataComponentRegister.LASER_COLOR, (byte) 0)
                 .component(DataComponentRegister.SCREEN_COLOR, (byte) 0));
@@ -67,6 +71,7 @@ public class LaserPointerItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(Level level, Player player, InteractionHand hand) {
+        System.out.println("use client side: " + level.isClientSide());
         ItemStack itemStack = player.getItemInHand(hand);
         if (level.isClientSide() && (hand == InteractionHand.MAIN_HAND || !player.getMainHandItem().is(ItemRegister.LASER_POINTER))) {
             HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
@@ -85,6 +90,8 @@ public class LaserPointerItem extends Item {
         }
         return InteractionResult.PASS;
     }
+
+    // inventoryTick was moved to ClientTickEvent.Post
     /*
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
@@ -97,9 +104,10 @@ public class LaserPointerItem extends Item {
             }
         }
     }*/
-
+/*
     @Override
     public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+        System.out.println("inventoryTick client side: " + level.isClientSide());
         if (level.isClientSide()) {
             if (slot == null) {
                 itemStack.set(DataComponentRegister.SCREEN_COLOR, (byte) 0);
@@ -107,8 +115,9 @@ public class LaserPointerItem extends Item {
             if (audioCooldown > 0) {
                 audioCooldown--;
             }
+            System.out.println(audioCooldown);
         }
-    }
+    }*/
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {

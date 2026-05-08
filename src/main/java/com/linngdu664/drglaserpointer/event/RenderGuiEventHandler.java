@@ -5,11 +5,10 @@ import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.client.util.GuiUtil;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -57,21 +56,23 @@ public class RenderGuiEventHandler {
         }
         GameRenderer gameRenderer = mc.gameRenderer;
         Camera camera = gameRenderer.getMainCamera();
-        Vec3 cameraPos = camera.getPosition();
+        Vec3 cameraPos = camera.position();
         Matrix3f rotMat = new Matrix3f().rotation(camera.rotation().conjugate(new Quaternionf()));      // make rot mat
         Window window = mc.getWindow();
-        float fovy = (float) gameRenderer.getFov(camera, event.getPartialTick().getGameTimeDeltaPartialTick(true), true) * Mth.DEG_TO_RAD;
+        float fovy = camera.getFov() * Mth.DEG_TO_RAD;
+//        float fovy = (float) gameRenderer.getFov(camera, event.getPartialTick().getGameTimeDeltaPartialTick(true), true) * Mth.DEG_TO_RAD;
         float tanHalfFovy = Mth.sin(fovy * 0.5F) / Mth.cos(fovy * 0.5F);
         float tanHalfFovx = tanHalfFovy * (float) window.getWidth() / (float) window.getHeight();
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        poseStack.translate(0F, 0F, 4901F);
+        GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
+        poseStack.pushMatrix();
+//        poseStack.pushPose();
+//        poseStack.translate(0F, 0F, 4901F);
         int guiWidth, guiHeight;
         float guiScale = (float) window.getGuiScale();
         if (guiScale > 3F) {
             float factor = 3F / guiScale;
-            poseStack.scale(factor, factor, factor);
+            poseStack.scale(factor, factor);
             guiWidth = Math.round((float) window.getWidth() / 3F);
             guiHeight = Math.round((float) window.getHeight() / 3F);
         } else {
@@ -88,17 +89,17 @@ public class RenderGuiEventHandler {
             FormattedText distanceText;
             List<FormattedCharSequence> targetTextList;
             ItemStack blockItemStack = null;
-            ResourceLocation entityIconLocation = null;
+            Identifier entityIconIdentifier = null;
             Vector3f labelPos;
             Vector3f realPos;
             Entity entity = level.getEntity(markEntity.getTargetEntityId());
             if (entity != null) {
                 if (entity instanceof LivingEntity) {
-                    ResourceLocation resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
-                    if (resourceLocation.getNamespace().equals("minecraft") && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
-                        entityIconLocation = Main.makeMyIdentifier("textures/gui/face/" + resourceLocation.getPath() + "_face.png");
+                    Identifier identifier = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+                    if (identifier.getNamespace().equals("minecraft") && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
+                        entityIconIdentifier = Main.makeMyIdentifier("textures/gui/face/" + identifier.getPath() + "_face.png");
                     } else {
-                        entityIconLocation = Main.makeMyIdentifier("textures/gui/face/unknown.png");
+                        entityIconIdentifier = Main.makeMyIdentifier("textures/gui/face/unknown.png");
                     }
                     targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", entity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
@@ -111,7 +112,7 @@ public class RenderGuiEventHandler {
                         blockItemStack = itemEntity.getItem();
                         targetTextList = font.split(Component.translatable("tip.drglaserpointer.item_entity_name", entity.getName()), MAX_TARGET_NAME_WIDTH);
                     } else {
-                        entityIconLocation = Main.makeMyIdentifier("textures/gui/face/unknown.png");
+                        entityIconIdentifier = Main.makeMyIdentifier("textures/gui/face/unknown.png");
                         targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     }
                     distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", markEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
@@ -165,27 +166,47 @@ public class RenderGuiEventHandler {
                 GuiUtil.blit(guiGraphics,DOWN_ICON, xScreen - 2, yScreen + LABEL_HEIGHT / 2 + 4, 0, 0, 4, 4, 4, 4);
             }
             if (blockItemStack == null) {
-                GuiUtil.blit(guiGraphics,entityIconLocation, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
+                GuiUtil.blit(guiGraphics,entityIconIdentifier, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
             } else {
-                GuiUtil.renderItem(guiGraphics,blockItemStack, xScreen - refWidth / 2, yScreen - 8);
+//                GuiUtil.renderItem(guiGraphics,blockItemStack, xScreen - refWidth / 2, yScreen - 8);
+                float transX = xScreen - refWidth / 2;
+                poseStack.translate(transX, yScreen);
+                guiGraphics.item(blockItemStack, 0, -8);
+                poseStack.translate(-transX, -yScreen);
             }
             float targetTextCenterX = xScreen + (refWidth - ICON_WIDTH_WITH_MARGIN) / 2 - (refWidth / 2 - ICON_WIDTH_WITH_MARGIN);
             if (targetTextLine1 != null) {
+                float transX = targetTextCenterX - font.width(targetTextLine1) * 0.5F;
+                poseStack.translate(transX, yScreen);
                 if (targetTextLine2 != null) {
-                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) * 0.5F, yScreen - 9, 0xffc1bd93, false);
-                    guiGraphics.drawString(font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) * 0.5F, yScreen, 0xffc1bd93, false);
+//                    GuiUtil.drawString(guiGraphics, font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) * 0.5F, yScreen - 9, 0xffc1bd93, false);
+//                    GuiUtil.drawString(guiGraphics, font, targetTextLine2, targetTextCenterX - font.width(targetTextLine2) * 0.5F, yScreen, 0xffc1bd93, false);
+                    guiGraphics.text(font, targetTextLine1, 0, -9, 0xffc1bd93, false);
+                    float transX2 = (targetTextCenterX - font.width(targetTextLine2) * 0.5F) - transX;
+                    poseStack.translate(transX2, 0);
+                    guiGraphics.text(font, targetTextLine2, 0, 0, 0xffc1bd93, false);
+                    poseStack.translate(-transX - transX2, -yScreen);
                 } else {
-                    guiGraphics.drawString(font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) * 0.5F, yScreen - 4, 0xffc1bd93, false);
+//                    GuiUtil.drawString(guiGraphics, font, targetTextLine1, targetTextCenterX - font.width(targetTextLine1) * 0.5F, yScreen - 4, 0xffc1bd93, false);
+                    guiGraphics.text(font, targetTextLine1, 0, -4, 0xffc1bd93, false);
+                    poseStack.translate(-transX, -yScreen);
                 }
             }
-            poseStack.pushPose();
-            poseStack.scale(0.8F, 0.8F, 0.8F);
+//            poseStack.pushPose();
+            poseStack.pushMatrix();
+            poseStack.scale(0.8F, 0.8F);
+//            poseStack.scale(0.8F, 0.8F, 0.8F);
             xScreen = xScreen * 1.25F;
             yScreen = yScreen * 1.25F;
-            GuiUtil.drawCenteredString(guiGraphics,font, (Component) playerText, xScreen, yScreen - 24, 0xffc1bd93);
-            GuiUtil.drawCenteredString(guiGraphics,font, (Component) distanceText, xScreen, yScreen + 17, 0xffc1bd93);
-            poseStack.popPose();
+//            GuiUtil.drawCenteredString(guiGraphics,font, (Component) playerText, xScreen, yScreen - 24, 0xffc1bd93);
+//            GuiUtil.drawCenteredString(guiGraphics,font, (Component) distanceText, xScreen, yScreen + 17, 0xffc1bd93);
+            poseStack.translate(xScreen, yScreen);
+            guiGraphics.centeredText(font, (Component) playerText, 0, -24, 0xffc1bd93);
+            guiGraphics.centeredText(font, (Component) distanceText, 0, 17, 0xffc1bd93);
+//            poseStack.popPose();
+            poseStack.popMatrix();
         }
-        poseStack.popPose();
+//        poseStack.popPose();
+        poseStack.popMatrix();
     }
 }
