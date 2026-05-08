@@ -43,9 +43,4 @@ public class LaserPointerMarkModel extends EntityModel<LaserPointerMarkRenderSta
 	public void setupAnim(LaserPointerMarkRenderState state) {
 
 	}
-
-//	@Override
-//	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
-//		bone.render(poseStack, vertexConsumer, i, i1, i2);
-//	}
 }

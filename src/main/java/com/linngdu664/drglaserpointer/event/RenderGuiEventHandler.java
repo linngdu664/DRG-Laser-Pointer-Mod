@@ -157,16 +157,16 @@ public class RenderGuiEventHandler {
             GuiUtil.hLine(guiGraphics,xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen - 12, 0xffc1bd93);
             GuiUtil.hLine(guiGraphics,xScreen + refWidth / 2, xScreen + refWidth / 2 + 2, yScreen + 11, 0xffc1bd93);
             if (labelPos.z >= 0 && labelPos.x < 0 || labelPos.z < 0 && rx < -1) {
-                GuiUtil.blit(guiGraphics,LEFT_ICON, xScreen - refWidth / 2 - 9, yScreen - 2, 0, 0, 4, 4, 4, 4);
+                GuiUtil.blitXyuvwh(guiGraphics, LEFT_ICON, xScreen - refWidth / 2 - 9, yScreen - 2, 0, 0, 4, 4, 4, 4);
             } else if (labelPos.z >= 0 && labelPos.x >= 0 || labelPos.z < 0 && rx > 1) {
-                GuiUtil.blit(guiGraphics,RIGHT_ICON, xScreen + refWidth / 2 + 5, yScreen - 2, 0, 0,  4, 4, 4, 4);
+                GuiUtil.blitXyuvwh(guiGraphics, RIGHT_ICON, xScreen + refWidth / 2 + 5, yScreen - 2, 0, 0, 4, 4, 4, 4);
             } else if (ry1 > 1) {
-                GuiUtil.blit(guiGraphics,UP_ICON, xScreen - 2, yScreen - LABEL_HEIGHT / 2 - 6, 0, 0, 4, 4, 4, 4);
+                GuiUtil.blitXyuvwh(guiGraphics, UP_ICON, xScreen - 2, yScreen - LABEL_HEIGHT / 2 - 6, 0, 0, 4, 4, 4, 4);
             } else if (ry1 < -1) {
-                GuiUtil.blit(guiGraphics,DOWN_ICON, xScreen - 2, yScreen + LABEL_HEIGHT / 2 + 4, 0, 0, 4, 4, 4, 4);
+                GuiUtil.blitXyuvwh(guiGraphics, DOWN_ICON, xScreen - 2, yScreen + LABEL_HEIGHT / 2 + 4, 0, 0, 4, 4, 4, 4);
             }
             if (blockItemStack == null) {
-                GuiUtil.blit(guiGraphics,entityIconIdentifier, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
+                GuiUtil.blitXyuvwh(guiGraphics, entityIconIdentifier, xScreen - refWidth / 2, yScreen - 8, 0, 0, 16, 16, 16, 16);
             } else {
 //                GuiUtil.renderItem(guiGraphics,blockItemStack, xScreen - refWidth / 2, yScreen - 8);
                 float transX = xScreen - refWidth / 2;

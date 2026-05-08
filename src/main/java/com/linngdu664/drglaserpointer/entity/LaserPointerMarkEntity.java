@@ -85,7 +85,10 @@ public class LaserPointerMarkEntity extends Entity {
         if (targetEntityUuid != null) {
             valueOutput.store("TargetEntity", UUIDUtil.CODEC, targetEntityUuid);
         }
-        valueOutput.storeNullable("TargetBlockItemStack", ItemStack.CODEC, entityData.get(TARGET_BLOCK_STATE).getBlock().asItem().getDefaultInstance());
+        BlockState bs = entityData.get(TARGET_BLOCK_STATE);
+        if (!bs.isAir()) {
+            valueOutput.storeNullable("TargetBlockItemStack", ItemStack.CODEC, bs.getBlock().asItem().getDefaultInstance());
+        }
         valueOutput.putInt("Color", entityData.get(COLOR));
         valueOutput.putInt("Timer", timer);
     }

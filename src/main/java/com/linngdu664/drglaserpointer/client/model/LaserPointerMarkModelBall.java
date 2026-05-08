@@ -1526,9 +1526,4 @@ public class LaserPointerMarkModelBall extends EntityModel<LaserPointerMarkRende
 	public void setupAnim(LaserPointerMarkRenderState state) {
 
 	}
-
-//	@Override
-//	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int i, int i1, int i2) {
-//		ball.render(poseStack, vertexConsumer, i, i1, i2);
-//	}
 }

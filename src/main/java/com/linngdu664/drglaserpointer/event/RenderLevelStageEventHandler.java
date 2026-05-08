@@ -9,6 +9,7 @@ import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import com.linngdu664.drglaserpointer.registry.RenderPipelineRegistry;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -30,7 +31,7 @@ import java.util.*;
 
 @EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public class RenderLevelStageEventHandler {
-    public static final RenderType MY_OVERLAY_TYPE = RenderType.create(
+    public static final RenderType LASER_RENDER_TYPE = RenderType.create(
             Main.makeMyIdentifier("laser").toString(),
             RenderSetup.builder(RenderPipelineRegistry.LASER_PIPELINE)
                     .bufferSize(4096)
@@ -101,7 +102,8 @@ public class RenderLevelStageEventHandler {
     public static void onRenderLevel(RenderLevelStageEvent.AfterTranslucentBlocks event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        if (player == null) {
+        ClientLevel level = mc.level;
+        if (player == null || level == null) {
             return;
         }
         ItemStack mainHandItemStack = player.getMainHandItem();
@@ -110,7 +112,7 @@ public class RenderLevelStageEventHandler {
         Vec3 camPos = mc.gameRenderer.getMainCamera().position();
         float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
         MultiBufferSource.BufferSource source = mc.renderBuffers().bufferSource();
-        VertexConsumer consumer = source.getBuffer(MY_OVERLAY_TYPE);
+        VertexConsumer consumer = source.getBuffer(LASER_RENDER_TYPE);
 
         if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR && (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer))) {
             LaserPointerHitHelper helper = LaserPointerHitHelper.getInstance();
@@ -144,7 +146,7 @@ public class RenderLevelStageEventHandler {
             }
         }
 
-        List<AbstractClientPlayer> playerList = mc.level.players();
+        List<AbstractClientPlayer> playerList = level.players();
         AABB aabb = player.getBoundingBox().inflate(LaserPointerHitHelper.LASER_RANGE);
         for (AbstractClientPlayer p : playerList) {
             if (aabb.contains(p.getPosition(partialTick)) && !p.isSpectator() && (p.getMainHandItem().is(laserPointer) || p.getOffhandItem().is(laserPointer)) && !p.equals(player)) {
@@ -165,10 +167,11 @@ public class RenderLevelStageEventHandler {
             }
         }
 
+        // todo 记得移除测试代码
         addLaser(consumer, camPos, new Vec3(0.5, 72.5, 0.5), new Vec3(64.5, 72.5, 0.5), 0xff78e0ff);
         addLaser(consumer, camPos, new Vec3(0.5, 72.5, 1.5), new Vec3(64.5, 72.5, 1.5), 0xffff7864);
         addLaser(consumer, camPos, new Vec3(0.5, 72.5, 2.5), new Vec3(64.5, 72.5, 2.5), 0xffffbc4c);
         addLaser(consumer, camPos, new Vec3(0.5, 72.5, 3.5), new Vec3(64.5, 72.5, 3.5), 0xff78ff78);
-        source.endBatch(MY_OVERLAY_TYPE);
+        source.endBatch(LASER_RENDER_TYPE);
     }
 }

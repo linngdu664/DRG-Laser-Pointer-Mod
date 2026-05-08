@@ -71,7 +71,6 @@ public class LaserPointerItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(Level level, Player player, InteractionHand hand) {
-        System.out.println("use client side: " + level.isClientSide());
         ItemStack itemStack = player.getItemInHand(hand);
         if (level.isClientSide() && (hand == InteractionHand.MAIN_HAND || !player.getMainHandItem().is(ItemRegister.LASER_POINTER))) {
             HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
