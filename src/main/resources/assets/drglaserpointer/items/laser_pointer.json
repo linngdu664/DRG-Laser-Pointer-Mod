@@ -1,0 +1,156 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "drglaserpointer:light_color",
+    "entries": [
+      {
+        "threshold": 0,
+        "model": {
+          "type": "minecraft:range_dispatch",
+          "property": "drglaserpointer:screen_color",
+          "entries": [
+            {
+              "threshold": 0,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix00"
+              }
+            },
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix01"
+              }
+            },
+            {
+              "threshold": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix02"
+              }
+            },
+            {
+              "threshold": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix03"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:range_dispatch",
+          "property": "drglaserpointer:screen_color",
+          "entries": [
+            {
+              "threshold": 0,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix10"
+              }
+            },
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix11"
+              }
+            },
+            {
+              "threshold": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix12"
+              }
+            },
+            {
+              "threshold": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix13"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 2,
+        "model": {
+          "type": "minecraft:range_dispatch",
+          "property": "drglaserpointer:screen_color",
+          "entries": [
+            {
+              "threshold": 0,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix20"
+              }
+            },
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix21"
+              }
+            },
+            {
+              "threshold": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix22"
+              }
+            },
+            {
+              "threshold": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix23"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 3,
+        "model": {
+          "type": "minecraft:range_dispatch",
+          "property": "drglaserpointer:screen_color",
+          "entries": [
+            {
+              "threshold": 0,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix30"
+              }
+            },
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix31"
+              }
+            },
+            {
+              "threshold": 2,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix32"
+              }
+            },
+            {
+              "threshold": 3,
+              "model": {
+                "type": "minecraft:model",
+                "model": "drglaserpointer:item/laser_pointer_mix33"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

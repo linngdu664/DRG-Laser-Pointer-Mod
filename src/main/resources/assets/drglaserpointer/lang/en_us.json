@@ -16,5 +16,5 @@
 
   "key.laserpointer.switch_to_laser_pointer": "Switch to Laser Pointer",
   "entity.drglaserpointer.laser_pointer_mark": "Laser Pointer Mark",
-  "key.categories.laserpointer": "DRG Laser Pointer"
+  "key.category.drglaserpointer.laserpointer": "DRG Laser Pointer"
 }
