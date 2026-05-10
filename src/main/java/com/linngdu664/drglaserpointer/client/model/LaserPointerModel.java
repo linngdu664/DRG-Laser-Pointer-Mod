@@ -6,29 +6,31 @@
 public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "laserpointermodel"), "main");
-	private final ModelPart bone;
+	private final ModelPart body;
 	private final ModelPart bone3;
 	private final ModelPart bone2;
 	private final ModelPart bone4;
 	private final ModelPart bone5;
-	private final ModelPart bb_main;
+	private final ModelPart bulb;
+	private final ModelPart screen;
 
 	public LaserPointerModel(ModelPart root) {
-		this.bone = root.getChild("bone");
-		this.bone3 = this.bone.getChild("bone3");
-		this.bone2 = this.bone.getChild("bone2");
-		this.bone4 = this.bone.getChild("bone4");
-		this.bone5 = this.bone.getChild("bone5");
-		this.bb_main = root.getChild("bb_main");
+		this.body = root.getChild("body");
+		this.bone3 = this.body.getChild("bone3");
+		this.bone2 = this.body.getChild("bone2");
+		this.bone4 = this.body.getChild("bone4");
+		this.bone5 = this.body.getChild("bone5");
+		this.bulb = root.getChild("bulb");
+		this.screen = root.getChild("screen");
 	}
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition bone = partdefinition.addOrReplaceChild("bone", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition bone3 = bone.addOrReplaceChild("bone3", CubeListBuilder.create().texOffs(293, 88).addBox(-16.0F, -96.0F, -17.0F, 32.0F, 96.0F, 25.0F, new CubeDeformation(0.0F))
+		PartDefinition bone3 = body.addOrReplaceChild("bone3", CubeListBuilder.create().texOffs(293, 88).addBox(-16.0F, -96.0F, -17.0F, 32.0F, 96.0F, 25.0F, new CubeDeformation(0.0F))
 		.texOffs(350, 92).addBox(-16.0F, -144.0F, -1.0F, 32.0F, 49.0F, 9.0F, new CubeDeformation(0.0F))
 		.texOffs(300, 112).addBox(-16.0F, -161.0F, -8.0F, 32.0F, 17.0F, 33.0F, new CubeDeformation(0.0F))
 		.texOffs(329, 81).addBox(-57.0F, -241.0F, -14.0F, 1.0F, 73.0F, 28.0F, new CubeDeformation(0.0F))
@@ -54,7 +56,7 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 		PartDefinition cube_r6 = bone3.addOrReplaceChild("cube_r6", CubeListBuilder.create().texOffs(368, 113).addBox(-14.0F, -12.0F, 2.0F, 28.0F, 11.0F, 11.0F, new CubeDeformation(0.0F))
 		.texOffs(323, 87).addBox(-13.0F, -22.0F, -14.0F, 26.0F, 27.0F, 25.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -141.0F, 86.0F, 0.3927F, 0.0F, 0.0F));
 
-		PartDefinition bone2 = bone.addOrReplaceChild("bone2", CubeListBuilder.create().texOffs(456, 80).addBox(-37.2F, -82.5F, -22.5F, 2.0F, 18.0F, 18.0F, new CubeDeformation(0.0F))
+		PartDefinition bone2 = body.addOrReplaceChild("bone2", CubeListBuilder.create().texOffs(456, 80).addBox(-37.2F, -82.5F, -22.5F, 2.0F, 18.0F, 18.0F, new CubeDeformation(0.0F))
 		.texOffs(444, 86).addBox(-52.2F, -81.5F, -21.5F, 15.0F, 16.0F, 16.0F, new CubeDeformation(0.0F))
 		.texOffs(450, 84).addBox(-52.2F, -46.5F, -21.5F, 15.0F, 16.0F, 16.0F, new CubeDeformation(0.0F))
 		.texOffs(460, 81).addBox(-37.2F, -47.5F, -22.5F, 2.0F, 18.0F, 18.0F, new CubeDeformation(0.0F)), PartPose.offset(-21.8F, -148.5F, 13.5F));
@@ -93,12 +95,12 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 
 		PartDefinition cube_r23 = bone2.addOrReplaceChild("cube_r23", CubeListBuilder.create().texOffs(459, 105).addBox(-9.0F, -1.5F, -1.5F, 18.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.6981F));
 
-		PartDefinition bone4 = bone.addOrReplaceChild("bone4", CubeListBuilder.create().texOffs(188, 113).addBox(33.0F, -84.0F, -3.0F, 15.0F, 81.0F, 21.0F, new CubeDeformation(0.0F))
+		PartDefinition bone4 = body.addOrReplaceChild("bone4", CubeListBuilder.create().texOffs(188, 113).addBox(33.0F, -84.0F, -3.0F, 15.0F, 81.0F, 21.0F, new CubeDeformation(0.0F))
 		.texOffs(188, 111).addBox(10.0F, -84.0F, -3.0F, 15.0F, 81.0F, 21.0F, new CubeDeformation(0.0F))
 		.texOffs(188, 110).addBox(-13.0F, -84.0F, -3.0F, 15.0F, 81.0F, 21.0F, new CubeDeformation(0.0F))
 		.texOffs(188, 110).addBox(56.0F, -84.0F, -3.0F, 15.0F, 81.0F, 21.0F, new CubeDeformation(0.0F)), PartPose.offset(-29.0F, -161.0F, 0.0F));
 
-		PartDefinition bone5 = bone.addOrReplaceChild("bone5", CubeListBuilder.create().texOffs(0, 0).addBox(-56.0F, -11.0F, -18.0F, 112.0F, 6.0F, 34.0F, new CubeDeformation(0.0F))
+		PartDefinition bone5 = body.addOrReplaceChild("bone5", CubeListBuilder.create().texOffs(0, 0).addBox(-56.0F, -11.0F, -18.0F, 112.0F, 6.0F, 34.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(50.0F, -78.0F, -18.0F, 6.0F, 67.0F, 34.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(-56.0F, -78.0F, -18.0F, 6.0F, 67.0F, 34.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(-56.0F, -84.0F, -18.0F, 112.0F, 6.0F, 34.0F, new CubeDeformation(0.0F))
@@ -126,8 +128,9 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 		PartDefinition cube_r30 = bone5.addOrReplaceChild("cube_r30", CubeListBuilder.create().texOffs(0, 0).addBox(-13.0F, 5.0F, -14.0F, 26.0F, 18.0F, 25.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(-15.0F, -10.0F, 4.0F, 30.0F, 7.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 19.0F, 86.0F, 0.3927F, 0.0F, 0.0F));
 
-		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(134, 145).addBox(-7.0F, -210.0F, 24.0F, 14.0F, 14.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(294, 0).addBox(-53.0F, -241.0F, -17.0F, 106.0F, 73.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+		PartDefinition bulb = partdefinition.addOrReplaceChild("bulb", CubeListBuilder.create().texOffs(134, 145).addBox(39.0F, -59.0F, 8.0F, 14.0F, 14.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-46.0F, -127.0F, 16.0F));
+
+		PartDefinition screen = partdefinition.addOrReplaceChild("screen", CubeListBuilder.create().texOffs(294, 0).addBox(-53.0F, -84.0F, -14.0F, 106.0F, 73.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -133.0F, -3.0F));
 
 		return LayerDefinition.create(meshdefinition, 512, 256);
 	}
@@ -139,7 +142,8 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		bulb.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		screen.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }
