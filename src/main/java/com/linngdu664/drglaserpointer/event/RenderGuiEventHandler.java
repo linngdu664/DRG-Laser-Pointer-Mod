@@ -1,6 +1,6 @@
 package com.linngdu664.drglaserpointer.event;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.client.util.GuiUtil;
@@ -35,7 +35,7 @@ import org.joml.*;
 import java.lang.Math;
 import java.util.List;
 
-@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = DrgLaserPointer.MODID, value = Dist.CLIENT)
 public class RenderGuiEventHandler {
     private static final int MAX_TARGET_NAME_WIDTH = 108;
     private static final int MAX_PLAYER_NAME_WIDTH = 153;
@@ -43,10 +43,10 @@ public class RenderGuiEventHandler {
     private static final float FRAME_PROTECT = 10;
     private static final float ICON_WIDTH_WITH_MARGIN = 18;
     private static final float MIN_REF_WIDTH = 40;
-    private static final Identifier UP_ICON = Main.makeMyIdentifier("textures/gui/arrow/up.png");
-    private static final Identifier DOWN_ICON = Main.makeMyIdentifier("textures/gui/arrow/down.png");
-    private static final Identifier LEFT_ICON = Main.makeMyIdentifier("textures/gui/arrow/left.png");
-    private static final Identifier RIGHT_ICON = Main.makeMyIdentifier("textures/gui/arrow/right.png");
+    private static final Identifier UP_ICON = DrgLaserPointer.makeMyIdentifier("textures/gui/arrow/up.png");
+    private static final Identifier DOWN_ICON = DrgLaserPointer.makeMyIdentifier("textures/gui/arrow/down.png");
+    private static final Identifier LEFT_ICON = DrgLaserPointer.makeMyIdentifier("textures/gui/arrow/left.png");
+    private static final Identifier RIGHT_ICON = DrgLaserPointer.makeMyIdentifier("textures/gui/arrow/right.png");
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
@@ -97,9 +97,9 @@ public class RenderGuiEventHandler {
                 if (entity instanceof LivingEntity) {
                     Identifier identifier = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
                     if (identifier.getNamespace().equals("minecraft") && !(entity instanceof Player) && !(entity instanceof ArmorStand)) {
-                        entityIconIdentifier = Main.makeMyIdentifier("textures/gui/face/" + identifier.getPath() + "_face.png");
+                        entityIconIdentifier = DrgLaserPointer.makeMyIdentifier("textures/gui/face/" + identifier.getPath() + "_face.png");
                     } else {
-                        entityIconIdentifier = Main.makeMyIdentifier("textures/gui/face/unknown.png");
+                        entityIconIdentifier = DrgLaserPointer.makeMyIdentifier("textures/gui/face/unknown.png");
                     }
                     targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", entity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);
@@ -112,7 +112,7 @@ public class RenderGuiEventHandler {
                         blockItemStack = itemEntity.getItem();
                         targetTextList = font.split(Component.translatable("tip.drglaserpointer.item_entity_name", entity.getName()), MAX_TARGET_NAME_WIDTH);
                     } else {
-                        entityIconIdentifier = Main.makeMyIdentifier("textures/gui/face/unknown.png");
+                        entityIconIdentifier = DrgLaserPointer.makeMyIdentifier("textures/gui/face/unknown.png");
                         targetTextList = font.split(entity.getName(), MAX_TARGET_NAME_WIDTH);
                     }
                     distanceText = font.ellipsize(Component.translatable("tip.drglaserpointer.distance", String.format("%.1f", markEntity.distanceTo(player))), MAX_PLAYER_NAME_WIDTH);

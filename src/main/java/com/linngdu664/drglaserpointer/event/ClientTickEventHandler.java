@@ -1,14 +1,14 @@
 package com.linngdu664.drglaserpointer.event;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import com.linngdu664.drglaserpointer.config.ClientConfig;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.item.LaserPointerItem;
 import com.linngdu664.drglaserpointer.network.LaserDistanceRequestPayload;
 import com.linngdu664.drglaserpointer.network.LaserDistanceUpdatePayload;
 import com.linngdu664.drglaserpointer.network.LaserPlaySoundPayload;
-import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
-import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.registry.DataComponentRegistry;
+import com.linngdu664.drglaserpointer.registry.ItemRegistry;
 import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = DrgLaserPointer.MODID, value = Dist.CLIENT)
 public class ClientTickEventHandler {
     private static short distance0 = -1;
     private static Item lastMainHandItem = Items.AIR;
@@ -45,7 +45,7 @@ public class ClientTickEventHandler {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player != null) {
-            Item laserPointerItem = ItemRegister.LASER_POINTER.get();
+            Item laserPointerItem = ItemRegistry.LASER_POINTER.get();
             ItemStack mainHandStack = player.getMainHandItem();
             ItemStack offHandStack = player.getOffhandItem();
             if (mainHandStack.is(laserPointerItem)) {
@@ -116,8 +116,8 @@ public class ClientTickEventHandler {
         for (int i = 0; i < size; i++) {
             ItemStack itemStack = inventory.getItem(i);
             // 40 = offhand
-            if (itemStack.is(ItemRegister.LASER_POINTER.get()) && i != selectedSlot && i != 40) {
-                itemStack.set(DataComponentRegister.SCREEN_COLOR, (byte) 0);
+            if (itemStack.is(ItemRegistry.LASER_POINTER.get()) && i != selectedSlot && i != 40) {
+                itemStack.set(DataComponentRegistry.SCREEN_COLOR, (byte) 0);
             }
         }
         if (LaserPointerItem.audioCooldown > 0) {

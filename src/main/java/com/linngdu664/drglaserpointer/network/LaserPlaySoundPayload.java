@@ -1,7 +1,7 @@
 package com.linngdu664.drglaserpointer.network;
 
-import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.registry.SoundRegister;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
+import com.linngdu664.drglaserpointer.registry.SoundRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserPlaySoundPayload(boolean isOn) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserPlaySoundPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_play_sound"));
+    public static final CustomPacketPayload.Type<LaserPlaySoundPayload> TYPE = new CustomPacketPayload.Type<>(DrgLaserPointer.makeMyIdentifier("laser_play_sound"));
     public static final StreamCodec<ByteBuf, LaserPlaySoundPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, LaserPlaySoundPayload::isOn,
             LaserPlaySoundPayload::new
@@ -24,9 +24,9 @@ public record LaserPlaySoundPayload(boolean isOn) implements CustomPacketPayload
             Player player = context.player();
             Level level = player.level();
             if (payload.isOn()) {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_ON.get(), SoundSource.PLAYERS);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.LASER_ON.get(), SoundSource.PLAYERS);
             } else {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_OFF.get(), SoundSource.PLAYERS);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.LASER_OFF.get(), SoundSource.PLAYERS);
             }
         });
     }

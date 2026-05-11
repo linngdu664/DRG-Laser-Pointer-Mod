@@ -10,20 +10,20 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(Main.MODID)
-public class Main {
+@Mod(DrgLaserPointer.MODID)
+public class DrgLaserPointer {
     public static final String MODID = "drglaserpointer";
 
     public static Identifier makeMyIdentifier(String path) {
         return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
-    public Main(IEventBus modEventBus, ModContainer modContainer) {
-        DataComponentRegister.DATA_COMPONENTS.register(modEventBus);
-        ItemRegister.ITEMS.register(modEventBus);
-        EntityRegister.ENTITY_TYPES.register(modEventBus);
-        SoundRegister.SOUNDS.register(modEventBus);
-        TriggerTypeRegister.TRIGGER_TYPES.register(modEventBus);
+    public DrgLaserPointer(IEventBus modEventBus, ModContainer modContainer) {
+        DataComponentRegistry.DATA_COMPONENTS.register(modEventBus);
+        ItemRegistry.ITEMS.register(modEventBus);
+        EntityRegistry.ENTITY_TYPES.register(modEventBus);
+        SoundRegistry.SOUNDS.register(modEventBus);
+        TriggerTypeRegistry.TRIGGER_TYPES.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);

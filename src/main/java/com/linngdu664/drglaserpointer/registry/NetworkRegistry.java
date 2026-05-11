@@ -1,14 +1,14 @@
 package com.linngdu664.drglaserpointer.registry;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import com.linngdu664.drglaserpointer.network.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(modid = Main.MODID)
-public class NetworkRegister {
+@EventBusSubscriber(modid = DrgLaserPointer.MODID)
+public class NetworkRegistry {
     @SubscribeEvent
     public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar("1");

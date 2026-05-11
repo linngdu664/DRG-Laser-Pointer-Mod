@@ -1,6 +1,6 @@
 package com.linngdu664.drglaserpointer.network;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public record LaserDistanceResponsePayload(ArrayList<Pair<Integer, Short>> disList) implements CustomPacketPayload {
     public static final HashMap<Integer, Short> clientDisMap = new HashMap<>();
-    public static final CustomPacketPayload.Type<LaserDistanceResponsePayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_distance_response"));
+    public static final CustomPacketPayload.Type<LaserDistanceResponsePayload> TYPE = new CustomPacketPayload.Type<>(DrgLaserPointer.makeMyIdentifier("laser_distance_response"));
     public static final StreamCodec<ByteBuf, LaserDistanceResponsePayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, CustomStreamCodecs.IS_PAIR_STREAM_CODEC), LaserDistanceResponsePayload::disList,
             LaserDistanceResponsePayload::new

@@ -1,23 +1,20 @@
 package com.linngdu664.drglaserpointer.item;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.network.LaserPickBlockPayload;
 import com.linngdu664.drglaserpointer.network.LaserPickEntityPayload;
-import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
-import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.registry.DataComponentRegistry;
+import com.linngdu664.drglaserpointer.registry.ItemRegistry;
 import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
-import com.linngdu664.drglaserpointer.registry.KeyMappingRegister;
+import com.linngdu664.drglaserpointer.registry.KeyMappingRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -31,7 +28,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
@@ -42,10 +38,10 @@ public class LaserPointerItem extends Item {
 
     public LaserPointerItem() {
         super(new Properties()
-                .setId(ResourceKey.create(Registries.ITEM, Main.makeMyIdentifier("laser_pointer")))
+                .setId(ResourceKey.create(Registries.ITEM, DrgLaserPointer.makeMyIdentifier("laser_pointer")))
                 .stacksTo(1)
-                .component(DataComponentRegister.LASER_COLOR, (byte) 0)
-                .component(DataComponentRegister.SCREEN_COLOR, (byte) 0));
+                .component(DataComponentRegistry.LASER_COLOR, (byte) 0)
+                .component(DataComponentRegistry.SCREEN_COLOR, (byte) 0));
     }
 /*
     @Override
@@ -72,9 +68,9 @@ public class LaserPointerItem extends Item {
     @Override
     public @NonNull InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (level.isClientSide() && (hand == InteractionHand.MAIN_HAND || !player.getMainHandItem().is(ItemRegister.LASER_POINTER))) {
+        if (level.isClientSide() && (hand == InteractionHand.MAIN_HAND || !player.getMainHandItem().is(ItemRegistry.LASER_POINTER))) {
             HitResult hitResult = LaserPointerHitHelper.getInstance().getHitResult();
-            byte color = itemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0);
+            byte color = itemStack.getOrDefault(DataComponentRegistry.LASER_COLOR, (byte) 0);
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                 ClientPacketDistributor.sendToServer(new LaserPickBlockPayload(blockHitResult.getLocation(), blockHitResult.getBlockPos(), color, audioCooldown == 0));
@@ -154,7 +150,7 @@ public class LaserPointerItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
         builder.accept(Component.translatable("laser_pointer.tooltip", Minecraft.getInstance().options.keyShift.getTranslatedKeyMessage()).withStyle(ChatFormatting.GRAY));
-        builder.accept(Component.translatable("laser_pointer1.tooltip", KeyMappingRegister.SWITCH_TO_LASER_POINTER.getTranslatedKeyMessage()).withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.translatable("laser_pointer1.tooltip", KeyMappingRegistry.SWITCH_TO_LASER_POINTER.getTranslatedKeyMessage()).withStyle(ChatFormatting.GRAY));
     }
 
     public static int getLaserColorARGB(byte laserColor) {
@@ -163,6 +159,15 @@ public class LaserPointerItem extends Item {
             case 2 -> 0xffffbc4c;   // yellow
             case 3 -> 0xff78ff78;   // green
             default -> 0xff78e0ff;  // blue
+        };
+    }
+
+    public static int getScreenColorARGB(byte screenColor) {
+        return switch (screenColor) {
+            case 1 -> 0xff096111;  // green
+            case 2 -> 0xffcb2b00;  // red
+            case 3 -> 0xff9a862d;  // yellow
+            default -> 0xff2b4738; // dark green
         };
     }
 }

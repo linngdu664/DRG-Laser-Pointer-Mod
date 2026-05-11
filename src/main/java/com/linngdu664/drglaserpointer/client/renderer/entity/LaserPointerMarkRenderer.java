@@ -50,11 +50,11 @@ public class LaserPointerMarkRenderer extends EntityRenderer<LaserPointerMarkEnt
     public void submit(LaserPointerMarkRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         super.submit(state, poseStack, submitNodeCollector, camera);
         Identifier texture = switch (state.color) {
-            default -> LaserPointerMarkModel.LAYER_LOCATION_EMPTY.model();
             case 0 -> LaserPointerMarkModel.LAYER_LOCATION_BLUE.model();
             case 1 -> LaserPointerMarkModel.LAYER_LOCATION_RED.model();
             case 2 -> LaserPointerMarkModel.LAYER_LOCATION_YELLOW.model();
             case 3 -> LaserPointerMarkModel.LAYER_LOCATION_GREEN.model();
+            default -> LaserPointerMarkModel.LAYER_LOCATION_EMPTY.model();
         };
         RenderType renderType = RenderTypes.entityTranslucentCullItemTarget(texture);
         if (ClientConfig.CUBE_MARK_MODEL.getConfigValue()) {

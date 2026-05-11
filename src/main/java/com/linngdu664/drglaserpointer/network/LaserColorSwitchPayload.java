@@ -1,8 +1,8 @@
 package com.linngdu664.drglaserpointer.network;
 
-import com.linngdu664.drglaserpointer.Main;
-import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
-import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
+import com.linngdu664.drglaserpointer.registry.DataComponentRegistry;
+import com.linngdu664.drglaserpointer.registry.ItemRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserColorSwitchPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_color_switch"));
+    public static final CustomPacketPayload.Type<LaserColorSwitchPayload> TYPE = new CustomPacketPayload.Type<>(DrgLaserPointer.makeMyIdentifier("laser_color_switch"));
     public static final StreamCodec<ByteBuf, LaserColorSwitchPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, LaserColorSwitchPayload::isIncrease,
             LaserColorSwitchPayload::new
@@ -23,8 +23,8 @@ public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacke
         context.enqueueWork(() -> {
             Player player = context.player();
             ItemStack mainHandItemStack = player.getMainHandItem();
-            if (mainHandItemStack.is(ItemRegister.LASER_POINTER)) {
-                int colorId = mainHandItemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0);
+            if (mainHandItemStack.is(ItemRegistry.LASER_POINTER)) {
+                int colorId = mainHandItemStack.getOrDefault(DataComponentRegistry.LASER_COLOR, (byte) 0);
                 if (payload.isIncrease()) {
                     colorId++;
                     if (colorId > 3) {
@@ -36,7 +36,7 @@ public record LaserColorSwitchPayload(boolean isIncrease) implements CustomPacke
                         colorId = 3;
                     }
                 }
-                mainHandItemStack.set(DataComponentRegister.LASER_COLOR, (byte) colorId);
+                mainHandItemStack.set(DataComponentRegistry.LASER_COLOR, (byte) colorId);
             }
         });
     }

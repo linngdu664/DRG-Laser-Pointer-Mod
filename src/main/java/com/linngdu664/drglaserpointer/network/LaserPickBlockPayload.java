@@ -1,6 +1,6 @@
 package com.linngdu664.drglaserpointer.network;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import com.linngdu664.drglaserpointer.entity.LaserPointerMarkEntity;
 import com.linngdu664.drglaserpointer.misc.ModTags;
 import com.linngdu664.drglaserpointer.registry.*;
@@ -22,7 +22,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color, boolean canPlayAudio) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("laser_pick_block"));
+    public static final CustomPacketPayload.Type<LaserPickBlockPayload> TYPE = new CustomPacketPayload.Type<>(DrgLaserPointer.makeMyIdentifier("laser_pick_block"));
     public static final StreamCodec<ByteBuf, LaserPickBlockPayload> STREAM_CODEC = StreamCodec.composite(
             CustomStreamCodecs.VEC3_STREAM_CODEC, LaserPickBlockPayload::location,
             BlockPos.STREAM_CODEC, LaserPickBlockPayload::blockPos,
@@ -38,14 +38,14 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
             if (level.hasChunkAt(payload.blockPos)) {
                 level.gameEvent(GameEvent.ENTITY_ACTION, player.position(), GameEvent.Context.of(player));
                 BlockState blockState = level.getBlockState(payload.blockPos);
-                TriggerTypeRegister.MARK_BLOCK_TRIGGER.get().trigger((ServerPlayer) player, blockState);
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.LASER_MAKE.get(), SoundSource.PLAYERS);
+                TriggerTypeRegistry.MARK_BLOCK_TRIGGER.get().trigger((ServerPlayer) player, blockState);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.LASER_MAKE.get(), SoundSource.PLAYERS);
                 if (payload.canPlayAudio) {
                     RandomSource random = level.getRandom();
                     if (blockState.is(ModTags.Blocks.RICH_BLOCKS)) {
-                        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegister.WERE_RICH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.WERE_RICH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
                     } else if (blockState.is(ModTags.Blocks.MUSHROOMS)) {
-                        level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextIntBetweenInclusive(0, 1) == 0 ? SoundRegister.MUSHROOM1 : SoundRegister.MUSHROOM2, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), random.nextIntBetweenInclusive(0, 1) == 0 ? SoundRegistry.MUSHROOM1 : SoundRegistry.MUSHROOM2, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F);
                     }
                 }
                 for (Entity entity : level.getAllEntities()) {
@@ -54,7 +54,7 @@ public record LaserPickBlockPayload(Vec3 location, BlockPos blockPos, byte color
                         break;
                     }
                 }
-                level.addFreshEntity(new LaserPointerMarkEntity(EntityRegister.LASER_POINTER_MARK.get(), level, player, payload.location, blockState, payload.color));
+                level.addFreshEntity(new LaserPointerMarkEntity(EntityRegistry.LASER_POINTER_MARK.get(), level, player, payload.location, blockState, payload.color));
             }
         });
     }

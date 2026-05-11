@@ -1,8 +1,66 @@
 {
-  "parent": "drglaserpointer:custom/laser_pointer",
   "textures": {
-    "laser_light": "drglaserpointer:item/laser_light_yellow",
-    "body": "drglaserpointer:item/laser_pointer_body",
-    "screen": "drglaserpointer:item/laser_screen_dark_green"
+    "0": "na",
+    "particle": "na"
+  },
+  "elements": [
+    {
+      "from": [3, 0, 0],
+      "to": [13, 10, 1],
+      "rotation": {"angle": 0, "axis": "y", "origin": [3, 0, 0]},
+      "faces": {
+        "north": {"uv": [0, 0, 5, 5], "texture": "#0"},
+        "east": {"uv": [5, 0, 5.5, 5], "texture": "#0"},
+        "south": {"uv": [0, 5, 5, 10], "texture": "#0"},
+        "west": {"uv": [5, 5, 5.5, 10], "texture": "#0"},
+        "up": {"uv": [10.5, 0.5, 5.5, 0], "texture": "#0"},
+        "down": {"uv": [10.5, 0.5, 5.5, 1], "texture": "#0"}
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [-180, 0, 0],
+      "translation": [0.35, -4.35, 1.45],
+      "scale": [0.043, 0.043, 0.043]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [-180, 0, 0],
+      "translation": [-0.35, -4.35, 1.45],
+      "scale": [0.043, 0.043, 0.043]
+    },
+    "firstperson_righthand": {
+      "rotation": [-180, 0, 0],
+      "translation": [-2.2, -2.5, 1.8],
+      "scale": [0.043, 0.043, 0.043]
+    },
+    "firstperson_lefthand": {
+      "rotation": [-180, 0, 0],
+      "translation": [-2.9, -2.5, 1.8],
+      "scale": [0.043, 0.043, 0.043]
+    },
+    "ground": {
+      "rotation": [-180, 0, 0],
+      "scale": [0.043, 0.043, 0.043]
+    },
+    "head": {
+      "rotation": [-180, 0, 0],
+      "scale": [0.043, 0.043, 0.043]
+    },
+    "gui": {
+      "rotation": [-160, -54, 0],
+      "translation": [0.9, -5.9, 0],
+      "scale": [0.055, 0.055, 0.055]
+    },
+    "fixed": {
+      "rotation": [-180, 180, 0],
+      "translation": [0, -6.2, 0],
+      "scale": [0.055, 0.055, 0.055]
+    },
+    "on_shelf": {
+      "rotation": [-180, 180, 0],
+      "translation": [0, -6.2, 0],
+      "scale": [0.055, 0.055, 0.055]
+    }
   }
 }

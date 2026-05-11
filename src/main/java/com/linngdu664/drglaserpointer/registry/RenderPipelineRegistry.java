@@ -1,6 +1,6 @@
 package com.linngdu664.drglaserpointer.registry;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
@@ -13,10 +13,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
-@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = DrgLaserPointer.MODID, value = Dist.CLIENT)
 public class RenderPipelineRegistry {
     public static RenderPipeline LASER_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
-            .withLocation(Main.makeMyIdentifier("laser"))
+            .withLocation(DrgLaserPointer.makeMyIdentifier("laser"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
@@ -25,8 +25,21 @@ public class RenderPipelineRegistry {
             .withDepthStencilState(DepthStencilState.DEFAULT)
             .build();
 
+//    public static RenderPipeline ITEM_TRANSLUCENT_NO_DEPTH_PIPELINE = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_LIGHT_DIR_SNIPPET)
+//            .withLocation(Main.makeMyIdentifier("item_translucent_no_depth"))
+//            .withVertexShader("core/item")
+//            .withFragmentShader("core/item")
+//            .withSampler("Sampler0")
+//            .withSampler("Sampler2")
+//            .withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
+//            .withShaderDefine("ALPHA_CUTOUT", 0.1F)
+//            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+//            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+//            .build();
+
     @SubscribeEvent
     public static void registerRenderPipeline(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(LASER_PIPELINE);
+//        event.registerPipeline(ITEM_TRANSLUCENT_NO_DEPTH_PIPELINE);
     }
 }

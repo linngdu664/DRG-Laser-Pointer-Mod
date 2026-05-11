@@ -1,6 +1,6 @@
 package com.linngdu664.drglaserpointer.network;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SwitchInventoryPayload(int slot) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SwitchInventoryPayload> TYPE = new CustomPacketPayload.Type<>(Main.makeMyIdentifier("switch_inventory"));
+    public static final CustomPacketPayload.Type<SwitchInventoryPayload> TYPE = new CustomPacketPayload.Type<>(DrgLaserPointer.makeMyIdentifier("switch_inventory"));
     public static final StreamCodec<ByteBuf, SwitchInventoryPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SwitchInventoryPayload::slot,
             SwitchInventoryPayload::new

@@ -1,19 +1,17 @@
 package com.linngdu664.drglaserpointer.event;
 
-import com.linngdu664.drglaserpointer.Main;
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
+import com.linngdu664.drglaserpointer.client.renderer.rendertype.MyRenderTypes;
 import com.linngdu664.drglaserpointer.item.LaserPointerItem;
 import com.linngdu664.drglaserpointer.network.LaserDistanceResponsePayload;
-import com.linngdu664.drglaserpointer.registry.DataComponentRegister;
-import com.linngdu664.drglaserpointer.registry.ItemRegister;
+import com.linngdu664.drglaserpointer.registry.DataComponentRegistry;
+import com.linngdu664.drglaserpointer.registry.ItemRegistry;
 import com.linngdu664.drglaserpointer.client.util.LaserPointerHitHelper;
-import com.linngdu664.drglaserpointer.registry.RenderPipelineRegistry;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -29,15 +27,8 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import java.util.*;
 
-@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = DrgLaserPointer.MODID, value = Dist.CLIENT)
 public class RenderLevelStageEventHandler {
-    public static final RenderType LASER_RENDER_TYPE = RenderType.create(
-            Main.makeMyIdentifier("laser").toString(),
-            RenderSetup.builder(RenderPipelineRegistry.LASER_PIPELINE)
-                    .bufferSize(4096)
-                    .sortOnUpload()
-                    .createRenderSetup()
-    );
     public static final double LASER_WIDTH = 0.005;
 
     private static void addLaserQuad(VertexConsumer consumer, Vec3 camPos, Vec3 start, Vec3 end, Vec3 n, int color) {
@@ -85,7 +76,7 @@ public class RenderLevelStageEventHandler {
         Vec3 eyePos = player.getEyePosition(partialTick);
         Vec3 shoulderPos = eyePos.add(Mth.cos(yBodyRot) * (isLeftHand ? 0.28125 : -0.28125), -0.3125, Mth.sin(yBodyRot) * (isLeftHand ? 0.28125 : -0.28125));
         Vec3 handVec = new Vec3(-Mth.sin(yRot) * Mth.cos(xRot), -Mth.sin(xRot), Mth.cos(yRot) * Mth.cos(xRot));
-        Vec3 handPos = shoulderPos.add(handVec.scale(0.6));
+        Vec3 handPos = shoulderPos.add(handVec.scale(0.55));
         Vec3 normal = handVec.cross(handVec.add(Mth.cos(yRot), 0, Mth.sin(yRot))).normalize();
         return handPos.add(normal.scale(player.isCrouching() ? 0.125 : 0.3125));
     }
@@ -94,7 +85,7 @@ public class RenderLevelStageEventHandler {
     private static Vec3 getFirstViewPlayerHandPos(Player player, boolean isLeftHand, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         double d4 = 960.0 / mc.options.fov().get();
-        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane(mc.options.fov().get()).getPointOnPlane(isLeftHand ? -0.56F : 0.56F, -0.36F).scale(d4);
+        Vec3 vec3 = mc.gameRenderer.getMainCamera().getNearPlane(mc.options.fov().get()).getPointOnPlane(isLeftHand ? -0.51F : 0.51F, -0.39F).scale(d4);
         return player.getEyePosition(partialTick).add(vec3);
     }
 
@@ -108,18 +99,18 @@ public class RenderLevelStageEventHandler {
         }
         ItemStack mainHandItemStack = player.getMainHandItem();
         ItemStack offHandItemStack = player.getOffhandItem();
-        Item laserPointer = ItemRegister.LASER_POINTER.get();
+        Item laserPointer = ItemRegistry.LASER_POINTER.get();
         Vec3 camPos = mc.gameRenderer.getMainCamera().position();
         float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
         MultiBufferSource.BufferSource source = mc.renderBuffers().bufferSource();
-        VertexConsumer consumer = source.getBuffer(LASER_RENDER_TYPE);
+        VertexConsumer consumer = source.getBuffer(MyRenderTypes.LASER_RENDER_TYPE);
 
         if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR && (mainHandItemStack.is(laserPointer) || offHandItemStack.is(laserPointer))) {
             LaserPointerHitHelper helper = LaserPointerHitHelper.getInstance();
             helper.calcHitResult(player, partialTick);
             Vec3 targetPos = helper.getHitResult().getLocation();
             if (mainHandItemStack.is(laserPointer)) {
-                int color = LaserPointerItem.getLaserColorARGB(mainHandItemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0));
+                int color = LaserPointerItem.getLaserColorARGB(mainHandItemStack.getOrDefault(DataComponentRegistry.LASER_COLOR, (byte) 0));
                 if (mc.options.getCameraType().isFirstPerson()) {
                     if (mc.gameRenderer.itemInHandRenderer.mainHandHeight == 1 && ClientTickEventHandler.mainHandLaserTick > 6) {
                         Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
@@ -129,10 +120,10 @@ public class RenderLevelStageEventHandler {
                     Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                     addLaser(consumer, camPos, startPos, targetPos, color);
                 }
-                mainHandItemStack.set(DataComponentRegister.SCREEN_COLOR, helper.getScreenColor(player.level()));
+                mainHandItemStack.set(DataComponentRegistry.SCREEN_COLOR, helper.getScreenColor(player.level()));
             }
             if (offHandItemStack.is(laserPointer)) {
-                int color = LaserPointerItem.getLaserColorARGB(offHandItemStack.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0));
+                int color = LaserPointerItem.getLaserColorARGB(offHandItemStack.getOrDefault(DataComponentRegistry.LASER_COLOR, (byte) 0));
                 if (mc.options.getCameraType().isFirstPerson()) {
                     if (mc.gameRenderer.itemInHandRenderer.offHandHeight == 1 && ClientTickEventHandler.offHandLaserTick > 6) {
                         Vec3 startPos = getFirstViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
@@ -142,7 +133,7 @@ public class RenderLevelStageEventHandler {
                     Vec3 startPos = getThirdViewPlayerHandPos(player, player.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                     addLaser(consumer, camPos, startPos, targetPos, color);
                 }
-                offHandItemStack.set(DataComponentRegister.SCREEN_COLOR, helper.getScreenColor(player.level()));
+                offHandItemStack.set(DataComponentRegistry.SCREEN_COLOR, helper.getScreenColor(player.level()));
             }
         }
 
@@ -157,21 +148,21 @@ public class RenderLevelStageEventHandler {
                 if (mainHandItemStack1.is(laserPointer)) {
                     Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.LEFT), partialTick);
                     Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), (short) 0) / 64F));
-                    addLaser(consumer, camPos, startPos, targetPos, LaserPointerItem.getLaserColorARGB(mainHandItemStack1.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0)));
+                    addLaser(consumer, camPos, startPos, targetPos, LaserPointerItem.getLaserColorARGB(mainHandItemStack1.getOrDefault(DataComponentRegistry.LASER_COLOR, (byte) 0)));
                 }
                 if (offHandItemStack1.is(laserPointer)) {
                     Vec3 startPos = getThirdViewPlayerHandPos(p, p.getMainArm().equals(HumanoidArm.RIGHT), partialTick);
                     Vec3 targetPos = eyePos.add(viewVec.scale(Objects.requireNonNullElse(LaserDistanceResponsePayload.clientDisMap.get(p.getId()), (short) 0) / 64F));
-                    addLaser(consumer, camPos, startPos, targetPos, LaserPointerItem.getLaserColorARGB(offHandItemStack1.getOrDefault(DataComponentRegister.LASER_COLOR, (byte) 0)));
+                    addLaser(consumer, camPos, startPos, targetPos, LaserPointerItem.getLaserColorARGB(offHandItemStack1.getOrDefault(DataComponentRegistry.LASER_COLOR, (byte) 0)));
                 }
             }
         }
 
-        // todo 记得移除测试代码
-        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 0.5), new Vec3(64.5, 72.5, 0.5), 0xff78e0ff);
-        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 1.5), new Vec3(64.5, 72.5, 1.5), 0xffff7864);
-        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 2.5), new Vec3(64.5, 72.5, 2.5), 0xffffbc4c);
-        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 3.5), new Vec3(64.5, 72.5, 3.5), 0xff78ff78);
-        source.endBatch(LASER_RENDER_TYPE);
+        // 记得注释测试代码
+//        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 0.5), new Vec3(64.5, 72.5, 0.5), 0xff78e0ff);
+//        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 1.5), new Vec3(64.5, 72.5, 1.5), 0xffff7864);
+//        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 2.5), new Vec3(64.5, 72.5, 2.5), 0xffffbc4c);
+//        addLaser(consumer, camPos, new Vec3(0.5, 72.5, 3.5), new Vec3(64.5, 72.5, 3.5), 0xff78ff78);
+        source.endBatch(MyRenderTypes.LASER_RENDER_TYPE);
     }
 }

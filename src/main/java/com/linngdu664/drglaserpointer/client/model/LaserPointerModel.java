@@ -1,11 +1,22 @@
 // Made with Blockbench 4.12.6
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
+package com.linngdu664.drglaserpointer.client.model;
 
+import com.linngdu664.drglaserpointer.DrgLaserPointer;
+import com.mojang.datafixers.util.Unit;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
-public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
+public class LaserPointerModel extends Model<Unit> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "laserpointermodel"), "main");
+	public static final Identifier TEXTURE_LOCATION = DrgLaserPointer.makeMyIdentifier("textures/item/e_laser_pointer_body.png");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(TEXTURE_LOCATION, "main");
 	private final ModelPart body;
 	private final ModelPart bone3;
 	private final ModelPart bone2;
@@ -15,6 +26,7 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 	private final ModelPart screen;
 
 	public LaserPointerModel(ModelPart root) {
+		super(root, RenderTypes::entityCutout);
 		this.body = root.getChild("body");
 		this.bone3 = this.body.getChild("bone3");
 		this.bone2 = this.body.getChild("bone2");
@@ -22,6 +34,18 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 		this.bone5 = this.body.getChild("bone5");
 		this.bulb = root.getChild("bulb");
 		this.screen = root.getChild("screen");
+	}
+
+	public ModelPart getBody() {
+		return body;
+	}
+
+	public ModelPart getBulb() {
+		return bulb;
+	}
+
+	public ModelPart getScreen() {
+		return screen;
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -136,14 +160,7 @@ public class LaserPointerModel<T extends Entity> extends EntityModel<T> {
 	}
 
 	@Override
-	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bulb.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		screen.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void setupAnim(Unit state) {
+		super.setupAnim(state);
 	}
 }
